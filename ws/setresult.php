@@ -58,7 +58,7 @@ if (isset($_REQUEST['op']))
 	}	
 	if (empty($no_omission))
 	{
-		$prevalence = 'null';
+		$no_omission = 'null';
 	}		
 	if (empty($spec_sens))
 	{
@@ -73,14 +73,8 @@ if (isset($_REQUEST['op']))
   (".$id.",".$idresulttype.",'".$file_tiff."','".$file_png."',".$partition.",
   '".$algorithm."',".$tss.",".$auc.",".$sensitivity.",".$equal_sens_spec.",".$prevalence.",
   ".$no_omission.",".$spec_sens.");";
+//		echo $sql;
 	}
-	if ($op=='A')
-	{
-		$sql = "update modelr.experiment_result where 
-			 idresulttype = ".$idresulttype.",  file_tiff = '".$file_tiff."',  file_png = '".$file_png."',
-		partition = ".$partition.",  algorithm = '".$algorithm."',  tss = ".$tss.",  auc = ".$auc.",  sensitivity = ".$sensitivity.",  equal_sens_spec = ".$equal_sens_spec.",
-		prevalence = ".$prevalence.",  no_omission = ".$no_omission.",  spec_sens =".$spec_sens." where idexperiment = ".$id ;
-  }
 	
 	if ($op=='E')
 	{
@@ -88,6 +82,7 @@ if (isset($_REQUEST['op']))
 	}
 
 	$res = pg_exec($conn,$sql);
+
 	if ($res)
 	{
 		if ($op=='I')
@@ -98,11 +93,6 @@ if (isset($_REQUEST['op']))
 		{
 			$msg='Excluído com sucesso';
 		}
-		if ($op=='A')
-		{
-			$msg='Alterado com sucesso';
-		}
-		$json_str = utf8_decode('{"experiment":[{"id":"'.$id.'","op": "'.$op.'","msg": "'.$msg.'"}]}');
 	}
 	else
 	{
@@ -114,11 +104,8 @@ if (isset($_REQUEST['op']))
 		{
 			$msg='Não foi possível excluir';
 		}
-		if ($op=='A')
-		{
-			$msg='Não foi possível alterar';
-		}
 	}
+	$json_str = utf8_decode('{"experiment":[{"id":"'.$id.'","op": "'.$op.'","msg": "'.$msg.'"}]}');
 }
 	echo $json_str;
 ?>
