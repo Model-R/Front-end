@@ -16,6 +16,17 @@ if (isset($_GET['id']))
 	$id = intval($_GET['id']);
 	$sql.=' and experiment.idexperiment = '.$id;
 }
+if (isset($_GET['idexperiment']))
+{
+	$idexperiment = $_GET['idexperiment'];
+	$sql.=" and md5(cast(experiment.idexperiment as text)) = '".$idexperiment."' ";
+}
+if (isset($_GET['status']))
+{
+	$id = intval($_GET['status']);
+	$sql.=' and experiment.idstatusexperiment = '.$id;
+}
+
 
 $res = pg_exec($conn,$sql);
 $qtd = pg_num_rows($res);
@@ -35,11 +46,11 @@ while ($row = pg_fetch_array($res))
 		$c2++;
 		if ($c2<$qtd2)
 		{	
-			$json_str2.='{"taxon":"'.$row2['taxon'].'", "lat":"'.$row2['lat'].'", "long": "'.$row2['long'].'", "idstatusoccurrence": "'.$row2['idstatusoccurrence'].'"},';
+			$json_str2.='{"taxon":"'.$row2['taxon'].'", "lat":"'.$row2['lat'].'", "lon": "'.$row2['long'].'", "idstatusoccurrence": "'.$row2['idstatusoccurrence'].'"},';
 		}
 		else
 		{
-				$json_str2.='{"taxon":"'.$row2['taxon'].'", "lat":"'.$row2['lat'].'", "long": "'.$row2['long'].'", "idstatusoccurrence": "'.$row2['idstatusoccurrence'].'"}';
+				$json_str2.='{"taxon":"'.$row2['taxon'].'", "lat":"'.$row2['lat'].'", "lon": "'.$row2['long'].'", "idstatusoccurrence": "'.$row2['idstatusoccurrence'].'"}';
 		}
 		
 	}
@@ -47,11 +58,11 @@ while ($row = pg_fetch_array($res))
 	
 	if ($c<$qtd)
 	{	
-		$json_str.='{"idexperiment":"'.md5($row['idexperiment']).'", "name":"'.$row['name'].'", "description": "'.$row['name'].'", "num_partition": "'.$row['num_partition'].'", "extent_model": "'.$row['extent_model'].'", "buffer": "'.$row['buffer'].'", "num_points": "'.$row['num_points'].'",  "tss": "'.$row['tss'].'", "statusexperiment": "'.$row['statusexperiment'].'","partitiontype": "'.$row['partitiontype'].'", "occurence": '.$json_str2.'},';
+		$json_str.='{"idexperiment":"'.md5($row['idexperiment']).'", "id":"'.$row['idexperiment'].'", "name":"'.$row['name'].'", "description": "'.$row['name'].'", "num_partition": "'.$row['num_partition'].'", "extent_model": "'.$row['extent_model'].'", "buffer": "'.$row['buffer'].'", "num_points": "'.$row['num_points'].'",  "tss": "'.$row['tss'].'", "statusexperiment": "'.$row['statusexperiment'].'","partitiontype": "'.$row['partitiontype'].'", "occurrences": '.$json_str2.'},';
 	}
 	else
 	{
-		$json_str.='{"idexperiment":"'.md5($row['idexperiment']).'", "name":"'.$row['name'].'", "description": "'.$row['name'].'", "num_partition": "'.$row['num_partition'].'", "extent_model": "'.$row['extent_model'].'", "buffer": "'.$row['buffer'].'", "num_points": "'.$row['num_points'].'",  "tss": "'.$row['tss'].'", "statusexperiment": "'.$row['statusexperiment'].'","partitiontype": "'.$row['partitiontype'].'", "occurence": '.$json_str2.'}';
+		$json_str.='{"idexperiment":"'.md5($row['idexperiment']).'", "id":"'.$row['idexperiment'].'", "name":"'.$row['name'].'", "description": "'.$row['name'].'", "num_partition": "'.$row['num_partition'].'", "extent_model": "'.$row['extent_model'].'", "buffer": "'.$row['buffer'].'", "num_points": "'.$row['num_points'].'",  "tss": "'.$row['tss'].'", "statusexperiment": "'.$row['statusexperiment'].'","partitiontype": "'.$row['partitiontype'].'", "occurence": '.$json_str2.'}';
 	}
 }
 $json_str .=']}';
