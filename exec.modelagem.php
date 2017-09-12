@@ -19,6 +19,8 @@ $id = $_REQUEST['id'];
 $extensao1 = $_REQUEST['edtextensao1_oeste'].';'.$_REQUEST['edtextensao1_leste'].';'.$_REQUEST['edtextensao1_norte'].';'.$_REQUEST['edtextensao1_sul'];
 //$extensao2 = $_REQUEST['edtextensao2_oeste'].';'.$_REQUEST['edtextensao2_leste'].';'.$_REQUEST['edtextensao2_norte'].';'.$_REQUEST['edtextensao2_sul'];
 
+$nome = $_REQUEST['edtexperimento'];
+$descricao = $_REQUEST['edtdescricao'];
 $idfonte = $_REQUEST['cmboxfonte'];
 $idtipoparticionamento = $_REQUEST['cmboxtipoparticionamento'];
 $numpontos = $_REQUEST['edtnumpontos'];
@@ -27,6 +29,8 @@ $tss = $_REQUEST['edttss'];
 $numparticoes = $_REQUEST['edtnumparticoes'];
 
 
+$Experimento->name = $nome;//integer,
+$Experimento->description = $descricao;//integer,
 $Experimento->idpartitiontype = $idtipoparticionamento;//integer,
 $Experimento->num_partition = $numparticoes;//integer,
 $Experimento->num_points = $numpontos ;//integer,

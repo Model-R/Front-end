@@ -59,9 +59,10 @@ $extensao2_oeste = '-62';
 $idproject = $_REQUEST['idproject'];
 
 $Experimento->getById($id);
-$idexperiment = 	   	$Experimento->idexperiment;//= $row['nomepropriedade'];
-$idproject = 	   	$Experimento->idproject ;//= $row['nomepropriedade'];
+$idexperiment = $Experimento->idexperiment;//= $row['nomepropriedade'];
+$idproject = $Experimento->idproject ;//= $row['nomepropriedade'];
 $name = $Experimento->name ;//= $row['inscricaoestadual'];
+$description = $Experimento->description ;//= $row['inscricaoestadual'];
 $idtipoparticionamento = $Experimento->idpartitiontype;
 $num_partition = $Experimento->num_partition;
 $buffer = $Experimento->buffer;
@@ -252,6 +253,9 @@ $tss = $Experimento->tss;
 									<form name='frm' id='frm' action='exec.modelagem.php' method="post" class="form-horizontal form-label-left" novalidate>
 										<input id="op" value="<?php echo $op;?>" name="op" type="hidden">
 										<input id="id" value="<?php echo $id;?>" name="id" type="hidden">
+										<input id="edtexperimento" value="<?php echo $name;?>" name="edtexperimento" type="hidden">
+										<input id="edtdescricao" value="<?php echo $description;?>" name="edtdescricao" type="hidden">
+										
 										
 										<div class="x_content">
 											<div class="" role="tabpanel" data-example-id="togglable-tabs">
@@ -380,12 +384,31 @@ $tss = $Experimento->tss;
                                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">Fonte<span class="required">*</span>
                                             </label>
                                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                                <?php echo $Fonte->listaCombo('cmboxfonte',$idsource,'onchange="atualizar(4)"','class="form-control"');?>
+                                                <?php 
+												$sqlsource = "select distinct idsource from modelr.experiment_use_raster eur,
+modelr.raster r where
+eur.idraster = r.idraster and eur.idexperiment = ".$idexperiment." limit 1 ";
+$ressource = pg_exec($conn,$sqlsource);
+$rowsource = pg_fetch_array($ressource);
+												
+												 if (!empty($_REQUEST['cmboxfonte']))
+								 {
+									 $idsource = $_REQUEST['cmboxfonte'];
+								 }
+								 else
+								 {
+									 $idsource = $rowsource['idsource'];
+								 }
+												
+												echo $Fonte->listaCombo('cmboxfonte',$idsource ,'onchange="atualizar(4)"','class="form-control"');?>
                                             </div>
                                         </div>
                                    <div class="x_content">
 								 <p style="padding: 5px;">
-								 <?php $sql = 'select * from modelr.raster where idsource = '.$idsource;
+								 <?php 
+								
+								 
+								 $sql = 'select * from modelr.raster where idsource = '.$idsource;
 								 $res = pg_exec($conn,$sql);
 								 while ($row = pg_fetch_array($res))
 								 {
