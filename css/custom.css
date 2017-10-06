@@ -2377,7 +2377,7 @@ a.star {
 .buttons,
 button,
 .btn {
-    margin-bottom: 5px;
+    margin-bottom: 5px !important;
     margin-right: 5px;
 }
 
@@ -6510,4 +6510,11 @@ ul.notifications {
     height: 60%;
     border: 2px solid;
     padding: 5px !important;
+}
+
+/* ------------------- consexperimento.php -----------------*/
+
+.cleanDataFooter{
+    display: flex;
+    justify-content: center;
 }

@@ -11,7 +11,7 @@
 	  $ordenapor = $_REQUEST['cmboxordenar'];
 	  
 //	  $idproject = $_REQUEST['idproject'];
-	  $idusuario = $_REQUEST['idusuario'];
+      $idusuario = $_REQUEST['idusuario'];
 	  
 	  //print_r($_REQUEST);
 	class MyPag extends Paginacao
@@ -74,7 +74,7 @@
                                         <span class="badge bg-blue">'.$qtd.'</span>
                                         <i class="fa fa-edit"></i>
                                     </a>
-									<a class="btn btn-app" onclick="limparDadosExperimento('.$row['idexperiment'].')" data-toggle="tooltip" data-placement="top" title="Limpar">
+									<a class="btn btn-app" onclick="confirmarLimparDados('.$row['idexperiment'].')" data-toggle="tooltip" data-placement="top" title="Limpar">
                                         <span class="badge bg-red">'.$qtd.'</span>
                                         <i class="fa fa-eraser"></i>
                                     </a>
@@ -275,6 +275,26 @@ if (($ordenapor=='USUARIO'))
   </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="ConfirmCleanModal" tabindex="-1" role="dialog" aria-labelledby="ConfirmCleanLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ConfirmCleanLabel">Limpar Dados</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Deseja Limpar todos os dados desse Experimento ?</p>
+                <div class="modal-footer cleanDataFooter">
+                    <button type="button" data-dismiss="modal" id="cleanButton" class="btn btn-primary">Sim</button>
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">Não</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
     <div class="container body">
 
@@ -440,12 +460,19 @@ require 'MSGCODIGO.php';
 <?php $MSGCODIGO = $_REQUEST['MSGCODIGO'];
 ?>
 		
-	
-	function limparDadosExperimento(idexperimento)
-	{
-		document.getElementById('frm').action='exec.<?php echo strtolower($FORM_ACTION);?>.php?id='+idexperimento+'&op=LD';
-		document.getElementById('frm').submit();
+	var limparExperimento;
+    $('#ConfirmCleanModal').modal({ show: false});
+
+    function confirmarLimparDados(idexperimento)
+	{   
+        limparExperimento = idexperimento;
+        $('#ConfirmCleanModal').modal('show');
 	}
+    $("#cleanButton").click(function() {
+        document.getElementById('frm').action='exec.<?php echo strtolower($FORM_ACTION);?>.php?id='+limparExperimento+'&op=LD';
+		document.getElementById('frm').submit();
+    });
+ 
 	function modelar(idexperimento)
 	{
 		document.getElementById('frm').action='cadmodelagem.php?id='+idexperimento;
