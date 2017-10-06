@@ -20,7 +20,7 @@
 
                         <ul class="nav navbar-nav navbar-right">
                             <li class="">
-                                <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                <a href="javascript:;" class="user-profile nav-user dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                     <img src="images/user.png" alt=""><?php echo $_SESSION['s_nome'];?>
                                     <span class=" fa fa-angle-down"></span>
                                 </a>
@@ -44,7 +44,7 @@
                                     </li>
                                     <li><a href="manual_modelr.pdf"><i class="fa fa-file-pdf-o pull-right"></i> Manual</a>
                                     </li>
-                                    <li><a href="login.php"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
+                                    <li><a href="index.php"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
                                     </li>
                                 </ul>
                             </li>
@@ -92,8 +92,8 @@
                                    
                                     <li>
                                         <div class="text-center">
-                                            <a>
-                                                <strong><a href="consexperimento.php">Visualizar todos</strong>
+                                            <a href="consexperimento.php">
+                                                <strong>Visualizar todos</strong>
                                                 <i class="fa fa-angle-right"></i>
                                             </a>
                                         </div>

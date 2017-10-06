@@ -47,6 +47,8 @@ if ($op=='A')
 
     <title>Cad. Usuário</title>
 
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+
     <!-- Bootstrap core CSS -->
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -150,7 +152,7 @@ if ($op=='A')
                             <div class="x_panel">
                                 <div class="x_title">
                                     <h2><a href='consusuario.php'>Cad. Usuário <small>Cadastro de usuários</small></a></h2>
-                                    <ul class="nav navbar-right panel_toolbox">
+                                    <!-- <ul class="nav navbar-right panel_toolbox">
                                                                             <li role="presentation" class="dropdown">
                                         <a id="drop4" href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
                                 Ação
@@ -166,7 +168,7 @@ if ($op=='A')
                                             </li>
                                         </ul>
                                     </li>
-                                    </ul>
+                                    </ul> -->
                                     <div class="clearfix"></div>
                                 </div>
                                 <div class="x_content">
@@ -217,7 +219,7 @@ if ($op=='A')
 										<div class="ln_solid"></div>
 										
                                         <div class="form-group">
-                                            <div class="col-md-6 col-md-offset-3">
+                                            <div class="form-group-buttons">
                                                 <button type="submit" class="btn btn-primary">Cancelar</button>
                                                 <button id="send" type="submit" class="btn btn-success">Enviar</button>
                                             </div>

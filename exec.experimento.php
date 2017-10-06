@@ -56,11 +56,11 @@ if ($operacao=='A')
 
     if ($result = $Experimento->alterar($idexperimento))
 	{
-		header("Location: cadexperimento.php?op=A&MSGCODIGO=84&id=$idexperimento");
+		header("Location: cadexperimento.php?op=A&tab=2&MSGCODIGO=84&id=$idexperimento");
 	}
 	else
 	{
-	 header("Location: cadexperimento.php?op=A&MSGCODIGO=85&id=$idexperimento");
+	 header("Location: cadexperimento.php?op=A&tab=2&MSGCODIGO=85&id=$idexperimento");
 	}
    
 }
@@ -94,6 +94,20 @@ if ($operacao=='E')
 }
 
 
+// liberar experimento
+if ($operacao=='LE')
+{
+
+    if ($result = $Experimento->liberarExperimento($idexperimento))
+	{
+		header("Location: cadexperimento.php?op=A&tab=2&MSGCODIGO=84&id=$idexperimento");
+	}
+	else
+	{
+	 header("Location: cadexperimento.php?op=A&tab=2&MSGCODIGO=85&id=$idexperimento");
+	}
+   
+}
 
 ?>
 

@@ -62,7 +62,7 @@ class TipoUsuario
 	
 	function listaCombo($nomecombo,$id,$refresh='N',$classe)
 	{
-	   	$sql = "select * from modelr.tipousuario  ";
+	   	$sql = "select * from modelr.usertype  ";
 		
 		$res = pg_exec($this->conn,$sql);
 		
@@ -78,7 +78,7 @@ class TipoUsuario
 				$s = $refresh;
 			}
 		}
-		$sql.=' order by tipousuario ';
+		$sql.=' order by usertype ';
 		$html = "<select name='".$nomecombo."' id = '".$nomecombo."' ".$s."  ".$classe.">";
 		$html .= "<option value=''>Selecione o tipo de usuário</Option>";
 		while ($row = pg_fetch_array($res))
@@ -88,7 +88,7 @@ class TipoUsuario
 			{
 			   $s = "selected";
 			}
-	      $html.="<option value='".$row['idtipousuario']."' ".$s." >".$row['tipousuario']."</option> ";
+	      $html.="<option value='".$row['idusertype']."' ".$s." >".$row['usertype']."</option> ";
 	    }
 		$html .= '</select>';
 		return $html;	

@@ -1,0 +1,3 @@
+"kappa";"spec_sens";"no_omission";"prevalence";"equal_sens_spec";"sensitivity";"AUC";"TSS";"algoritmo";"partition"
+"Tapirira guianensis Aubl. 1 BioClim";0.15374615;-1e-04;-1e-04;0.15374615;0.15374615;0.553393213572854;0.112774451097804;"BioClim";1
+"Tapirira guianensis Aubl. 1 BioClim";0.15374615;-1e-04;-1e-04;0.15374615;0.15374615;0.553393213572854;0.112774451097804;"BioClim";1

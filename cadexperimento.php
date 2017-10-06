@@ -31,11 +31,7 @@ $Periodo->conn = $conn;
 $StatusOccurrence = new StatusOccurrence();
 $StatusOccurrence->conn = $conn;
 
-
-//print_r($_REQUEST);
-
 $tab = $_REQUEST['tab'];
-
 $filtro = $_REQUEST['filtro']; 
 
 if (empty($tab))
@@ -43,19 +39,16 @@ if (empty($tab))
 	$tab = 1;
 }
 $op=$_REQUEST['op'];
-//echo $op;
 $id=$_REQUEST['id'];
 $idsource = $_REQUEST['cmboxfonte'];
-
 $especie = $_REQUEST['edtespecie'];
 
 if ($op=='A')
 {
 	$Experimento->getById($id);
-	$idexperiment = 	   	$Experimento->idexperiment;//= $row['nomepropriedade'];
-	$name = $Experimento->name ;//= $row['inscricaoestadual'];
-	$description = $Experimento->description ;//= $row['inscricaoestadual'];
-		   	
+	$idexperiment = $Experimento->idexperiment;
+	$name = $Experimento->name ;
+	$description = $Experimento->description ;
 }
 
 ?>
@@ -68,6 +61,7 @@ if ($op=='A')
 
     <title>Model-R </title>
 
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
     <!-- Bootstrap core CSS -->
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -164,86 +158,78 @@ if ($op=='A')
 	</div>
 	
 	 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
-                                    <div class="modal-dialog modal-lg">
-                                        <div class="modal-content">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
 
-                                            <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
-                                                </button>
-                                                <h4 class="modal-title" id="myModalLabel2">Editar ponto</h4>
-                                            </div>
-                                            <div class="modal-body">
-                                                <h4><div id="divtaxon"></div></h4>
-                                                <p>Dados originais<br>
-												<div id="dadosoriginais"></div><br>
-												<div class="row">
-													<div class="col-md-3 col-sm-3 col-xs-3">
-														<div id="divimagem"></div><br>
-													</div>
-													<div class="col-md-9 col-sm-9 col-xs-9">
-														<b>Dados inferidos</b><br>
-														<?php echo $StatusOccurrence->listaCombo('cmboxstatusoccurrence',$idstatusoccurrence,'N','class="form-control"','1,4,6,7,16,17');?>
-														<div class="row">
-															<div class="col-md-6 col-sm-6 col-xs-6">
-																Latitude:<input type="text" name="edtlatitude" id="edtlatitude" class="form-control"><br>
-															</div>
-															<div class="col-md-6 col-sm-6 col-xs-6">
-																Longitude:<input type="text" name="edtlongitude" id="edtlongitude" class="form-control"><br>
-															</div>
-														</div>
-													</div>
-												</div>
-												</p>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <input type="hidden" name="edidocorrencia" id="edidocorrencia">
-												<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-                                                <button type="button" class="btn btn-primary" onclick="atualizarPontos(document.getElementById('edidocorrencia').value,document.getElementById('cmboxstatusoccurrence').value,document.getElementById('edtlatitude').value,document.getElementById('edtlongitude').value)">Salvar</button>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel2">Editar ponto</h4>
+				</div>
+				<div class="modal-body">
+					<h4><div id="divtaxon"></div></h4>
+					<p>Dados originais<br>
+					<div id="dadosoriginais"></div><br>
+					<div class="row">
+						<div class="col-md-3 col-sm-3 col-xs-3">
+							<div id="divimagem"></div><br>
+						</div>
+						<div class="col-md-9 col-sm-9 col-xs-9">
+							<b>Dados inferidos</b><br>
+							<?php echo $StatusOccurrence->listaCombo('cmboxstatusoccurrence',$idstatusoccurrence,'N','class="form-control"','1,4,6,7,16,17');?>
+							<div class="row">
+								<div class="col-md-6 col-sm-6 col-xs-6">
+									Latitude:<input type="text" name="edtlatitude" id="edtlatitude" class="form-control"><br>
+								</div>
+								<div class="col-md-6 col-sm-6 col-xs-6">
+									Longitude:<input type="text" name="edtlongitude" id="edtlongitude" class="form-control"><br>
+								</div>
+							</div>
+						</div>
+					</div>
+					</p>
+				</div>
+				<div class="modal-footer">
+					<input type="hidden" name="edidocorrencia" id="edidocorrencia">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+					<button type="button" class="btn btn-primary" onclick="atualizarPontos(document.getElementById('edidocorrencia').value,document.getElementById('cmboxstatusoccurrence').value,document.getElementById('edtlatitude').value,document.getElementById('edtlongitude').value)">Salvar</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	 <div class="modal fade" id="myModalstatusoccurrence" tabindex="-1" role="dialog" aria-hidden="true">
-                                    <div class="modal-dialog modal-lg">
-                                        <div class="modal-content">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
 
-                                            <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
-                                                </button>
-                                                <h4 class="modal-title" id="myModalLabel2">Status Ocorrência</h4>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p>
-												<?php echo $StatusOccurrence->listaCombo('cmboxstatusoccurrence222',$idstatusoccurrence222,'N','class="form-control"','1,4,6,7,16,17');?>
-												</p>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                                <button type="button" class="btn btn-primary" onclick="atualizarPontos('',document.getElementById('cmboxstatusoccurrence222').value)">Salvar</button>
-                                            </div>
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel2">Status Ocorrência</h4>
+				</div>
+				<div class="modal-body">
+					<p>
+					<?php echo $StatusOccurrence->listaCombo('cmboxstatusoccurrence222',$idstatusoccurrence222,'N','class="form-control"','1,4,6,7,16,17');?>
+					</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary" onclick="atualizarPontos('',document.getElementById('cmboxstatusoccurrence222').value)">Salvar</button>
+				</div>
 
-                                        </div>
-                                    </div>
-                                </div>								
+			</div>
+		</div>
+	</div>								
 								
 								
 	<div class="container body">
 		<div class="main_container">
-
-			
 			<div class="col-md-3 left_col">
                 <div class="left_col scroll-view">
-
-                    
-					<?php //require "menu.php";?>
                 </div>
             </div>
-
             <!-- top navigation -->
 			<?php require "menutop.php";?>			
-			
 				<!-- page content -->
 			<div class="right_col" role="main">
 				<div class="">
@@ -261,47 +247,48 @@ if ($op=='A')
 									<form name='frm' id='frm' action='exec.experimento.php' method="post" class="form-horizontal form-label-left" novalidate>
 										<input id="op" value="<?php echo $op;?>" name="op" type="hidden">
 										<input id="id" value="<?php echo $id;?>" name="id" type="hidden">
-										<div class="row">
-											
-											<div class="col-md-5 col-sm-5 col-xs-12">
+										<div class="">
+											<div>
 												<div class="item form-group">
 												<label class="control-label col-md-3 col-sm-3 col-xs-12" for="edtexperimento">Experimento <span class="required">*</span>
 												</label>
-													<div class="col-md-5 col-sm-5 col-xs-12">
+													<div class="col-md-6 col-sm-6 col-xs-12">
 														<input id="edtexperimento" value="<?php echo $name;?>"  name="edtexperimento" class="form-control col-md-7 col-xs-12" required="required">
 													</div>
 												</div>
 											</div>
-											<div class="col-md-5 col-sm-5 col-xs-12">
+											<div class="">
 												<div class="item form-group">
-												<label class="control-label col-md-2 col-sm-2 col-xs-12" for="edtdescricao">Descrição
+												<label class="control-label col-md-3 col-sm-3 col-xs-12" for="edtdescricao">Descrição
 												</label>
-													<div class="col-md-10 col-sm-10 col-xs-12">
+													<div class="col-md-6 col-sm-6 col-xs-12">
 													<input id="edtdescricao" value="<?php echo $description;?>"  name="edtdescricao" class="form-control col-md-7 col-xs-12">
 													</div>
 												</div>
 											</div>
-											<div class="col-md-2 col-sm-2 col-xs-2">
-											    <button id="send" type="button" onclick="enviar()" class="btn btn-success">Salvar</button>
+											<div class="ln_solid"></div>
+											<?php if ($op!='I')
+											{?>
+											<div class="new_experiment_send_button">
+											    <button id="send" type="button" onclick="enviar()" class="btn btn-info">Salvar</button>
+												 <button id="send2" type="button" onclick="liberarExperimento()" class="btn btn-success">Liberar experimento para modelagem</button>
 											</div>
+											<?php } ?>
 										</div>
 											<?php 
 											// SO MOSTRO O BOTÃO SE FOR INCLUIR. ASSIM O BOTÃO FICA NA PARTE DE BAIXO DA TELA QUANDO A
 											// OPÇÃO FOR ALTERAR
 											
-											if ($op=='I'){?>
-											<div class="form-group">
-                                            <div class="col-md-6 col-md-offset-5">
+										if ($op=='I'){?>
+										<div class="form-group">
+                                            <div class="new_experiment_send_button">
                                                 <button id="send" type="button" onclick="enviar()" class="btn btn-success">Salvar</button>
                                             </div>
-											</div>
-											<?php } ?>
-											
 										</div>
-										
+										<?php } ?>
+									<!--</div>-->
 										<?php if ($op=='A')
 										{?>
-										
 										<div class="x_content">
 											<div class="" role="tabpanel" data-example-id="togglable-tabs">
 												<ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
@@ -317,7 +304,7 @@ if ($op=='A')
 																<div class="x_panel">
 																	<div class="x_title">
 																		<h2>Dados Bióticos <small></small></h2>
-																		 <ul class="nav navbar-right panel_toolbox">
+																		<ul class="nav navbar-right panel_toolbox">
 																			<li><a><i class="fa fa-globe"></i></a>
 																			</li>
 																			<li><a data-toggle="modal" data-target=".bs-example-modal-sm"><i class="fa fa-file-excel-o"></i></a>
@@ -327,107 +314,92 @@ if ($op=='A')
 																		</div>
 																	</div>
 																	<div class="x_content">
-																		<div class="item form-group">
-																			<label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">Fonte<span class="required">*</span>
+																		<div>
+																			<div class="item form-group files-options">
+																			<label class="control-label" for="email">Fonte<span class="required">*</span>
 																			</label>
-																			<div class="col-md-6 col-sm-6 col-xs-12">
-																				<input type="checkbox" name="fontebiotico[]" id="checkfontejabot" checked="true" value="JABOT"/> JABOT
-																				<?php if ($_SESSION['s_idtipousuario']=='2'){?>
-																				<input type="checkbox" name="fontebiotico[]" id="checkfontegbif" value="GBIF" data-parsley-mincheck="2" required class="flat" /> GBIF
-																				<input type="checkbox" name="fontebiotico[]" id="checkfonteoutro" value="OUTRO" data-parsley-mincheck="2" required class="flat" /> Outro
+																			<div class="">
+																				<input type="radio" name="fontebiotico[]" id="checkfontejabot" value="1" <?php if ($_REQUEST['fontebiotico'][0]=='1') echo "checked";?> /> JABOT
+																				<input type="radio" name="fontebiotico[]" id="checkfontegbif" value="2" <?php if ($_REQUEST['fontebiotico'][0]=='2') echo "checked";?>/> GBIF
 																				<button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target=".bs-example-modal-sm">Arquivo CSV</button>
-																				<?php } ?>
 																			</div>
 												
-																		</div>
-																		<div class="item form-group">
-																			<div class="col-md-6 col-sm-6 col-xs-12">
-																				<div class="input-group">
-																					<input id="edtespecie" value="<?php echo $especie;?>"  name="edtespecie" class="form-control col-md-7 col-xs-12" >
-																					<span class="input-group-btn"><button type="button" onclick="buscar()" class="btn btn-primary" >Buscar</button>
-																					<button type="button" onclick="adicionarOcorrencia()" class="btn btn-success btn"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Adicionar</button></span>
-																				</div>
-																				
 																			</div>
-																			
+																			<div class="item form-group species-name">
+																				<div class="">
+																					<div class="input-group">
+																						<input id="edtespecie" value="<?php echo $especie;?>"  name="edtespecie" class="form-control col-md-7 col-xs-12" >
+																						<span class="input-group-btn"><button type="button" onclick="buscar()" class="btn btn-primary" >Buscar</button>
+																						<button type="button" onclick="adicionarOcorrencia()" class="btn btn-success btn"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Adicionar</button></span>
+																					</div>
+																				</div>
+																			</div>
 																		</div>		
 																		<!--id="check-all" class="flat"-->
-																		<table class="table table-striped responsive-utilities jambo_table bulk_action">
-																			<thead>
-																				<tr class="headings">
-																					<th>
-																						<input type="checkbox" id="chkboxtodos2" name="chkboxtodos2" onclick="selecionaTodos2(true);">
-																					</th>
-																					<th class="column-title">Táxon </th>
-																					<th class="column-title">Tombo </th>
-																					<th class="column-title">Coletor </th>
-																					<th class="column-title">Latitude </th>
-																					<th class="column-title">Logitude</th>
-																					<th class="column-title no-link last"><span class="nobr">Action</span>																					</th>
-																					<th class="bulk-actions" colspan="7">
-																						<a class="antoo" style="color:#fff; font-weight:500;">Total de Registros selecionados: ( <span class="action-cnt"> </span> ) </a>
-																						
-																					</th>
-																				</tr>
-																			</thead>
-							
-							<?php 
-							if ((!empty($especie)) && ($_REQUEST['fontebiotico'][0]=='JABOT'))
-							{
-								$sql = "select numtombo,taxoncompleto,codtestemunho,coletor,numcoleta,latitude,longitude,pais,estado_prov as estado,cidade as municipio
- from  
-								publicacao.extracao_jabot where latitude is not null and longitude is not null and
-								familia || ' ' || taxoncompleto ilike '%".$especie."%'";
-								
-								//echo $sql;
-								$res = pg_exec($conn,$sql);
-								$totalregistroselecionados = pg_num_rows($res);
-							?>
-																			<tbody>
-							<?php while ($row = pg_fetch_array($res))
-							{
-								$codigobarras= str_pad($row['codtestemunho'], 8, "0", STR_PAD_LEFT);	
-								
-								$sqlimagem = "select * from jabot.imagem where codigobarras = '".$codigobarras."' limit 1";
-								
-								$resimagem = pg_exec($conn,$sqlimagem);
-								
-								$rowimagem = pg_fetch_array($resimagem);
-								
-								$servidor = $rowimagem ['servidor'];
-								$path =  $rowimagem ['path'];
-								$arquivo =  $rowimagem ['arquivo'];
-								
-								$html_imagem='<a href=templaterb2.php?colbot=rb&codtestemunho='.$row['codtestemunho'].'&arquivo='.$arquivo.' target=\'Visualizador\'><img src="http://'.$servidor.'/fsi/server?type=image&source='.$path.'/'.$arquivo.'&width=300&height=100&profile=jpeg&quality=20"></a>';
-								
-								?>
-																				<tr class="even pointer">
-																					<td class="a-center "><input name="chtestemunho[]" id="chtestemunho[]" value="<?php echo $row['codtestemunho'];?>" type="checkbox" ></td>
-																					<td class=" "><?php echo $html_imagem.' ';?><?php echo $row['taxoncompleto'];?></td>
-																					<td class="a-right a-right "><?php echo $row['numtombo'];?></td>
-																					<td class="a-right a-right "><?php echo $row['coletor'];?> <?php echo $row['numcoleta'];?></td>
-																					<td class=" "><?php echo $row['latitude'];?>, <?php echo $row['longitude'];?></td>
-																					<td class=" "><?php echo $row['pais'];?>, <?php echo $row['estado'];?> - <?php echo $row['municipio'];?></td>
-																					<td class=" last">
-																					<a><i class="fa fa-globe"></i></a>
-																					<a><i class="fa fa-save"></i></a>
-																					</td>
-																				</tr>
-							<?php } 
-							} // if (!empty($especie))
-							?>
-											
-																			</tbody>
-																		</table>
-																		<?php //echo $sql;?>
-								 
-                                    <!-- end pop-over -->
-
+																		<div id='div_resultadobusca'>
+																			<table class="table table-striped responsive-utilities jambo_table bulk_action">
+																				<thead>
+																					<tr class="headings">
+																						<th>
+																							<input type="checkbox" id="chkboxtodos2" name="chkboxtodos2" onclick="selecionaTodos2(true);">
+																						</th>
+																						<th class="column-title">Táxon </th>
+																						<th class="column-title">Tombo </th>
+																						<th class="column-title">Coletor </th>
+																						<th class="column-title">Latitude </th>
+																						<th class="column-title">Logitude</th>
+																						<th class="column-title no-link last"><span class="nobr">Action</span>																					</th>
+																						<th class="bulk-actions" colspan="7">
+																							<a class="antoo" style="color:#fff; font-weight:500;">Total de Registros selecionados: ( <span class="action-cnt"> </span> ) </a>
+																						</th>
+																					</tr>
+																				</thead>
+	<?php 
+	//1 jabot
+	//2 Gbif
+	if ((!empty($especie)) && ($_REQUEST['fontebiotico'][0]=='1'))
+	{
+		$sql = "select numtombo,taxoncompleto,codtestemunho,coletor,numcoleta,latitude,longitude,
+		pais,estado_prov as estado,cidade as municipio
+			from  
+		publicacao.extracao_jabot where latitude is not null and longitude is not null and
+		familia || ' ' || taxoncompleto ilike '%".$especie."%'";
+		$res = pg_exec($conn,$sql);
+		$totalregistroselecionados = pg_num_rows($res);
+	?>
+																				<tbody>
+	<?php while ($row = pg_fetch_array($res))
+		{
+		$codigobarras= str_pad($row['codtestemunho'], 8, "0", STR_PAD_LEFT);	
+		$sqlimagem = "select * from jabot.imagem where codigobarras = '".$codigobarras."' limit 1";
+		$resimagem = pg_exec($conn,$sqlimagem);
+		$rowimagem = pg_fetch_array($resimagem);
+		$servidor = $rowimagem ['servidor'];
+		$path =  $rowimagem ['path'];
+		$arquivo =  $rowimagem ['arquivo'];
+		$html_imagem='<a href=templaterb2.php?colbot=rb&codtestemunho='.$row['codtestemunho'].'&arquivo='.$arquivo.' target=\'Visualizador\'><img src="http://'.$servidor.'/fsi/server?type=image&source='.$path.'/'.$arquivo.'&width=300&height=100&profile=jpeg&quality=20"></a>';
+		?>
+																					<tr class="even pointer">
+																						<td class="a-center "><input name="chtestemunho[]" id="chtestemunho[]" value="<?php echo $row['codtestemunho'];?>" type="checkbox" ></td>
+																						<td class=" "><?php echo $html_imagem.' ';?><?php echo $row['taxoncompleto'];?></td>
+																						<td class="a-right a-right "><?php echo $row['numtombo'];?></td>
+																						<td class="a-right a-right "><?php echo $row['coletor'];?> <?php echo $row['numcoleta'];?></td>
+																						<td class=" "><?php echo $row['latitude'];?>, <?php echo $row['longitude'];?></td>
+																						<td class=" "><?php echo $row['pais'];?>, <?php echo $row['estado'];?> - <?php echo $row['municipio'];?></td>
+																						<td class=" last">
+																						<a><i class="fa fa-globe"></i></a>
+																						<a><i class="fa fa-save"></i></a>
+																						</td>
+																					</tr>
+	<?php 
+		} 
+	} // if ((!empty($especie)) && ($_REQUEST['fontebiotico'][0]=='JABOT'))
+	?>
+												
+																				</tbody>
+																			</table>
+																		</div>
 																	</div>
-                                    <!-- end pop-over -->
-
-                                
-                                    <!-- end pop-over -->
 																</div>
 															</div>
 														</div> <!-- row -->
@@ -438,11 +410,7 @@ if ($op=='A')
 																<div class="x_panel">
 																	<div class="x_title">
 																		<h2>Data Cleaning</h2>
-																		<div class="clearfix">
-																		</div>
-																	</div>
-																	<div class="row">
-																			
+																		<div class="clearfix"></div>
 																	</div>
 																	<div class="row">
 																			<div class="col-md-12 col-sm-12 col-xs-12">
@@ -453,13 +421,13 @@ if ($op=='A')
 																			--><button id="send3" type="button" onclick="atualizarPontos('',13,'','')" class="btn btn-xs btn-warning">Coordenada com zero</button>
 																			
 																			<button id="send4" type="button" onclick="marcarPontosDuplicados()" class="btn btn-xs btn-danger">Duplicatas</button>
+																			<button id="send3" type="button" onclick="atualizarPontos('',99,'','')" class="btn btn-xs btn-warning">Executar Todos</button>
 																			<!--<button id="send5" type="button" onclick="liberarParaModelagem()" class="btn btn-xs btn-success">Liberar Modelagem</button>-->
 																			</div>
 																	</div>
 																	<div class="x_content">
 																	 <p style="padding: 5px;">
-																	 <div id="map3">
-																	 </div>
+																	 <div id="map3"></div>
 																		<!-- end pop-over -->
 																	</div>
 																</div>
@@ -467,11 +435,8 @@ if ($op=='A')
 						
 															<div class="col-md-8 col-sm-8 col-xs-12">
 																<div class="x_panel">
-
 																	<div class="x_title">
-																		<div class="clearfix">
-																		</div>
-																		
+																		<div class="clearfix"></div>
 																		<div class="row">
 																			<div class="col-md-6 col-sm-6 col-xs-12">
 																				<?php echo $StatusOccurrence->listaCombo('cmboxstatusoccurrencefiltro',$idstatusoccurrencefiltro,'N','class="form-control"','');?>
@@ -489,175 +454,131 @@ if ($op=='A')
 																					<th class="column-title">Imagem</th>
 																					<th class="column-title">Identificação</th>
 																					<th class="column-title">Localização</th>
-																					<th class="column-title">Status <button type="button" class="btn btn-default btn-xs" onclick="abreModelStatusOcorrencia()">
-  <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Editar
-</button></th>
-																					<th class="column-title">
-<!--<button type="button" class="btn btn-success btn-xs" onclick="liberaModelagem('<?php echo $row['idoccurrence'];?>','S')">
-  <span class="glyphicon glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
-</button>-->
-</th>
+																					<th class="column-title">Status <a data-toggle="tooltip" data-placement="top" title data-original-title="Editar" onclick="abreModelStatusOcorrencia()"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></th>
+																					<th class="column-title"></th>
 																				</tr>
 																			</thead>
-							
-							<?php 
-							$sql = "select idoccurrence,idexperiment,iddatasource,taxon,collector,collectnumber,server,
+<?php 
+$sql = "select idoccurrence,idexperiment,iddatasource,taxon,collector,collectnumber,server,
 path,file,occurrence.idstatusoccurrence,pathicon,statusoccurrence,country,majorarea,minorarea,
-case when lat2 is not null then lat2
-else
-lat
-end as lat,
+case when lat2 is not null then lat2 else lat end as lat,
 case when long2 is not null then long2
-else
-long
-end as long
-
-
- from modelr.occurrence, modelr.statusoccurrence where 
-							occurrence.idstatusoccurrence = statusoccurrence.idstatusoccurrence and
-							idexperiment = ".$id;
-							
-							if (!empty($filtro))
-							{
-								$sql.=' and occurrence.idstatusoccurrence = '.$filtro;
-							}
-							
+else long end as long
+from modelr.occurrence, modelr.statusoccurrence where 
+occurrence.idstatusoccurrence = statusoccurrence.idstatusoccurrence and
+idexperiment = ".$id;
+if (!empty($filtro))
+{
+	$sql.=' and occurrence.idstatusoccurrence = '.$filtro;
+}
 $res = pg_exec($conn,$sql);
 $conta = pg_num_rows($res);
-
 $marker = '';
 $info = '';
-							?>
-																		<tbody>
-							<?php 
-							$c=0;
-							while ($row = pg_fetch_array($res))
-							{
-								$servidor = $row['server'];
-								$path =  $row['path'];
-								$arquivo =  $row['file'];
-								$localizacao = $row['country'].', '.$row['majorarea'].' - '.$row['minorarea'];
-								
-								$html_imagem='<a href=templaterb2.php?colbot=rb&codtestemunho='.$row['codtestemunho'].'&arquivo='.$arquivo.' target=\"Visualizador\"><img src="http://'.$servidor.'/fsi/server?type=image&source='.$path.'/'.$arquivo.'&width=300&height=70&profile=jpeg&quality=20"></a>';
-								
-								// preparo os quadros de informação para cada ponto
-								$c++;
-								if ($c < $conta) {
-									$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."'],";
-//									$info.="['<div class=\"info_content\"><h2>".$row['taxon']."</h2><table><tr><td>".$html_imagem."</td><td> Tombo: ".$row['numtombo']."<br>Coletor: ".$row['coletor']." ".$row['numcoleta']." <br>Lat: ".$row['lat'].' Long:'.$row['long']."<br>Lat: <input type=\"text\" size=\"8\" id=\"edtlat".($c-1)."\"  name=\"edtlat".($c-1)."\" value=\"".$row['lat']."\">Long: <input type=\"text\" size=\"8\" value=\"".$row['long']."\"></td></tr><button id=\"send\" type=\"button\" onclick=\"excluirPontos(".$row['idoccurrence'].","")\" class=\"btn btn-danger btn-xs\">Excluir</button><button id=\"send\" type=\"button\" onclick=\"enviar()\" class=\"btn btn-default btn-xs\">Salvar Posição</button><button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\".bs-example-modal-sm2\">Small modal</button></div>'],";
-								}
-								else
-								{
-									$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."']";
-									//$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long']."]";
-//									$info.="['<div class=\"info_content\"><h2>".$row['taxon']."</h2><table><tr><td>".$html_imagem."</td><td>Tombo: ".$row['numtombo']."<br>Coletor: ".$row['coletor']." ".$row['numcoleta']."<br>Lat: ".$row['lat'].' Long:'.$row['long']."</td></tr><button id=\"send\" type=\"button\" onclick=\"excluirPontos(".$row['idoccurrence'].","")\" class=\"btn btn-danger btn-xs\">Excluir</button><button id=\"send\" type=\"button\" onclick=\"enviar()\" class=\"btn btn-default btn-xs\">Salvar Posição</button></div>']";
-									$latcenter = $row['lat'];
-									$longcenter = $row['long'];
-								}
-								
-								$icone = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
-								if ($row['idstatusoccurrence']!='')
-								{
-									$icone = 'http://maps.google.com/mapfiles/ms/icons/'.$row['pathicon'];
-								}
-								
-								
-								?>
-								
-                                <tr class="even pointer">
-                                    <td class="a-center "><input type="checkbox" name="table_records[]" id="table_records[]" value="<?php echo $row['idoccurrence'];?>" ></td><td><?php echo $html_imagem.' ';?></td>
-                                    <td class="a-right a-right "><?php echo $row['taxon'];?><br><?php echo $row['numtombo'];?><br>
-									<?php echo $row['collector'];?> <?php echo $row['collectnumber'];?></td>
-									<td class=" "><?php echo $row['country'];?>, <?php echo $row['majorarea'];?> - <?php echo $row['minorarea'];?>. (<?php echo $row['lat'];?><br><?php echo $row['long'];?>)</td>
-									<td class=" "><?php echo "<image src='".$icone."'>".' '.$row['statusoccurrence'];?>
-									<button type="button" class="btn btn-default btn-xs" onclick="abreModal('<?php echo $row['taxon'];?>','<?php echo $row['lat'];?>','<?php echo $row['long'];?>','<?php echo $row['idoccurrence'];?>','<?php echo $row[''];?>','<?php echo $row[''];?>','<?php echo $servidor;?>','<?php echo $path;?>','<?php echo $arquivo;?>','<?php echo $row['idstatusoccurrence'];?>','<?php echo $localizacao;?>')">
-  <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Editar
-</button></td>
-									<td>
-<?php if ($row['checked']==false)
-{
-	$checkedcor='success';
-	$checkedicon='ok-circle';
-}
-else
-{
-	$checkedcor='danger';
-	$checkedicon='ban-circle';
-}
 ?>
-<!--<button type="button" class="btn btn-<?php echo $checkedcor;?> btn-xs" onclick="liberaModelagem('<?php echo $row['idoccurrence'];?>','S')">
-  <span class="glyphicon glyphicon glyphicon-<?php echo $checkedicon;?>" aria-hidden="true"></span> Liberar
-</button>
--->
-</td>
-                                    
-                                </tr>
-							<?php }  ?>
-											 <tr class="even pointer">
-												<td class="a-center " colspan=5>Total: <?php echo $c;?></td>
-											</tr>
-										</tbody>
-									</table>
-									
-									
-                                </div>
-                               
-							</div>
-						</div>
-						
-						</div> <!-- row -->
-						</div> <!-- table panel -->
-                        
-						
-						</div> <!-- myTabContent -->
-						
-						
-						
-						</div> <!-- tabpanel -->
-						</div>
-						
-										<?php } ?>
-						
-						
-						
-						
-						
-						</div> <!-- div class="" -->
-						</form>
-						</div>
+																			<tbody>
+<?php 
+$c=0;
+while ($row = pg_fetch_array($res))
+{
+	$servidor = $row['server'];
+	$path =  $row['path'];
+	$arquivo =  $row['file'];
+	$localizacao = $row['country'].', '.$row['majorarea'].' - '.$row['minorarea'];
+	
+	$html_imagem='<a href=templaterb2.php?colbot=rb&codtestemunho='.$row['codtestemunho'].'&arquivo='.$arquivo.' target=\"Visualizador\"><img src="http://'.$servidor.'/fsi/server?type=image&source='.$path.'/'.$arquivo.'&width=300&height=70&profile=jpeg&quality=20"></a>';
+	
+	// preparo os quadros de informação para cada ponto
+	$c++;
+	if ($c < $conta) {
+		$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."'],";
+	}
+	else
+	{
+		$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."']";
+		$latcenter = $row['lat'];
+		$longcenter = $row['long'];
+	}
+	$icone = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
+	if ($row['idstatusoccurrence']!='')
+	{
+		$icone = 'http://maps.google.com/mapfiles/ms/icons/'.$row['pathicon'];
+	}
+	?>
+								
+																				<tr class="even pointer">
+																					<td class="a-center "><input type="checkbox" name="table_records[]" id="table_records[]" value="<?php echo $row['idoccurrence'];?>" ></td><td><?php echo $html_imagem.' ';?></td>
+																					<td class="a-right a-right "><?php echo $row['taxon'];?><br><?php echo $row['numtombo'];?><br>
+																					<?php echo $row['collector'];?> <?php echo $row['collectnumber'];?></td>
+																					<td class=" "><?php echo $row['country'];?>, <?php echo $row['majorarea'];?> - <?php echo $row['minorarea'];?>. (<?php echo $row['lat'];?><br><?php echo $row['long'];?>)</td>
+																					<td class=" "><?php echo "<image src='".$icone."'>".' '.$row['statusoccurrence'];?>
+																					<a data-toggle="tooltip" data-placement="top" title data-original-title="Editar" onclick="abreModal('<?php echo $row['taxon'];?>','<?php echo $row['lat'];?>','<?php echo $row['long'];?>','<?php echo $row['idoccurrence'];?>','<?php echo $row[''];?>','<?php echo $row[''];?>','<?php echo $servidor;?>','<?php echo $path;?>','<?php echo $arquivo;?>','<?php echo $row['idstatusoccurrence'];?>','<?php echo $localizacao;?>')">  <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
+																					<td>
+	<?php if ($row['checked']==false)
+	{
+		$checkedcor='success';
+		$checkedicon='ok-circle';
+	}
+	else
+	{
+		$checkedcor='danger';
+		$checkedicon='ban-circle';
+	}
+	?>
+																					</td>
+																				</tr>
+	<?php }// while  ?>
+																				<tr class="even pointer">
+																					<td class="a-center " colspan=5>Total: <?php echo $c;?></td>
+																				</tr>
+																			</tbody>
+																		</table>
+																	</div>
+																</div>
+															</div>
+														</div> <!-- row -->
+													</div> <!-- table panel -->
+												</div> <!-- myTabContent -->
+											</div> <!-- tabpanel -->
+										</div>
+<?php } //<?php if ($op=='A') ?>
+									<!--</div> <!-- div class="" -->
+									</form>
+								</div>
 										
-                                        <div class="ln_solid"></div>
-										<?php 
-										// MOSTRO APENAS PARA A OPÇÃO ALTERAR
-										// ASSIM O BOTÃO FICA NA PARTE DE BAIXO DA TELA
-										if ($op=='A')
-										{?>
-                                        <div class="form-group">
-                                            <div class="col-md-6 col-md-offset-5">
-                                                <button id="send" type="button" onclick="enviar()" class="btn btn-success">Salvar</button>
-                                            </div>
-                                        </div>
-										<?php } ?>
-                                </div>
+                                <!-- <div class="ln_solid"></div> -->
+<?php 
+	// MOSTRO APENAS PARA A OPÇÃO ALTERAR
+	// ASSIM O BOTÃO FICA NA PARTE DE BAIXO DA TELA
+if ($op=='A')
+	{?>
+								<div class="form-group">
+									<div class="col-md-6 col-md-offset-5">
+										<button id="send" type="button" onclick="enviar()" class="btn btn-success">Salvar</button>
+									</div>
+								</div>
+<?php } ?>
+
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
                 
                 <!-- footer content -->
             <footer>
-                <div class="">
+                <div class="" id="demo">
                     
                 </div>
                 <div class="clearfix"></div>
             </footer>
             <!-- /footer content -->
                 
-            </div>
-            <!-- /page content -->
         </div>
-
+            <!-- /page content -->
     </div>
+
+<!--    </div>-->
 
     <div id="custom_notifications" class="custom-notifications dsp_none">
         <ul class="list-unstyled notifications clearfix" data-tabbed_notifications="notif-group">
@@ -727,6 +648,7 @@ function editar()
 
 function buscar()
 {
+	//alert(document.getElementById('checkfontegbif').checked);
 	if (document.getElementById('edtespecie').value=='')
 	{
 		criarNotificacao('Atenção','Informe o nome da espécie','warning')
@@ -741,12 +663,100 @@ function buscar()
 		}
 		else
 		{
-			document.getElementById('frm').action="cadexperimento.php?busca=TRUE";
-			document.getElementById('frm').submit();
+			if (document.getElementById('checkfontegbif').checked==true)
+			{
+				//alert('gbif');
+				getTaxonKeyGbif(texto);
+				//gbif(texto);
+			}
+			else
+			{
+				//alert('jabot');
+				document.getElementById('frm').action="cadexperimento.php?busca=TRUE";
+				document.getElementById('frm').submit();
+			}
 		}
 	}
 }
 
+function getTaxonKeyGbif(sp)
+{
+	//alert('');
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        var myObj = JSON.parse(this.responseText);
+        document.getElementById("demo").innerHTML = myObj.results[0]["key"]; //this.responseText;//myObj.result[key];//count;
+		gbif(myObj.results[0]["key"]);
+		}
+	};
+	xmlhttp.open("GET", "http://api.gbif.org/v1/species?name="+sp, true);
+	xmlhttp.send();
+}
+
+function gbif(taxonKey)
+{
+	//alert(taxonKey);
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        var myObj = JSON.parse(this.responseText);
+		var body = '';
+		for (i = 0; i < myObj.results.length; i++) {
+			//alert(i);
+			longitude = myObj.results[i].decimalLongitude;
+			latitude = myObj.results[i].decimalLatitude;
+
+			taxon = myObj.results[i].species;
+			tombo = myObj.results[i].catalogNumber;
+			coletor = myObj.results[i].recordedBy;
+			numcoleta = myObj.results[i].catalogNumber;
+			pais = myObj.results[i].country;
+			estado = myObj.results[i].stateProvince;
+			cidade = myObj.results[i].municipality;
+			
+			//$idexperimento,$idfontedados,$lat,$long,$taxon,$coletor,$numcoleta,$imagemservidor,$imagemcaminho,$imagemarquivo,$pais,$estado,$municipio
+			var idexperimento = document.getElementById('id').value;
+			
+			var Jval = idexperimento + '|2|'+latitude+'|'+longitude+'|'+taxon+'|'+ coletor+'|'+numcoleta+'||||'+ pais+'|'+ estado+'|'+ cidade; 
+
+				body += '<tr class="even pointer"><td class="a-center "><input name="chtestemunho[]" id="chtestemunho[]" value="'+Jval+'" type="checkbox" ></td>';
+				body +='<td class=" ">'+taxon+'</td>';
+				body +='<td class="a-right a-right ">'+tombo+'</td>';
+				body +='<td class="a-right a-right ">'+coletor+' '+numcoleta+'</td>';
+				body +='<td class=" ">'+latitude+', '+longitude+'</td>';
+				body +='<td class=" ">'+pais+', '+estado+' - '+cidade+'</td>';
+				body +='<td class=" last"><a><i class="fa fa-globe"></i></a><a><i class="fa fa-save"></i></a></td></tr>';
+			
+			//var str = "insert into modelr.occurrence (idexperiment,iddatasource,lat,long,taxon,collector,collectnumber,server,path,file,idstatusoccurrence,country,majorarea,minorarea) values (";
+			//str+=idexperiment+','+'2'+','+latitude+','+longitude+",'"+taxon+"','"+coletor+"','"+numcoleta+"','','','','','',
+
+
+			//x =  myObj.results[i].decimalLongitude + ', '+ myObj.results[i].decimalLatitude;
+			//exec.adicionarocorrenciagbif
+			//alert(x);
+		}
+		
+		var table = '';
+		table += '<table class="table table-striped responsive-utilities jambo_table bulk_action"><thead><tr class="headings"><th><input type="checkbox" id="chkboxtodos2" name="chkboxtodos2" onclick="selecionaTodos2(true);">';
+		table += '</th><th class="column-title">Táxon </th><th class="column-title">Tombo </th><th class="column-title">Coletor </th><th class="column-title">Latitude </th>';
+		table += '<th class="column-title">Logitude</th><th class="column-title no-link last"><span class="nobr">Action</span></th><th class="bulk-actions" colspan="7">';
+		table += '<a class="antoo" style="color:#fff; font-weight:500;">Total de Registros selecionados: ( <span class="action-cnt"> </span> ) </a>';
+		table += '</th></tr></thead>';
+		table += '<tbody>'+body+'</tbody></table>';
+		table += '';
+			
+//			x += '('+myObj.results[i]['decimalLongitude'] + ', '+myObj.results[i]['decimalLongitude']+ ')';
+//		}
+
+//		decimalLongitude":-41.336139,"decimalLatitude
+		
+			document.getElementById("div_resultadobusca").innerHTML = table;
+		}
+	};
+	xmlhttp.open("GET", "http://api.gbif.org/v1/occurrence/search?taxonKey="+taxonKey+'&hasCoordinate=true', true);
+	xmlhttp.send();
+}
 
 function atualizar(tab)
 {
@@ -841,6 +851,8 @@ function contaSelecionados(objeto)
 	}
 	return conta;
 }
+
+
 function abreModelStatusOcorrencia()
 {
 	if (contaSelecionados(document.getElementsByName('table_records[]'))>0)
@@ -865,9 +877,7 @@ function abreModal(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquiv
 	document.getElementById('dadosoriginais').innerHTML='Latitude: '+lat+' Longitude: '+lng+' - '+localizacao;
 	document.getElementById('edtlatitude').value=latinf;
 	document.getElementById('edtlongitude').value=lnginf;
-	//alert(idstatusocorrence);
 	document.getElementById('cmboxstatusoccurrence').value=idstatusocorrence;
-
 	$('#myModal').modal('show');
 }
 
@@ -919,8 +929,6 @@ function toggle(isChecked) {
 		
 	}
 }
-
-
 
 	
 function adicionarOcorrencia()
@@ -974,6 +982,24 @@ function filtrar(idstatusoccurrence)
 	exibe('loading');
 	document.getElementById('frm').action='cadexperimento.php?tab=2&filtro='+idstatusoccurrence;
 	document.getElementById('frm').submit();
+}
+		
+function liberarExperimento()
+{
+	if (
+		(document.getElementById('edtexperimento').value=='')  ||
+		(document.getElementById('edtdescricao').value=='') 
+		)
+		{
+			criarNotificacao('Atenção','Verifique o preenchimento','warning');
+		}
+		else
+		{
+			exibe('loading');
+			document.getElementById('op').value='LE';
+			document.getElementById('frm').action='exec.experimento.php';
+			document.getElementById('frm').submit();
+		}
 }
 		
 function enviar()

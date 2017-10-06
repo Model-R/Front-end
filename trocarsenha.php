@@ -21,6 +21,7 @@ $Usuario->conn = $conn;
     <title>Model-R </title>
 
     <!-- Bootstrap core CSS -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
@@ -102,7 +103,7 @@ $Usuario->conn = $conn;
 										
                                         <div class="ln_solid"></div>
                                         <div class="form-group">
-                                            <div class="col-md-6 col-md-offset-3">
+                                            <div class="form-group-buttons">
                                                 <button id="send" type="button" onclick="enviar()" class="btn btn-success">Enviar</button>
                                             </div>
                                         </div>

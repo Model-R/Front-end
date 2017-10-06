@@ -13,11 +13,11 @@ $senha = $_REQUEST['edtsenha'];
 //header("Location: consprojeto.php");
 
 if (!$Usuario->autentica($login,$senha) ) 
-{
-	header("Location: login.php?MSGCODIGO=10");
+{	
+	header("Location: index.php?MSGCODIGO=10");
 }
 else
-{
+{	
 	$Usuario->getUsuarioByLogin($login);
 	session_register("s_idusuario"); 
 	session_register("s_nome");

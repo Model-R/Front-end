@@ -46,7 +46,7 @@ if ($MSGCODIGO=='7')
 if ($MSGCODIGO=='8')
 {
 		echo "
-		criarNotificacao('Erro','Não foi possível enviar nova nova!','erro');";
+		criarNotificacao('Erro','Não foi possível enviar nova senha!','erro');";
 }
 if ($MSGCODIGO=='9')
 {
@@ -221,10 +221,8 @@ if ($MSGCODIGO=='74')
 		echo "
 		criarNotificacao('Filtro automático','Pontos fora do limit do Brasil verificado!','success');";
 }
-
-
-
 ?>
+
 var permanotice, tooltip, _alert;
 	
 	function criarNotificacao(titulo,texto,tipo)

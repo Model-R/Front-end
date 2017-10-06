@@ -9,9 +9,9 @@ $usuario->conn = $conn;
 //$resultado=$usuario->enviarSenha($email);
 $resultado=$usuario->enviarSenha($email);
 if($resultado==true){
-	header("Location: login.php?MSGCODIGO=9");
+	header("Location: index.php?MSGCODIGO=9");
 }else {
-	header("Location: login.php?MSGCODIGO=8");
+	header("Location: index.php?MSGCODIGO=8");
 }
 //header("Location: login.php");
 

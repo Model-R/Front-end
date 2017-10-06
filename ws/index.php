@@ -57,7 +57,7 @@ while ($row = pg_fetch_array($res))
 	$json_str2 .=']';
 	
 	// VARIÁVEIS ABIÓTICAS
-	$sql3 = 'select r.idraster,r.raster, s.source from modelr.experiment_use_raster eur,
+	$sql3 = 'select r.idraster,r.raster,r.path,r.resolution,r.period, s.source from modelr.experiment_use_raster eur,
 modelr.raster r, modelr.source s where
 eur.idraster = r.idraster and
 r.idsource = s.idsource and
@@ -71,11 +71,11 @@ eur.idexperiment = '.$row['idexperiment'];
 		$c3++;
 		if ($c3<$qtd3)
 		{	
-			$json_str3.='{"raster":"'.$row3['raster'].'", "source":"'.$row3['source'].'", "idraster": "'.$row3['idraster'].'"},';
+			$json_str3.='{"raster":"'.$row3['raster'].'", "source":"'.$row3['source'].'", "path":"'.$row3['path'].'", "period":"'.$row3['period'].'", "resolution":"'.$row3['resolution'].'", "idraster": "'.$row3['idraster'].'"},';
 		}
 		else
 		{
-			$json_str3.='{"raster":"'.$row3['raster'].'", "source":"'.$row3['source'].'", "idraster": "'.$row3['idraster'].'"}';
+			$json_str3.='{"raster":"'.$row3['raster'].'", "source":"'.$row3['source'].'", "path":"'.$row3['path'].'", "period":"'.$row3['period'].'", "resolution":"'.$row3['resolution'].'", "idraster": "'.$row3['idraster'].'"}';
 		}
 	}
 	$json_str3 .=']';

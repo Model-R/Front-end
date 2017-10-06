@@ -18,24 +18,30 @@
 	{
 		function desenhacabeca($row)
 		{
-		 	 $html = '
+              $html = '
 			 <thead>
-                                            <tr class="headings">
-                                                <th>
-                                                    <input type="checkbox" id="check-all" class="flat">
-                                                </th>
-                                                <th class="column-title">Experimento </th>
-                                                <th class="column-title">Descrição </th>
-                                                <th class="column-title">Ação </th>
-                                                <th class="column-title no-link last"><span class="nobr">status</span>
-                                                </th>
-                                                <th class="bulk-actions" colspan="7">
-                                                    <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
-                                            </th>
-                                </tr>
-                            </thead>
-                      ';
-		 		echo $html;
+                <tr class="headings">
+                    <th>
+                        <input type="checkbox" id="check-all" class="flat">
+                    </th>
+                    <th class="column-title">Experimento </th>
+                    <th class="column-title">Descrição </th>
+                    ';
+			if ($_SESSION['s_idtipousuario']==2)
+			{
+				$html.='<th class="column-title">Usuário </th>';
+			}
+			$html.='						
+                    <th class="column-title">Ação </th>
+                    <th class="column-title no-link last"><span class="nobr">status</span>
+                    </th>
+                    <th class="bulk-actions" colspan="7">
+                        <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+                    </th>
+                </tr>
+            </thead>
+            ';
+        echo $html;
 		}
 
 		function desenha($row){
@@ -53,38 +59,46 @@
 			if (($_SESSION['s_idtipousuario'])==1)
 			{
 				
-				$disabled = 'disabled';
+//				$disabled = 'disabled';
+				$disabled = ''; // alterado apenas para a apresentação
 			}
-			
 			$html = '<td class="a-center "><input type="checkbox" class="flat" name="id_experiment[]" id="id_experiment" value="'.$row["idexperiment"].'" ></td>
-                                    <td class=" ">'.$row['name'].'</td>
-                                    <td class=" ">'.$row['description'].'</td>
-                                    <td class=" ">
-									<a class="btn btn-app" href="cadexperimento.php?op='.'A'.'&tab='.'2'.'&id='.$row['idexperiment'].'">
+                                    <td class=" ">'.$row['2'].'</td>
+                                    <td class=" ">'.$row['description'].'</td>';
+			if ($_SESSION['s_idtipousuario']==2)
+			{
+				$html.='<td class=" ">'.$row['username'].'</td>';
+			}			
+			$html.='				<td class="actions">
+									<a class="btn btn-app" href="cadexperimento.php?op='.'A'.'&tab='.'2'.'&id='.$row['idexperiment'].'" data-toggle="tooltip" data-placement="top" title="Editar">
                                         <span class="badge bg-blue">'.$qtd.'</span>
-                                        <i class="fa fa-edit"></i> Editar
+                                        <i class="fa fa-edit"></i>
                                     </a>
-									<a class="btn btn-app" onclick="limparDadosExperimento('.$row['idexperiment'].')">
+									<a class="btn btn-app" onclick="limparDadosExperimento('.$row['idexperiment'].')" data-toggle="tooltip" data-placement="top" title="Limpar">
                                         <span class="badge bg-red">'.$qtd.'</span>
-                                        <i class="fa fa-eraser"></i> Limpar
+                                        <i class="fa fa-eraser"></i>
                                     </a>
                                    ';
 									if ($qtdok>0)
 									{
 										$html.='
-									<a class="btn btn-app '.$disabled.'" onclick="modelar('.$row['idexperiment'].')">
+									<a class="btn btn-app '.$disabled.'" onclick="modelar('.$row['idexperiment'].')" data-toggle="tooltip" data-placement="top" title="Modelar">
                                         <span class="badge bg-green">'.$qtdok.'</span>
-                                        <i class="fa fa-gear"></i> Modelar
+                                        <i class="fa fa-gear"></i>
                                     </a>
                                                     ';
 									}
-									if ($row['idstatusexperiment']==4)
-									{
-										$html.='<a class="btn btn-app '.$disabled.'" onclick="resultado('.$row['idexperiment'].')">
-											<i class="fa fa-globe"></i> Resultado
+									
+									$hash = md5($row['idexperiment']);
+									$log_directory = './result/'.$hash.'/';
+									$results_array = array();
+									$conta_arquivos = 0;
+									//if (is_dir($log_directory))
+									//{
+										$html.='<a class="btn btn-app '.$disabled.'" onclick="resultado('.$row['idexperiment'].')" data-toggle="tooltip" data-placement="top" title="Resultado">
+											<i class="fa fa-globe"></i>
 										</a>';
-									}
-
+									//}
 									
 									$idstatus = $row['idstatusexperiment'];
 									$classe1='done';
@@ -150,13 +164,6 @@
                                         </ul>
 									</div>
 									</td>';			
-			// $date = new DateTime($row['datacadastro']);
-			/*$html = ' 
-                      <td align="center"><input type="checkbox" name="id_[]" id="id_" value="'.$row["iddescricao"].'" /></td>
-					  <td nowrap><a href="caddescricao.php?op=A&id='.$row['iddescricao'].'">'.$row["descricao"].'</a></td>
-					  ';
-*/		 	
-
 	echo $html;
 				echo "";
 		}// function
@@ -167,26 +174,34 @@ $conn = $clConexao->Conectar();
 
 $Paginacao = new MyPag();
 $Paginacao->conn = $conn;
-$sql = 'select * from modelr.experiment e, modelr.statusexperiment se where 
-e.idstatusexperiment = se.idstatusexperiment
-
+$sql = 'select *, u.name as username from modelr.experiment e, modelr.statusexperiment se, modelr.user u where 
+e.idstatusexperiment = se.idstatusexperiment and
+e.iduser = u.iduser
  ';
+// echo $sql;
 
 if ($_SESSION['s_idtipousuario']=='1')
 {
    $sql.= " and e.iduser = ".$_SESSION['s_idusuario'];	
 }
- 
-if ($tipofiltro=='EXPERIMENTO')
+
+if ($tipofiltro=='EXPERIMENTO' || $tipofiltro==NULL)
 {
    $sql.= " and e.name ilike '%".$valorfiltro."%'";	
 }
-
-
+if ($tipofiltro=='USUARIO')
+{   
+   $sql.= " and u.name ilike '%".$valorfiltro."%' ";	
+}
 
 if (($ordenapor=='EXPERIMENTO') || ($ordenapor==''))
 {
    $sql.= " order by e.name";	
+}
+
+if (($ordenapor=='USUARIO'))
+{
+   $sql.= " order by u.name";	
 }
 
 //echo $sql;
@@ -211,6 +226,9 @@ if (($ordenapor=='EXPERIMENTO') || ($ordenapor==''))
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Model-R</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
 
     <!-- Bootstrap core CSS -->
 
@@ -247,7 +265,7 @@ if (($ordenapor=='EXPERIMENTO') || ($ordenapor==''))
       <!-- dialog body -->
       <div class="modal-body"> 
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        Excluir todos o(s) registros(s)? </div>
+        Excluir todos o(s) registros(s) 2? </div>
       <!-- dialog buttons -->
       <div class="modal-footer"> 
         <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
@@ -281,13 +299,27 @@ if (($ordenapor=='EXPERIMENTO') || ($ordenapor==''))
                 <div class="">
                     <div class="clearfix"></div>
 
+                    <?php ?>
 
                     <div class="row">
 
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="x_panel">
-                                <div class="x_title">
-                                    <h2>Consulta Experimento <small>Experimentos cadastrados no sistema</small></h2>
+                                <div class="x_title_consexperimentos">
+                                    <h2> Experimentos 
+                                        <div data-toggle="tooltip" data-placement="right" title data-original-title="Instruções">
+                                            <!-- <span class="glyphicon glyphicon-modal-window" data-toggle="modal" data-target="#instructionModal"></span> -->
+                                            <span class="glyphicon glyphicon-modal-window instruction-icon"></span>
+                                        </div>
+                                    </h2>
+                                    <div class="print-options">
+                                        <a  class="btn btn-default btn-sm" onClick="export_table_to_pdf('experimentos.pdf');" data-toggle="tooltip" data-placement="top" title="Exportar tabela em PDF"><?php echo " PDF ";?></a>
+                                        <a  class="btn btn-default btn-sm" onClick="export_table_to_csv('experimentos.csv');"data-toggle="tooltip" data-placement="top" title="Exportar tabela em XLS"><?php echo " XLS";?></a>
+                                    </div>
+
+                                    <?php 
+                                        include_once 'templates/consexperimento.instrucao.php';
+                                    ?>
                                     <!--<ul class="nav navbar-right panel_toolbox">
                                                                             <li role="presentation" class="dropdown">
                                         <a id="drop4" href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
@@ -309,34 +341,38 @@ if (($ordenapor=='EXPERIMENTO') || ($ordenapor==''))
                                     </li>
                                     </ul>
 									-->
-                                    <div class="clearfix"></div>
+                                    <!-- <div class="clearfix"></div> -->
                                 </div>
 								<form class="form-inline" name="frm" id="frm" method="post">
 								<input type="hidden" name="sql" id="sql" value="<?php echo $Paginacao->sql;?>">
                                 <div class="x_content">
                                    
                                 <p>
-								<div class="form-group">
-                                    <label for="cmboxtipofiltro">Filtro</label>
-                                    <select id="cmboxtipofiltro" name="cmboxtipofiltro" class="form-control">
-                                                    <option value="EXPERIMENTO" <?php if ($tipofiltro=='EXPERIMENTO') echo "selected";?>>Experimento</option>
-                                                    <option value="PROJETO" <?php if ($tipofiltro=='PROJETO') echo "selected";?>>Projeto</option>
-                                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="edtvalorfiltro">Filtro</label>
-                                    <input id="edtvalorfiltro" name="edtvalorfiltro" class="form-control" placeholder="Filtro" value="<?php echo $valorfiltro;?>">
-                                </div>
-                                <div class="form-group">
-                                    <label for="cmboxordenar">Ordenar por</label>
-                                    <select id="cmboxordenar" name="cmboxordenar" class="form-control">
-                                                    <option value="EXPERIMENTO" <?php if ($ordenapor=='EXPERIMENTO') echo "selected";?>>Experimento</option>
-                                                    <option value="PROJETO" <?php if ($ordenapor=='PROJETO') echo "selected";?>>Projeto</option>
-                                                    </select>
-                                </div>
-								<button type="button" class="btn btn-success" onClick='filterApply()'>Filtrar</button>
-								<button type="button" class="btn btn-info" onClick='novo()'>Novo</button>
-								<button type="button" class="btn btn-danger" onClick='showExcluir()'>Excluir</button>
+                                    <div class="filters">
+                                        <div class="filter-group">
+                                            <?php 
+                                                if ($_SESSION['s_idtipousuario']=='2')
+                                                {
+                                                    include_once 'templates/tipofiltro.php';
+                                                }
+                                            ?>
+                                            <div class="form-group">
+                                                <label for="edtvalorfiltro">Nome</label>
+                                                <input id="edtvalorfiltro" name="edtvalorfiltro" class="form-control" placeholder="Nome" value="<?php echo $valorfiltro;?>">
+                                            </div>
+                                            <?php 
+                                                if ($_SESSION['s_idtipousuario']=='2')
+                                                {
+                                                    include_once 'templates/ordenarfiltro.php';
+                                                }
+                                            ?>
+                                            <button type="button" class="btn btn-success" onClick='filterApply()'>Filtrar</button>
+                                        </div>
+                                        <div class="row-action">
+                                            <button type="button" class="btn btn-info" onClick='novo()'>Novo</button>
+                                            <button type="button" class="btn btn-danger" onClick='showExcluir()'>Excluir</button>
+                                        </div>
+                                    </div>
                             </p>
 							    <div style="overflow:auto;"> 
                 <div class="table-responsive"> 
@@ -389,7 +425,10 @@ if (($ordenapor=='EXPERIMENTO') || ($ordenapor==''))
 	<!-- PNotify -->
     <script type="text/javascript" src="js/notify/pnotify.core.js"></script>
     <script type="text/javascript" src="js/notify/pnotify.buttons.js"></script>
-    <script type="text/javascript" src="js/notify/pnotify.nonblock.js"></script>		
+    <script type="text/javascript" src="js/notify/pnotify.nonblock.js"></script>	
+
+    <!-- print pdf -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.debug.js"></script>	
 	
 	<script>
 	
@@ -432,6 +471,7 @@ require 'MSGCODIGO.php';
 		document.getElementById('frm').target="_blank";//"'cons<?php echo strtolower($FORM_ACTION);?>.php';
 		if (tipo=='pdf')
 		{
+            console.log(document.getElementById('frm').action='rel<?php echo strtolower($FORM_ACTION);?>.php')
 			document.getElementById('frm').action='rel<?php echo strtolower($FORM_ACTION);?>.php';
 			document.getElementById('frm').submit();
 		}
@@ -446,7 +486,11 @@ require 'MSGCODIGO.php';
 	{
 		window.location.href = 'cad<?php echo strtolower($FORM_ACTION);?>.php?op=I&idusuario=<?php echo $idusuario;?>';
 	}
-
+	
+	function resultado(id)
+	{
+		window.location.href = 'resultado.php?&id='+id;
+	}
 	
 	function removeFilter()
 	{
@@ -467,6 +511,136 @@ require 'MSGCODIGO.php';
   			document.getElementById('frm').submit();
 	}	
 	
+    function download_csv(csv, filename) {
+        var csvFile;
+        var downloadLink;
+
+        // CSV FILE
+        csvFile = new Blob([csv], {type: "text/csv"});
+
+        // Download link
+        downloadLink = document.createElement("a");
+
+        // File name
+        downloadLink.download = filename;
+
+        // We have to create a link to the file
+        downloadLink.href = window.URL.createObjectURL(csvFile);
+
+        // Make sure that the link is not displayed
+        downloadLink.style.display = "none";
+
+        // Add the link to your DOM
+        document.body.appendChild(downloadLink);
+
+        // Lanzamos
+        downloadLink.click();
+    }
+
+    function export_table_to_csv(filename) {
+
+        var session = <?php echo $_SESSION['s_idtipousuario'];?>;
+        
+        var html = document.getElementById("experiments_table");
+        var csv = [];
+        var rows = document.querySelectorAll("table#experiments_table tr");
+        
+        for (var i = 0; i < rows.length; i++) {
+            var row = [], cols = rows[i].querySelectorAll("td, th");
+            if(session == 1){
+                //usuário comum acessando o sistema
+                //não imprime coluna do checkbox (j==0), coluna "ação" (j==3), coluna "bulk action" (j==5);
+                for (var j = 1; j < 5; j++) {
+                    if(j == 3) continue;
+                    if(cols[j].className == ' last'){
+                        var links = cols[j].querySelectorAll("li a");
+                        for(var k = 0; k < links.length; k++){
+                            if(links[k].className == 'selected') row.push("\uFEFF" + links[k].innerText.replace(/[0-9]/g, "").replace(/\n/g, ''));
+                        }
+                    }
+                    else row.push("\uFEFF" + cols[j].innerText);
+                }
+            } else {
+                //administrador acessando o sistema
+                //não imprime coluna do checkbox (j==0), coluna "ação" (j==4), coluna "bulk action" (j==6);
+                for (var j = 1; j < 6; j++) {
+                    if(j == 4) continue;
+                    if(cols[j].className == ' last'){
+                        var links = cols[j].querySelectorAll("li a");
+                        for(var k = 0; k < links.length; k++){
+                            if(links[k].className == 'selected') row.push("\uFEFF" + links[k].innerText.replace(/[0-9]/g, "").replace(/\n/g, ''));
+                        }
+                    }
+                    else row.push("\uFEFF" + cols[j].innerText);
+                }
+            }
+            
+            csv.push(row.join(","));		
+        }
+
+        // Download CSV
+        download_csv(csv.join("\n"), filename);
+    }
+
+    function export_table_to_pdf(filename) {
+
+        var session = <?php echo $_SESSION['s_idtipousuario'];?>;
+        var pdf = new jsPDF('p', 'pt', 'letter');
+
+        //arrumar header
+        if(session == 1){
+            //usuário comum acessando o sistema
+            pdf.setFillColor(63,83,103);
+            pdf.rect(10, 50, 200, 30, "F");
+            pdf.rect((1* 200) + 10, 50,200, 30, "F");
+            pdf.rect((2* 200) + 10, 50, 200, 30, "F");
+        } else {
+            //administrador acessando o sistema
+            pdf.setFillColor(63,83,103);
+            pdf.rect(10, 50, 145, 30, "F");
+            pdf.rect((1* 145) + 10, 50,145, 30, "F");
+            pdf.rect((2* 145) + 10, 50, 145, 30, "F");
+            pdf.rect((3* 145) + 10, 50, 145, 30, "F");
+        }
+
+        pdf.cellInitialize();
+        pdf.setFontSize(10);
+        $.each( $('#experiments_table tr'), function (i, row){
+            $.each( $(row).find("td, th"), function(j, cell){
+                var txt = $(cell).text().trim() || " ";
+                if(session == 1){
+                    //usuário comum acessando o sistema
+                    //não imprime coluna do checkbox (j==0), coluna "ação" (j==3), coluna "bulk action" (j==5);
+                    if(j==0 || j==3 || j==5) return;
+                    cell.tagName == 'TH' ? pdf.setTextColor("#ffffff") : pdf.setTextColor("#000000");
+                    if(j==4){
+                        var links = cell.querySelectorAll("li a");
+                        for(var k = 0; k < links.length; k++){
+                            if(links[k].className == 'selected') txt = links[k].innerText.replace(/[0-9]/g, "").replace(/\n/g, '');
+                        }
+                    }
+                    var width = 200;
+                    pdf.cell(10, 50, width, 30, txt, i);
+                } else {
+                    //administrador acessando o sistema
+                    //não imprime coluna do checkbox (j==0), coluna "ação" (j==4), coluna "bulk action" (j==6);
+                    if(j==0 || j==4 || j==6) return;
+                    cell.tagName == 'TH' ? pdf.setTextColor("#ffffff") : pdf.setTextColor("#000000");
+                    if(j==5){
+                        var links = cell.querySelectorAll("li a");
+                        for(var k = 0; k < links.length; k++){
+                            if(links[k].className == 'selected') txt = links[k].innerText.replace(/[0-9]/g, "").replace(/\n/g, '');
+                        }
+                    }
+                    var width = 145;
+                    pdf.cell(10, 50, width, 30, txt, i,{ align: 'center' });
+                }
+            });
+        });
+        
+        pdf.save(filename);
+    }
+
 	</script>
 
 </body>

@@ -286,7 +286,7 @@ $tss = $Experimento->tss;
                                 </div>
 								</div>
 								<div class="col-md-6 col-sm-6 col-xs-12">
-								<div class="x_content">
+								<div class="x_content coordinates">
 										<div class="item form-group">
                                             <label class="control-label col-md-4 col-sm-4 col-xs-4" for="email">Longitude esquerda: 
                                             </label>
@@ -317,8 +317,12 @@ $tss = $Experimento->tss;
                                         </div>										
 								</div>
 								</div>
-								
                             </div>
+                            <div class="form-group">
+                                    <div class="send-button">
+                                        <button id="send" type="button" onclick="enviar()" class="btn btn-success">Salvar</button>
+                                    </div>
+                                </div>
                         </div>
 						<!--
 						<div class="col-md-6 col-sm-6 col-xs-12">
@@ -431,6 +435,11 @@ $rowsource = pg_fetch_array($ressource);
                                     <!-- end pop-over -->
                                 </div>
                             </div>
+                            <div class="form-group">
+                                    <div class="send-button">
+                                        <button id="send" type="button" onclick="enviar()" class="btn btn-success">Salvar</button>
+                                    </div>
+                                </div>
                         </div>
 						
 						</div> <!-- row -->
@@ -522,15 +531,20 @@ $rowsource = pg_fetch_array($ressource);
                                     <!-- end pop-over -->
 
                                 </div>
+                            
                             </div>
 										
 									</div>
-								
                                 </div>
                             </div>
+                            <div class="form-group">
+                                    <div class="send-button">
+                                        <button id="send" type="button" onclick="enviar()" class="btn btn-success">Salvar</button>
+                                    </div>
+                                </div>
                         </div>
 
-						</div> <!-- row -->
+                        </div> <!-- row -->
 						</div> <!-- table panel -->
 						
 						
@@ -551,12 +565,12 @@ $rowsource = pg_fetch_array($ressource);
 						</form>
 						</div>
 										
-                                        <div class="ln_solid"></div>
+                                        <!-- <div class="ln_solid"></div>
 										<div class="form-group">
                                             <div class="col-md-6 col-md-offset-5">
                                                 <button id="send" type="button" onclick="enviar()" class="btn btn-success">Salvar</button>
                                             </div>
-                                        </div>
+                                        </div> -->
 										
                                 </div>
                             </div>
@@ -922,10 +936,15 @@ $(document ).ready(function() {
 });
 		
 $('.nav-tabs a[href="#tab_content3"]').click(function(){
-	//alert('3');
+	// alert('3');
     $(this).tab('show');
-	initMap();
 })	
+
+$('.nav-tabs').on('shown.bs.tab', function () {
+    google.maps.event.trigger(window, 'resize', {});
+    initMap();
+  });
+});
 
 function toggle(isChecked) {
 	var chks = document.getElementsByName('chtestemunho[]');

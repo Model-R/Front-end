@@ -20,8 +20,16 @@ if (isset($_REQUEST['op']))
 	4;"Outros"
 */	
 
-	$file_tiff=$_REQUEST['file_tiff'];
-	$file_png=$_REQUEST['file_png'];
+	$raster_bin_path=$_REQUEST['raster_bin_path'];
+	$raster_cont_path=$_REQUEST['raster_cont_path'];
+	$raster_cut_path=$_REQUEST['raster_cut_path'];
+
+	$png_bin_path=$_REQUEST['png_bin_path'];
+	$png_cont_path=$_REQUEST['png_cont_path'];
+	$png_cut_path=$_REQUEST['png_cut_path'];
+
+	$kappa=$_REQUEST['kappa'];
+	
 	$partition=$_REQUEST['partition'];
 	$algorithm=$_REQUEST['algorithm'];
 	$tss=$_REQUEST['tss'];
@@ -66,13 +74,31 @@ if (isset($_REQUEST['op']))
 	}	
 	if ($op=='I')
 	{
-		$sql = "insert into modelr.experiment_result (
-			idexperiment ,  idresulttype ,  file_tiff ,  file_png ,
+
+	$raster_bin_path=$_REQUEST['raster_bin_path'];
+	$raster_cont_path=$_REQUEST['raster_cont_path'];
+	$raster_cut_path=$_REQUEST['raster_cut_path'];
+
+	$png_bin_path=$_REQUEST['png_bin_path'];
+	$png_cont_path=$_REQUEST['png_cont_path'];
+	$png_cut_path=$_REQUEST['png_cut_path'];
+
+	$kappa=$_REQUEST['kappa'];
+
+
+$sql = "insert into modelr.experiment_result (
+			idexperiment ,  idresulttype ,  
 		partition ,  algorithm ,  tss,  auc ,  sensitivity ,  equal_sens_spec ,
-  prevalence ,  no_omission ,  spec_sens  ) values
-  (".$id.",".$idresulttype.",'".$file_tiff."','".$file_png."',".$partition.",
+  prevalence ,  no_omission ,  spec_sens, raster_bin_path, raster_cont_path, raster_cut_path,
+  png_bin_path, png_cont_path, png_cut_path , kappa
+  ) values
+  (".$id.",".$idresulttype.",".$partition.",
   '".$algorithm."',".$tss.",".$auc.",".$sensitivity.",".$equal_sens_spec.",".$prevalence.",
-  ".$no_omission.",".$spec_sens.");";
+  ".$no_omission.",".$spec_sens.",
+  '".$raster_bin_path."','".$raster_cont_path."','".$raster_cut_path."','".$png_bin_path."','".$png_cont_path."','".$png_cut_path."','".$kappa."'
+  
+  
+  );";
 //		echo $sql;
 	}
 	

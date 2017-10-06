@@ -101,7 +101,7 @@ if ($ordenapor=='LOGIN')
 }
 
 
-echo $sql;
+//echo $sql;
 
     $Paginacao->sql = $sql; // a  sem o filtro
 	$Paginacao->filtro = ''; // o filtro a ser aplicado ao sql/
@@ -123,6 +123,7 @@ echo $sql;
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Model-R</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
 
     <!-- Bootstrap core CSS -->
 
@@ -201,7 +202,7 @@ echo $sql;
                                     <h2>Consulta Usuário <small>Usuários cadastrados no sistema</small></h2>
                                     <ul class="nav navbar-right panel_toolbox">
                                                                             <li role="presentation" class="dropdown">
-                                        <a id="drop4" href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
+                                        <!-- <a id="drop4" href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
                                 Ação
                                 <span class="caret"></span>
                             </a>
@@ -210,10 +211,9 @@ echo $sql;
                                             </li>
                                             <li role="presentation"><a role="menuitem" tabindex="-1" onClick='showExcluir()'>Excluir</a>
                                             </li>
-                                        </ul>
+                                        </ul> -->
                                     </li>
                                     </ul>
-                                    <div class="clearfix"></div>
                                 </div>
 								<form class="form-inline" name="frm" id="frm" method="post">
 								<input type="hidden" name="sql" id="sql" value="<?php echo $Paginacao->sql;?>">
@@ -221,7 +221,7 @@ echo $sql;
                                    
                                 <p>
 								<div class="form-group">
-                                    <label for="cmboxtipofiltro">Filtro</label>
+                                    <label for="cmboxtipofiltro">Tipo</label>
                                     <select id="cmboxtipofiltro" name="cmboxtipofiltro" class="form-control">
                                                     <option value="NOME" <?php if ($tipofiltro=='NOME') echo "selected";?>>Nome</option>
                                                     <option value="LOGIN" <?php if ($tipofiltro=='LOGIN') echo "selected";?>>Login</option>
@@ -240,6 +240,20 @@ echo $sql;
                                 </div>
 								<input type="checkbox" class="flat" name="chkboxativo" id="chkboxativo" value="S" <?php if ($ativo=='S') {echo 'checked';}?>> Ativos
 								<button type="button" class="btn btn-success" onClick='filterApply()'>Filtrar</button>
+                                <div class="row-action">
+                                    <button type="button" class="btn btn-info"><a role="menuitem" class="menu-item" tabindex="-1" href="cadusuario.php?op=I">Novo</a></button>
+                                    <button type="button" class="btn btn-danger"><a role="menuitem" class="menu-item" tabindex="-1" onClick='showExcluir()'>Excluir</a></button>
+                                </div>
+                                <!-- <a id="drop4" href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
+                                Ação
+                                <span class="caret"></span>
+                            </a>
+                                        <ul id="menu6" class="dropdown-menu animated fadeInDown" role="menu">
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="cadusuario.php?op=I">Novo</a>
+                                            </li>
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" onClick='showExcluir()'>Excluir</a>
+                                            </li>
+                                        </ul> -->
 								
                             </p>
 							    
