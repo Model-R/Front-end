@@ -3764,6 +3764,10 @@ ul.social li {
     cursor: default;
 }
 
+.wizard_horizontal ul.wizard_steps li a{
+    line-height: 5px;
+}
+
 .wizard_horizontal ul.wizard_steps li a:before {
     content: "";
     position: absolute;
@@ -3828,6 +3832,16 @@ ul.social li {
     line-height: 1.42857143 !important;
     vertical-align: middle !important;
     border-top: 1px solid #ddd !important;
+}
+
+.actions a{
+    margin-top: -5px !important;
+}
+
+#wizard {
+    max-width: 350px;
+    margin: auto;
+    margin-top: -10px;
 }
 
 .form_wizard .stepContainer div.content {
