@@ -3769,7 +3769,7 @@ ul.social li {
     position: absolute;
     height: 4px;
     background: #ccc;
-    top: 20px;
+    top: 10px;
     width: 100%;
     z-index: 4;
     left: 0;
@@ -3780,9 +3780,9 @@ ul.social li {
 }
 
 .wizard_horizontal ul.wizard_steps li a .step_no {
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
     border-radius: 100px;
     display: block;
     margin: 0 auto 5px;
@@ -3820,6 +3820,14 @@ ul.social li {
     width: 80%;
     float: left;
     padding: 0 10px;
+}
+
+#experiments_table>thead>tr>th, #experiments_table>tbody>tr>th, #experiments_table>tfoot>tr>th, 
+#experiments_table>thead>tr>td, #experiments_table>tbody>tr>td, #experiments_table>tfoot>tr>td {
+    padding: 5px !important;
+    line-height: 1.42857143 !important;
+    vertical-align: middle !important;
+    border-top: 1px solid #ddd !important;
 }
 
 .form_wizard .stepContainer div.content {

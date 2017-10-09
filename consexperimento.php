@@ -333,7 +333,7 @@ if (($ordenapor=='USUARIO'))
                                         </div>
                                     </h2>
                                     <div class="print-options">
-                                        <a  class="btn btn-default btn-sm" onClick="export_table_to_pdf('experimentos.pdf');" data-toggle="tooltip" data-placement="top" title="Exportar tabela em PDF"><?php echo " PDF ";?></a>
+                                        <a  class="btn btn-default btn-sm" onClick="imprimir('PDF');" data-toggle="tooltip" data-placement="top" title="Exportar tabela em PDF"><?php echo " PDF ";?></a>
                                         <a  class="btn btn-default btn-sm" onClick="imprimir('CSV');"data-toggle="tooltip" data-placement="top" title="Exportar tabela em XLS"><?php echo " XLS";?></a>
                                     </div>
 
@@ -494,18 +494,17 @@ require 'MSGCODIGO.php';
 
 	function imprimir(tipo)
 	{
-		//alert(tipo);
 		document.getElementById('frm').target="_blank";//"'cons<?php echo strtolower($FORM_ACTION);?>.php';
 		if (tipo=='PDF')
 		{
             console.log(document.getElementById('frm').action='export' + tipo + '.php')
-			document.getElementById('frm').action='export' + tipo + '.php;
+			document.getElementById('frm').action='export' + tipo + '.php';
 			document.getElementById('frm').submit();
 		}
 		if (tipo=='CSV')
 		{
 			console.log(document.getElementById('frm').action='export' + tipo + '.php')
-			document.getElementById('frm').action='export' + tipo + '.php;
+			document.getElementById('frm').action='export' + tipo + '.php';
 			document.getElementById('frm').submit();
 		}
 	}
