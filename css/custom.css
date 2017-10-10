@@ -1104,18 +1104,14 @@ h2 {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    border-bottom: 2px solid #1a4277;
     padding: 1px 5px 6px;
-    margin-bottom: 10px;
 }
 
 .x_title {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    border-bottom: 2px solid #1a4277;
     padding: 1px 5px 6px;
-    margin-bottom: 10px;
 }
 
 .x_title .filter {
@@ -6536,9 +6532,7 @@ ul.notifications {
 }
 
 .map-content{
-    margin-top: 100px;
-    height: 60%;
-    border: 2px solid;
+    height: 80%;
     padding: 5px !important;
 }
 

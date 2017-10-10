@@ -37,7 +37,7 @@ $filtro = $_REQUEST['filtro'];
 
 if (empty($tab))
 {
-	$tab = 3;
+	$tab = 2;
 }
 $op=$_REQUEST['op'];
 
@@ -263,19 +263,21 @@ $tss = $Experimento->tss;
 										<div class="x_content">
                                         <div class="" role="tabpanel" data-example-id="togglable-tabs">
 												<ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                                                    <li role="presentation" <?php if ($tab=='2') echo 'class="active"';?>><a href="#tab_content2" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Dados Estatísticos</a>
+													</li>
 													<li role="presentation" <?php if ($tab=='3') echo 'class="active"';?>><a href="#tab_content3" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Modelos Gerados</a>
 													</li>
 													<li role="presentation" <?php if ($tab=='4') echo 'class="active"';?>><a href="#tab_content4" id="home-tab" role="tab"  data-toggle="tab"  aria-expanded="true">Modelos Finais (Ensemble)</a>
 													</li>
                                                     <li role="presentation" <?php if ($tab=='5') echo 'class="active"';?>><a href="#tab_content5" id="home-tab" role="tab"  data-toggle="tab"  aria-expanded="true">Modelos Finais (Presfinal)</a>
 													</li>
+                                                    <li role="presentation" <?php if ($tab=='6') echo 'class="active"';?>><a href="#tab_content6" id="home-tab" role="tab"  data-toggle="tab"  aria-expanded="true">Mapa</a>
+													</li>
 												</ul>
                         <div id="myTabContent" class="tab-content">
-
-                         <div  class="tab-pane fade <?php if ($tab=='3') echo 'in active';?>" id="tab_content3" >
-						
-						<div class="row">
-						<div class="col-md-12 col-sm-12 col-xs-12">
+                        
+                        <div class="tab-pane fade<?php if ($tab=='2') echo ' in active';?>" id="tab_content2">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="x_panel">
                                 <div class="x_title">
                                     <h2>Dados estatísticos <small></small></h2>
@@ -391,7 +393,15 @@ echo '<td>'.$meuArray[$i].'</td>';
 	
     </tbody>
   </table>
-                                </div>
+        </div>
+            </div>
+                </div>
+                        </div>
+                         <div  class="tab-pane fade <?php if ($tab=='3') echo 'in active';?>" id="tab_content3" >
+						
+						<div class="row">
+						<div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="x_panel">
 								
 								<div class="col-md-12 col-sm-12 col-xs-12">
 								<div class="row">
@@ -473,122 +483,7 @@ foreach($results_array as $value)
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="x_panel">
 
-                        <div class="x_title">
-                                <h2>Dados estatísticos <small></small></h2>
-                                <div class="clearfix"></div>
-									<table class="table table-striped">
-   
-                                        <tbody>
-                                        <thead>
-                                    <tr>
-                                    <th>algoritmo</th>
-                                    <th>partition</th>
-                                    <th>kappa</th>
-                                    <th>spec_sens</th>
-                                    <th>no_omission</th>
-                                    <th>prevalence</th>
-                                    <th>equal_sens_spec</th>
-                                    <th>sensitivity</th>
-                                    <th>AUC</th>
-                                    <th>TSS</th>
-                                    </tr>
-                                    </thead>
-                                        <?php
-                                        
-                                        $sql = 'select * from modelr.experiment_result';
-                                        $res = pg_exec($conn,$sql);
-                                        while ($row = pg_fetch_array($res))
-                                        {
-                                            $kappa = $row['kappa'];
-                                            $spec_sens = $row['spec_sens'];
-                                            $no_omission = $row['no_omission'];
-                                            $prevalence = $row['prevalence'];
-                                            $equal_sens_spec = $row['equal_sens_spec'];
-                                            $sensitivity = $row['sensitivity'];
-                                            $auc = $row['auc'];
-                                            $tss = $row['tss'];
-                                            $algoritmo = $row['algorithm'];
-                                            $partition = $row['partition'];
-                                            echo '<tr>';
-                                    echo '<td>'.$algoritmo.'</td>';
-                                    echo '<td>'.$partition.'</td>';
-                                    echo '<td>'.$kappa.'</td>';
-                                    echo '<td>'.$spec_sens.'</td>';
-                                    echo '<td>'.$no_omission.'</td>';
-                                    echo '<td>'.$prevalence.'</td>';
-                                    echo '<td>'.$equal_sens_spec.'</td>';
-                                    echo '<td>'.$sensitivity.'</td>';
-                                    echo '<td>'.$auc.'</td>';
-                                    echo '<td>'.number_format($tss,3,',','').'</td>';
-                                    echo '</tr>';
-                                        }
-                                    /*
-                                        $names=file('./result/'.$hash.'/estatistica.txt');
-                                    // To check the number of lines
-                                    //echo count($names).'<br>';
-                                    $linha = 0;
-                                    foreach($names as $name)
-                                    {
-                                        list ($kappa, $spec_sens,$no_omission,$prevalence,$equal_sens_spec,$sensitivity,$AUC,$TSS,$algoritmo,$partition) = split (';', $name);
-                                        if ($linha == 0)
-                                        {
-                                            echo ' <thead><tr>';
-                                    //   echo '<th>'.$kappa.'</th>';
-                                    echo '<th>'.$spec_sens.'</th>';
-                                    echo '<th>'.$no_omission.'</th>';
-                                    echo '<th>'.$prevalence.'</th>';
-                                    echo '<th>'.$equal_sens_spec.'</th>';
-                                    echo '<th>'.$sensitivity.'</th>';
-                                    echo '<th>'.$AUC.'</th>';
-                                    echo '<th>'.$TSS.'</th>';
-                                    echo '<th>'.$algoritmo.'</th>';
-                                    echo '<th>'.$partition.'</th>';
-                                    echo '</tr> </thead>';
-                                        }
-                                        else
-                                        {
-                                        echo '<tr>';
-                                    //   echo '<td>'.$kappa.'</td>';
-                                    echo '<td>'.$spec_sens.'</td>';
-                                    echo '<td>'.$no_omission.'</td>';
-                                    echo '<td>'.$prevalence.'</td>';
-                                    echo '<td>'.$equal_sens_spec.'</td>';
-                                    echo '<td>'.$sensitivity.'</td>';
-                                    echo '<td>'.$AUC.'</td>';
-                                    echo '<td>'.number_format($TSS,3,',','').'</td>';
-                                    echo '<td>'.$algoritmo.'</td>';
-                                    echo '<td>'.$partition.'</td>';
-                                    echo '</tr>';
-                                        }
-                                        $linha ++;
-                                    }
-                                    */
-                                    ?>
-                                    <?php
-                                    /*	$meuArray = Array();
-                                    $file = fopen('./result/e369853df766fa44e1ed0ff613f563bd/evaluateEugenia aurata O.Berg_5_bioclim.txt', 'r');
-                                    while (($line = fgetcsv($file)) !== false)
-                                    {
-                                    $meuArray[] = $line;
-                                    }
-                                    fclose($file);
-                                    print_r($meuArray);
-
-                                    foreach($meuArray as $linha => $valor){
-                                    echo 'linha '.$linha.' = '.$valor;
-                                    }
-                                        
-                                    for($i = 0; $i < count($meuArray); $i++){
-                                    echo '<td>'.$meuArray[$i].'</td>';
-                                    }
-                                    */
-                                    ?>
-
-                                        
-                                        </tbody>
-                                    </table>
-                                </div>
-                        <div class="col-md-6 col-sm-6 col-xs-6">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_content">
 
                             <div class="row">
@@ -635,7 +530,7 @@ foreach($results_array as $value)
                             foreach($results_array as $value)
                             {
                                 ?>
-                            <div class="col-md-6 image-model">
+                            <div class="col-md-3 image-model">
                                 <a href="<?php echo $log_directory.'/'.$value;?>" target="result">
                                     <img src="<?php echo $log_directory.'/'.$value;?>" class="img-thumbnail" alt="Cinque Terre" width="304" height="236">
                                     <p><?php //echo $value;?></a><br>
@@ -668,123 +563,7 @@ foreach($results_array as $value)
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="x_panel">
 
-                        <div class="x_title">
-                            <h2>Dados estatísticos <small></small></h2>
-                            <div class="clearfix"></div>
-                            <table class="table table-striped">
-   
-                                        <tbody>
-                                        <thead>
-                                    <tr>
-                                    <th>algoritmo</th>
-                                    <th>partition</th>
-                                    <th>kappa</th>
-                                    <th>spec_sens</th>
-                                    <th>no_omission</th>
-                                    <th>prevalence</th>
-                                    <th>equal_sens_spec</th>
-                                    <th>sensitivity</th>
-                                    <th>AUC</th>
-                                    <th>TSS</th>
-                                    </tr>
-                                    </thead>
-                                        <?php
-                                        
-                                        $sql = 'select * from modelr.experiment_result';
-                                        $res = pg_exec($conn,$sql);
-                                        while ($row = pg_fetch_array($res))
-                                        {
-                                            $kappa = $row['kappa'];
-                                            $spec_sens = $row['spec_sens'];
-                                            $no_omission = $row['no_omission'];
-                                            $prevalence = $row['prevalence'];
-                                            $equal_sens_spec = $row['equal_sens_spec'];
-                                            $sensitivity = $row['sensitivity'];
-                                            $auc = $row['auc'];
-                                            $tss = $row['tss'];
-                                            $algoritmo = $row['algorithm'];
-                                            $partition = $row['partition'];
-                                            echo '<tr>';
-                                    echo '<td>'.$algoritmo.'</td>';
-                                    echo '<td>'.$partition.'</td>';
-                                    echo '<td>'.$kappa.'</td>';
-                                    echo '<td>'.$spec_sens.'</td>';
-                                    echo '<td>'.$no_omission.'</td>';
-                                    echo '<td>'.$prevalence.'</td>';
-                                    echo '<td>'.$equal_sens_spec.'</td>';
-                                    echo '<td>'.$sensitivity.'</td>';
-                                    echo '<td>'.$auc.'</td>';
-                                    echo '<td>'.number_format($tss,3,',','').'</td>';
-                                    echo '</tr>';
-                                        }
-                                    /*
-                                        $names=file('./result/'.$hash.'/estatistica.txt');
-                                    // To check the number of lines
-                                    //echo count($names).'<br>';
-                                    $linha = 0;
-                                    foreach($names as $name)
-                                    {
-                                        list ($kappa, $spec_sens,$no_omission,$prevalence,$equal_sens_spec,$sensitivity,$AUC,$TSS,$algoritmo,$partition) = split (';', $name);
-                                        if ($linha == 0)
-                                        {
-                                            echo ' <thead><tr>';
-                                    //   echo '<th>'.$kappa.'</th>';
-                                    echo '<th>'.$spec_sens.'</th>';
-                                    echo '<th>'.$no_omission.'</th>';
-                                    echo '<th>'.$prevalence.'</th>';
-                                    echo '<th>'.$equal_sens_spec.'</th>';
-                                    echo '<th>'.$sensitivity.'</th>';
-                                    echo '<th>'.$AUC.'</th>';
-                                    echo '<th>'.$TSS.'</th>';
-                                    echo '<th>'.$algoritmo.'</th>';
-                                    echo '<th>'.$partition.'</th>';
-                                    echo '</tr> </thead>';
-                                        }
-                                        else
-                                        {
-                                        echo '<tr>';
-                                    //   echo '<td>'.$kappa.'</td>';
-                                    echo '<td>'.$spec_sens.'</td>';
-                                    echo '<td>'.$no_omission.'</td>';
-                                    echo '<td>'.$prevalence.'</td>';
-                                    echo '<td>'.$equal_sens_spec.'</td>';
-                                    echo '<td>'.$sensitivity.'</td>';
-                                    echo '<td>'.$AUC.'</td>';
-                                    echo '<td>'.number_format($TSS,3,',','').'</td>';
-                                    echo '<td>'.$algoritmo.'</td>';
-                                    echo '<td>'.$partition.'</td>';
-                                    echo '</tr>';
-                                        }
-                                        $linha ++;
-                                    }
-                                    */
-                                    ?>
-                                    <?php
-                                    /*	$meuArray = Array();
-                                    $file = fopen('./result/e369853df766fa44e1ed0ff613f563bd/evaluateEugenia aurata O.Berg_5_bioclim.txt', 'r');
-                                    while (($line = fgetcsv($file)) !== false)
-                                    {
-                                    $meuArray[] = $line;
-                                    }
-                                    fclose($file);
-                                    print_r($meuArray);
-
-                                    foreach($meuArray as $linha => $valor){
-                                    echo 'linha '.$linha.' = '.$valor;
-                                    }
-                                        
-                                    for($i = 0; $i < count($meuArray); $i++){
-                                    echo '<td>'.$meuArray[$i].'</td>';
-                                    }
-                                    */
-                                    ?>
-
-                                        
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                        <div class="col-md-6 col-sm-6 col-xs-6">							
+                        <div class="col-md-12 col-sm-12 col-xs-12">							
 								
 <div class="x_content">
 
@@ -832,7 +611,7 @@ $c = 0;
 foreach($results_array as $value)
 {
 	?>
-  <div class="col-md-6 image-model">
+  <div class="col-md-3 image-model">
       <a href="<?php echo $log_directory.'/'.$value;?>" target="result">
         <img src="<?php echo $log_directory.'/'.$value;?>" class="img-thumbnail" alt="Cinque Terre" width="304" height="236">
           <p><?php //echo $value;?></a><br>
@@ -855,10 +634,21 @@ foreach($results_array as $value)
                                 </div>								
 									
 								</div>
-							
-							
-							
-							<div class="col-md-6 col-sm-6 col-xs-6">
+						
+						</div> <!-- table panel -->
+
+                        </div>								
+									
+								</div>
+
+
+                                <div class="tab-pane fade<?php if ($tab=='6') echo ' in active';?>" id="tab_content6">
+                        
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="x_panel">
+
+                        
+							<div class="col-md-12 col-sm-12 col-xs-12">
                                 <div class="x_content map-content">
 								 <div id="map"></div>
                                     <!-- end pop-over -->
@@ -870,7 +660,6 @@ foreach($results_array as $value)
                         </div>								
 									
 								</div>
-
                         </div> <!-- end class="tab-content" -->
 
                         </div> <!-- end tags toggle -->
