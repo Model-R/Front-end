@@ -39,12 +39,12 @@ else
 	}
 	// FORA DO LIMITE DO BRASIL
 	
-	// libera o experimento para a modelagem
-	if (($idstatus == '17') || ($idstatus=='4'))
-	{
-		$sql = "update modelr.experiment set idstatusexperiment = 2 where idexperiment = ".$idexperimento;
-		$res = pg_exec($conn,$sql);
-	}
+	// // libera o experimento para a modelagem
+	// if (($idstatus == '17') || ($idstatus=='4'))
+	// {
+	// 	$sql = "update modelr.experiment set idstatusexperiment = 2 where idexperiment = ".$idexperimento;
+	// 	$res = pg_exec($conn,$sql);
+	// }
 
 	// coodenada zerada
 	if (($idstatus=='13') || ($idstatus=='99'))

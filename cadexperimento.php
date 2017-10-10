@@ -304,12 +304,6 @@ if ($op=='A')
 																<div class="x_panel">
 																	<div class="x_title">
 																		<h2>Dados Bióticos <small></small></h2>
-																		<ul class="nav navbar-right panel_toolbox">
-																			<li><a><i class="fa fa-globe"></i></a>
-																			</li>
-																			<li><a data-toggle="modal" data-target=".bs-example-modal-sm"><i class="fa fa-file-excel-o"></i></a>
-																			</li>
-																		</ul>
 																		<div class="clearfix">
 																		</div>
 																	</div>
@@ -346,12 +340,8 @@ if ($op=='A')
 																						<th class="column-title">Táxon </th>
 																						<th class="column-title">Tombo </th>
 																						<th class="column-title">Coletor </th>
-																						<th class="column-title">Latitude </th>
-																						<th class="column-title">Logitude</th>
-																						<th class="column-title no-link last"><span class="nobr">Action</span>																					</th>
-																						<th class="bulk-actions" colspan="7">
-																							<a class="antoo" style="color:#fff; font-weight:500;">Total de Registros selecionados: ( <span class="action-cnt"> </span> ) </a>
-																						</th>
+																						<th class="column-title">Coordenadas </th>
+																						<th class="column-title">Localização</th>
 																					</tr>
 																				</thead>
 	<?php 
@@ -386,10 +376,6 @@ if ($op=='A')
 																						<td class="a-right a-right "><?php echo $row['coletor'];?> <?php echo $row['numcoleta'];?></td>
 																						<td class=" "><?php echo $row['latitude'];?>, <?php echo $row['longitude'];?></td>
 																						<td class=" "><?php echo $row['pais'];?>, <?php echo $row['estado'];?> - <?php echo $row['municipio'];?></td>
-																						<td class=" last">
-																						<a><i class="fa fa-globe"></i></a>
-																						<a><i class="fa fa-save"></i></a>
-																						</td>
 																					</tr>
 	<?php 
 		} 
@@ -941,7 +927,7 @@ function liberarParaModelagem()
 
 function atualizarPontos(idponto,idstatus,latinf,longinf)
 {
-	//alert('');
+	//alert('?idstatus='+idstatus+'&idponto='+idponto+'&latinf='+latinf+'&longinf='+longinf);
 	
 	exibe('loading');
 	document.getElementById('frm').action='exec.atualizarpontos.php?idstatus='+idstatus+'&idponto='+idponto+'&latinf='+latinf+'&longinf='+longinf;

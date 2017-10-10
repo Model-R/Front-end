@@ -107,11 +107,11 @@ class Experimento
 
 	function excluirPonto($idexperimento,$idponto,$idstatus,$latinf,$longinf)
 	{
-		if (($idstatus == '17') || ($idstatus=='4'))
-		{
-			$sql = "update modelr.experiment set idstatusexperiment = 2 where idexperiment = ".$idexperimento;
-			$res = pg_exec($this->conn,$sql);
-		}
+		// if (($idstatus == '17') || ($idstatus=='4'))
+		// {
+		// 	$sql = "update modelr.experiment set idstatusexperiment = 2 where idexperiment = ".$idexperimento;
+		// 	$res = pg_exec($this->conn,$sql);
+		// }
 		
 		$sql = "update modelr.occurrence set idstatusoccurrence = ".$idstatus; 
 		if ((!empty($latinf)) && (!empty($longinf)))
