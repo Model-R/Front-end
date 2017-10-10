@@ -445,7 +445,7 @@ if ($op=='A')
 																			<button id="send" type="button" onclick="filtrar(document.getElementById('cmboxstatusoccurrencefiltro').value)" class="btn btn btn-success">Filtrar</button>
 																			</div>
 																		</div>	
-																		<table class="table table-striped responsive-utilities jambo_table bulk_action">
+																		<table id="points_table" class="table table-striped responsive-utilities jambo_table bulk_action">
 																			<thead>
 																				<tr class="headings">
 																					<th>
@@ -455,7 +455,6 @@ if ($op=='A')
 																					<th class="column-title">Identificação</th>
 																					<th class="column-title">Localização</th>
 																					<th class="column-title">Status <a data-toggle="tooltip" data-placement="top" title data-original-title="Editar" onclick="abreModelStatusOcorrencia()"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></th>
-																					<th class="column-title"></th>
 																				</tr>
 																			</thead>
 <?php 
@@ -508,24 +507,11 @@ while ($row = pg_fetch_array($res))
 								
 																				<tr class="even pointer">
 																					<td class="a-center "><input type="checkbox" name="table_records[]" id="table_records[]" value="<?php echo $row['idoccurrence'];?>" ></td><td><?php echo $html_imagem.' ';?></td>
-																					<td class="a-right a-right "><?php echo $row['taxon'];?><br><?php echo $row['numtombo'];?><br>
+																					<td class="a-right a-right "><?php echo $row['taxon'];?><?php echo $row['numtombo'];?>
 																					<?php echo $row['collector'];?> <?php echo $row['collectnumber'];?></td>
-																					<td class=" "><?php echo $row['country'];?>, <?php echo $row['majorarea'];?> - <?php echo $row['minorarea'];?>. (<?php echo $row['lat'];?><br><?php echo $row['long'];?>)</td>
+																					<td class=" "><?php echo $row['country'];?>, <?php echo $row['majorarea'];?> - <?php echo $row['minorarea'];?>.(<?php echo $row['lat'];?>,<?php echo $row['long'];?>)</td>
 																					<td class=" "><?php echo "<image src='".$icone."'>".' '.$row['statusoccurrence'];?>
 																					<a data-toggle="tooltip" data-placement="top" title data-original-title="Editar" onclick="abreModal('<?php echo $row['taxon'];?>','<?php echo $row['lat'];?>','<?php echo $row['long'];?>','<?php echo $row['idoccurrence'];?>','<?php echo $row[''];?>','<?php echo $row[''];?>','<?php echo $servidor;?>','<?php echo $path;?>','<?php echo $arquivo;?>','<?php echo $row['idstatusoccurrence'];?>','<?php echo $localizacao;?>')">  <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
-																					<td>
-	<?php if ($row['checked']==false)
-	{
-		$checkedcor='success';
-		$checkedicon='ok-circle';
-	}
-	else
-	{
-		$checkedcor='danger';
-		$checkedicon='ban-circle';
-	}
-	?>
-																					</td>
 																				</tr>
 	<?php }// while  ?>
 																				<tr class="even pointer">

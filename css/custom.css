@@ -1469,7 +1469,7 @@ table.jambo_table tbody tr.selected td {
 }
 
 table tr {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
     border-bottom: 2px solid;
     /* color: #73879c; */
@@ -3828,6 +3828,14 @@ ul.social li {
 
 #experiments_table>thead>tr>th, #experiments_table>tbody>tr>th, #experiments_table>tfoot>tr>th, 
 #experiments_table>thead>tr>td, #experiments_table>tbody>tr>td, #experiments_table>tfoot>tr>td {
+    padding: 5px !important;
+    line-height: 1.42857143 !important;
+    vertical-align: middle !important;
+    border-top: 1px solid #ddd !important;
+}
+
+#points_table>thead>tr>th, #points_table>tbody>tr>th, #points_table>tfoot>tr>th, 
+#points_table>thead>tr>td, #points_table>tbody>tr>td, #points_table>tfoot>tr>td {
     padding: 5px !important;
     line-height: 1.42857143 !important;
     vertical-align: middle !important;
