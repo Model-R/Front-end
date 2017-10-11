@@ -647,10 +647,10 @@ foreach($results_array as $value)
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="x_panel">
 
-                        
 							<div class="col-md-12 col-sm-12 col-xs-12">
                                 <div class="x_content map-content">
-								 <div id="map"></div>
+								 <div id="map">
+                                 </div>
                                     <!-- end pop-over -->
                                 </div>
 							</div>
@@ -731,9 +731,11 @@ foreach($results_array as $value)
     <script type="text/javascript" src="js/notify/pnotify.core.js"></script>
     <script type="text/javascript" src="js/notify/pnotify.buttons.js"></script>
     <script type="text/javascript" src="js/notify/pnotify.nonblock.js"></script>		
-		
-<script>
 
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhi_DlmaFvRu7eP357bOzl29fyZXKIJE0&libraries=drawing">
+    </script>	
+    		
+<script>
 
 // This example adds a user-editable rectangle to the map.
 function selecionaTodos2(isChecked) {
@@ -816,8 +818,69 @@ function HomeControl(controlDiv, map) {
   });
 }
 
+//---------------------------------- Map Shape Control
+
+var drawingManager;
+var selectedShape;
+
+function clearSelection() {
+    if (selectedShape) {
+        selectedShape.setEditable(false);
+        selectedShape = null;
+    }
+}
+
+function setSelection(shape) {
+    clearSelection();
+    selectedShape = shape;
+    shape.setEditable(true);
+}
+
+function deleteSelectedShape() {
+    if (selectedShape) {
+        selectedShape.setMap(null);
+    }
+}
+
+function CenterControl(controlDiv, map) {
+
+    // Set CSS for the control border.
+    var controlUI = document.createElement('div');
+    controlUI.style.backgroundColor = '#fff';
+    controlUI.style.border = '2px solid #fff';
+    controlUI.style.borderRadius = '3px';
+    controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+    controlUI.style.cursor = 'pointer';
+    controlUI.style.marginBottom = '22px';
+    controlUI.style.textAlign = 'center';
+    controlUI.style.marginTop = '5px';
+    controlUI.style.marginLeft = '-8px';
+    controlUI.style.borderLeft = '0px';
+    controlUI.title = 'Apagar desenhos selecionados';
+    controlDiv.appendChild(controlUI);
+
+    // Set CSS for the control interior.
+    var controlText = document.createElement('div');
+    controlText.style.color = 'rgb(25,25,25)';
+    controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+    controlText.style.fontSize = '14px';
+    controlText.style.lineHeight = '20px';
+    controlText.style.paddingLeft = '5px';
+    controlText.style.paddingRight = '5px';
+    controlText.innerHTML = 'Apagar Polígono';
+    controlUI.appendChild(controlText);
+
+    // Setup the click event listeners: simply set the map to Chicago.
+    controlUI.addEventListener('click', function() {
+        if (selectedShape) {
+            selectedShape.setMap(null);
+        }
+    });
+
+}
 
 function initMap() {
+
 	<?php if (empty($latcenter))
 	{
 		$latcenter = -24.5452;
@@ -825,20 +888,91 @@ function initMap() {
 	}
 	?>
 	
+    
  var overlay;
    USGSOverlay.prototype = new google.maps.OverlayView();
 
 	
   var map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: -24.5452, lng: -42.5389},
-	panControl:false,
+        center: {lat: -24.5452, lng: -42.5389},
+	    panControl:true,
       	zoomControl:true,
+        scaleControl:true,
 	  	zoomControlOptions: {
-  		style:google.maps.ZoomControlStyle.DEFAULT
+  		    style:google.maps.ZoomControlStyle.DEFAULT
 	 	},
+        mapTypeId: 'terrain',
+        mapTypeControl: true,
+        mapTypeControlOptions: {
+            mapTypeIds: ['terrain','roadmap', 'satellite']
+        },
+        styles: [
+            {
+                "featureType": "landscape",
+                "stylers": [
+                    {"hue": "#FFA800"},
+                    {"saturation": 0},
+                    {"lightness": 0},
+                    {"gamma": 1}
+                ]
+            },
+            {
+                "featureType": "road.highway",
+                "stylers": [
+                    {"hue": "#53FF00"},
+                    {"saturation": -73},
+                    {"lightness": 40},
+                    {"gamma": 1}
+                ]
+            },
+            {
+                "featureType": "road.arterial",
+                "stylers": [
+                    {"hue": "#FBFF00"},
+                    {"saturation": 0},
+                    {"lightness": 0},
+                    {"gamma": 1}
+                ]
+            },
+            {
+                "featureType": "road.local",
+                "stylers": [
+                    {"hue": "#00FFFD"},
+                    {"saturation": 0},
+                    {"lightness": 30},
+                    {"gamma": 1}
+                ]
+            },
+            {
+                "featureType": "water",
+                "stylers": [
+                    {"hue": "#00BFFF"},
+                    {"saturation": 6},
+                    {"lightness": 8},
+                    {"gamma": 1}
+                ]
+            },
+            {
+                "featureType": "poi",
+                "stylers": [
+                    {"hue": "#679714"},
+                    {"saturation": 33.4},
+                    {"lightness": -25.4},
+                    {"gamma": 1}
+                ]
+            }
+        ],
    // center: {lat: <?php echo $latcenter;?>, lng: <?php echo $longcenter;?>},
     zoom: 2
   });
+
+  var centerControlDiv = document.createElement('div');
+var centerControl = new CenterControl(centerControlDiv, map);
+
+centerControlDiv.index = 1;
+map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
+
+
   //var homeControlDiv = document.createElement('div');
   //var homeControl = new HomeControl(homeControlDiv, map);
   	//map.controls[google.maps.ControlPosition.TOP_RIGHT].push(homeControlDiv);
@@ -858,26 +992,28 @@ var drawingManager = new google.maps.drawing.DrawingManager({
     drawingControlOptions: {
       position: google.maps.ControlPosition.TOP_CENTER,
       drawingModes: [
+        google.maps.drawing.OverlayType.CIRCLE,
+        google.maps.drawing.OverlayType.RECTANGLE,
         google.maps.drawing.OverlayType.POLYGON
       ]
     },
     markerOptions: {
 		icon: {
-					path: google.maps.SymbolPath.CIRCLE,
-					scale: 6,
-					fillColor: '#A74EAF',
-					fillOpacity: 0.8,
-					strokeColor: '#fff',
-					strokeWeight: 1
-					}
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 6,
+            fillColor: '#A74EAF',
+            fillOpacity: 0.8,
+            strokeColor: '#fff',
+            strokeWeight: 1
+		}
 		
 //      icon: 'imagens/place-03.png'
     },
     circleOptions: {
-      fillColor: '#ffff00',
-      fillOpacity: 1,
-      strokeWeight: 5,
-      clickable: false,
+      fillColor: '#50657e;',
+      fillOpacity: .3,
+      strokeWeight: 3,
+      clickable: true,
       editable: true,
       zIndex: 1
     }
@@ -895,7 +1031,26 @@ var drawingManager = new google.maps.drawing.DrawingManager({
     zoom: 2
   });
 */
-  
+
+google.maps.event.addListener(drawingManager, 'overlaycomplete', function(e) {
+    if (e.type != google.maps.drawing.OverlayType.MARKER) {
+        // Switch back to non-drawing mode after drawing a shape.
+        drawingManager.setDrawingMode(null);
+        // Add an event listener that selects the newly-drawn shape when the user
+        // mouses down on it.
+        var newShape = e.overlay;
+        newShape.type = e.type;
+        google.maps.event.addListener(newShape, 'click', function() {
+            setSelection(newShape);
+        });
+        setSelection(newShape);
+    }
+});
+// Clear the current selection when the drawing mode is changed, or when the
+// map is clicked.
+google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection);
+google.maps.event.addListener(map, 'click', clearSelection);
+
 // [START region_rectangle]
   var bounds1 = {
     north: <?php echo $extensao1_norte;?>,
@@ -1205,8 +1360,6 @@ function abreModal(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquiv
 }
 
     </script>
-	 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhi_DlmaFvRu7eP357bOzl29fyZXKIJE0&libraries=drawing&callback=initMap" async defer>
-    </script>	
 	
     <script>
 	
@@ -1235,7 +1388,6 @@ $('.nav-tabs a[href="#tab_content3"]').click(function(){
 });	
 
 $('.nav-tabs').on('shown.bs.tab', function () {
-    console.log('aaa');
     google.maps.event.trigger(window, 'resize', {});
     initMap();
 });
@@ -1304,6 +1456,8 @@ function enviar()
             if (this.checked)
                 $('form .alert').remove();
         }).prop('checked', false);
+
+
     </script>
 
 </body>
