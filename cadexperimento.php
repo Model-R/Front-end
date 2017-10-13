@@ -271,7 +271,27 @@ if ($op=='A')
 											{?>
 											<div class="new_experiment_send_button">
 												<button id="send" type="button" onclick="enviar()" class="btn btn-info">Salvar</button>
-												<button id="send2" type="button" onclick="liberarExperimento()" class="btn btn-success">Liberar experimento para modelagem</button>
+
+												<?php
+												$sql = "select idoccurrence,idexperiment,iddatasource,taxon,collector,collectnumber,server,
+												path,file,occurrence.idstatusoccurrence,pathicon,statusoccurrence,country,majorarea,minorarea,
+												case when lat2 is not null then lat2 else lat end as lat,
+												case when long2 is not null then long2
+												else long end as long
+												from modelr.occurrence, modelr.statusoccurrence where 
+												occurrence.idstatusoccurrence = statusoccurrence.idstatusoccurrence and
+												(occurrence.idstatusoccurrence = 4 or occurrence.idstatusoccurrence = 17) and
+												idexperiment = ".$id;
+
+												$res = pg_exec($conn,$sql);
+												$total = pg_num_rows($res);
+
+												if($total > 0){
+													echo '<button id="send2" type="button" onclick="liberarExperimento()" class="btn btn-success">Liberar experimento para modelagem</button>';
+												} else {
+													echo '<button id="send2" type="button" onclick="liberarExperimento()" class="btn btn-success hide">Liberar experimento para modelagem</button>';
+												}
+												?>
 											</div>
 											<?php } ?>
 										</div>
