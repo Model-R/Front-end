@@ -270,8 +270,8 @@ if ($op=='A')
 											<?php if ($op!='I')
 											{?>
 											<div class="new_experiment_send_button">
-											    <button id="send" type="button" onclick="enviar()" class="btn btn-info">Salvar</button>
-												 <button id="send2" type="button" onclick="liberarExperimento()" class="btn btn-success">Liberar experimento para modelagem</button>
+												<button id="send" type="button" onclick="enviar()" class="btn btn-info">Salvar</button>
+												<button id="send2" type="button" onclick="liberarExperimento()" class="btn btn-success">Liberar experimento para modelagem</button>
 											</div>
 											<?php } ?>
 										</div>
@@ -462,6 +462,10 @@ $marker = '';
 $info = '';
 ?>
 																			<tbody>
+<tr class="even pointer">
+	<td class="a-center " colspan=5>Total: <?php echo $conta;?></td>
+</tr>
+
 <?php 
 $c=0;
 while ($row = pg_fetch_array($res))
@@ -500,9 +504,6 @@ while ($row = pg_fetch_array($res))
 																					<a data-toggle="tooltip" data-placement="top" title data-original-title="Editar" onclick="abreModal('<?php echo $row['taxon'];?>','<?php echo $row['lat'];?>','<?php echo $row['long'];?>','<?php echo $row['idoccurrence'];?>','<?php echo $row[''];?>','<?php echo $row[''];?>','<?php echo $servidor;?>','<?php echo $path;?>','<?php echo $arquivo;?>','<?php echo $row['idstatusoccurrence'];?>','<?php echo $localizacao;?>')">  <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
 																				</tr>
 	<?php }// while  ?>
-																				<tr class="even pointer">
-																					<td class="a-center " colspan=5>Total: <?php echo $c;?></td>
-																				</tr>
 																			</tbody>
 																		</table>
 																	</div>
