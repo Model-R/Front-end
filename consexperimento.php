@@ -93,12 +93,12 @@
 									$log_directory = './result/'.$hash.'/';
 									$results_array = array();
 									$conta_arquivos = 0;
-									//if (is_dir($log_directory))
-									//{
+									if (is_dir($log_directory))
+									{
 										$html.='<a class="btn btn-app '.$disabled.'" onclick="resultado('.$row['idexperiment'].')" data-toggle="tooltip" data-placement="top" title="Resultado">
 											<i class="fa fa-globe"></i>
 										</a>';
-									//}
+									}
 									
 									$idstatus = $row['idstatusexperiment'];
 									$classe1='done';

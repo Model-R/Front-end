@@ -649,6 +649,7 @@ foreach($results_array as $value)
 
 							<div class="col-md-12 col-sm-12 col-xs-12">
                                 <div class="x_content map-content">
+                                <input type="range" min="0" max="100" step="1" onchange="updateOpacity(this.value)" data-toggle="tooltip" data-placement="top" title="Arraste para alterar transparência da imagem no Mapa">
 								 <div id="map">
                                  </div>
                                     <!-- end pop-over -->
@@ -822,6 +823,7 @@ function HomeControl(controlDiv, map) {
 
 var drawingManager;
 var selectedShape;
+var imageOverlay;
 
 function clearSelection() {
     if (selectedShape) {
@@ -836,26 +838,27 @@ function setSelection(shape) {
     shape.setEditable(true);
 }
 
-function deleteSelectedShape() {
-    if (selectedShape) {
-        selectedShape.setMap(null);
-    }
-}
+// function deleteSelectedShape() {
+//     console.log('entrou delete');
+//     if (selectedShape) {
+//         console.log(selectedShape.getPath())
+//         // selectedShape.setMap(null);
+//     }
+// }
 
 function CenterControl(controlDiv, map) {
 
     // Set CSS for the control border.
     var controlUI = document.createElement('div');
+    
+    controlUI.style.height = '24px';
+    controlUI.style.display = 'flex';
+    controlUI.style.alignItems = 'center';
     controlUI.style.backgroundColor = '#fff';
-    controlUI.style.border = '2px solid #fff';
-    controlUI.style.borderRadius = '3px';
-    controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
     controlUI.style.cursor = 'pointer';
-    controlUI.style.marginBottom = '22px';
-    controlUI.style.textAlign = 'center';
     controlUI.style.marginTop = '5px';
-    controlUI.style.marginLeft = '-8px';
-    controlUI.style.borderLeft = '0px';
+    controlUI.style.marginLeft = '-5px';
+    controlUI.style.boxShadow = '0 1.5px rgba(31, 30, 30, 0.15)';
     controlUI.title = 'Apagar desenhos selecionados';
     controlDiv.appendChild(controlUI);
 
@@ -877,6 +880,61 @@ function CenterControl(controlDiv, map) {
         }
     });
 
+}
+
+
+function ExportShapeControl(controlDiv, map) {
+
+    // Set CSS for the control border.
+    var controlUI = document.createElement('div');
+    controlUI.style.height = '24px';
+    controlUI.style.display = 'flex';
+    controlUI.style.alignItems = 'center';
+    controlUI.style.backgroundColor = '#fff';
+    controlUI.style.borderTopRightRadius = '3px';
+    controlUI.style.borderBottomRightRadius = '3px';
+    controlUI.style.cursor = 'pointer';
+    controlUI.style.marginTop = '5px';
+    controlUI.style.boxShadow = '0 1.5px rgba(31, 30, 30, 0.15)';
+    controlUI.title = 'Exportar desenhos selecionados';
+    controlDiv.appendChild(controlUI);
+
+    // Set CSS for the control interior.
+    var controlText = document.createElement('div');
+    controlText.style.color = 'rgb(25,25,25)';
+    controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+    controlText.style.fontSize = '14px';
+    controlText.style.lineHeight = '20px';
+    controlText.style.paddingLeft = '5px';
+    controlText.style.paddingRight = '5px';
+    controlText.innerHTML = 'Exportar Polígono';
+    controlUI.appendChild(controlText);
+
+    // Setup the click event listeners: simply set the map to Chicago.
+    controlUI.addEventListener('click', function() {
+        if(selectedShape.type == 'polygon'){
+            for(var i = 0; i < selectedShape.getPath().getLength(); i++){
+                console.log(selectedShape.getPath().getAt(i).toUrlValue(5),'\n');
+            }
+        } else {
+            //for(var i = 0; i < selectedShape.getPath().getLength(); i++){
+                var bounds = selectedShape.getBounds();
+                var start = bounds.getNorthEast().toString().replace('(','').replace(')','').split(',');
+                var end = bounds.getSouthWest().toString().replace('(','').replace(')','').split(',');
+                var center = bounds.getCenter().toString().replace('(','').replace(')','').split(',');
+                console.log('start ', start);
+                console.log('end ', end);
+                console.log('center ', center);
+            //}
+        }
+
+        imageOverlay.setOpacity(1);
+    });
+
+}
+
+function updateOpacity (value){
+    imageOverlay.setOpacity(value/100);
 }
 
 function initMap() {
@@ -972,17 +1030,34 @@ var centerControl = new CenterControl(centerControlDiv, map);
 centerControlDiv.index = 1;
 map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
 
+var exportShapeDiv = document.createElement('div');
+var exportShape = new ExportShapeControl(exportShapeDiv, map);
+
+exportShapeDiv.index = 1;
+map.controls[google.maps.ControlPosition.TOP_CENTER].push(exportShapeDiv);
+
 
   //var homeControlDiv = document.createElement('div');
   //var homeControl = new HomeControl(homeControlDiv, map);
   	//map.controls[google.maps.ControlPosition.TOP_RIGHT].push(homeControlDiv);
 
-	var kmlLayer = new google.maps.KmlLayer({
-    	url: 'http://model-r.jbrj.gov.br/teste.kml',
-    	suppressInfoWindows: true,
-    	map: map,
-    	preserveViewport: true
-  	});
+	// var kmlLayer = new google.maps.KmlLayer({
+    // 	url: 'http://model-r.jbrj.gov.br/teste.kml',
+    // 	suppressInfoWindows: true,
+    // 	map: map,
+    // 	preserveViewport: true
+  	// });
+
+console.log('entrou')
+      var imageBounds = new google.maps.LatLngBounds(
+        new google.maps.LatLng(-22.14671,-46.53809),
+        new google.maps.LatLng(-5.04717,-28.65234));
+    mapOverlay = new google.maps.GroundOverlay(
+    'http://model-r.jbrj.gov.br/ensemble_geral.png',
+    imageBounds,{opacity:0.3});
+    mapOverlay.setMap(map);
+
+    imageOverlay = mapOverlay;
 	
 	
 var drawingManager = new google.maps.drawing.DrawingManager({
