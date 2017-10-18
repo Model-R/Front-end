@@ -6465,6 +6465,41 @@ ul.notifications {
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    width: 50%;
+    margin-left: 25% !important;;
+}
+
+.files-options label{
+    padding-top: 0px !important;
+}
+
+.files-options > div{
+    display: flex;
+    width: 400px;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+/* Esconde o input */
+input[type='file'] {
+display: none
+}
+
+/* Aparência que terá o seletor de arquivo */
+#label-arquivo {
+    background-color: #1a82c3;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    margin: 10px;
+    padding: 6px 20px;
+    padding-top: 6px !important;
+}
+
+.radio-group{
+    display: flex;
+    width: 200px;
+    justify-content: space-around;
 }
 
 .species-name{

@@ -333,9 +333,12 @@ if ($op=='A')
 																			<label class="control-label" for="email">Fonte<span class="required">*</span>
 																			</label>
 																			<div class="">
-																				<input type="radio" name="fontebiotico[]" id="checkfontejabot" value="1" <?php if ($_REQUEST['fontebiotico'][0]=='1') echo "checked";?> /> JABOT
-																				<input type="radio" name="fontebiotico[]" id="checkfontegbif" value="2" <?php if ($_REQUEST['fontebiotico'][0]=='2') echo "checked";?>/> GBIF
-																				<button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target=".bs-example-modal-sm">Arquivo CSV</button>
+																				<div class="radio-group">
+																					<div><input type="radio" name="fontebiotico[]" id="checkfontejabot" value="1" <?php if ($_REQUEST['fontebiotico'][0]=='1') echo "checked";?> /> JABOT</div>
+																					<div><input type="radio" name="fontebiotico[]" id="checkfontegbif" value="2" <?php if ($_REQUEST['fontebiotico'][0]=='2') echo "checked";?>/> GBIF</div>
+																					<div><input type="radio" name="fontebiotico[]" id="checkfontecsv" value="2" <?php if ($_REQUEST['fontebiotico'][0]=='2') echo "checked";?>/> CSV</div>
+																				</div>
+																				<form enctype="multipart/form-data"><label id="label-arquivo" for='upload'>Arquivo CSV</label><input id="upload" type=file accept="text/csv" name="files[]" size=30></form>
 																			</div>
 												
 																			</div>
@@ -683,6 +686,7 @@ function getTaxonKeyGbif(sp)
 		gbif(myObj.results[0]["key"]);
 		}
 	};
+	console.log(sp);
 	xmlhttp.open("GET", "http://api.gbif.org/v1/species?name="+sp, true);
 	xmlhttp.send();
 }
@@ -934,6 +938,76 @@ function abreModal(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquiv
 	document.getElementById('cmboxstatusoccurrence').value=idstatusocorrence;
 	$('#myModal').modal('show');
 }
+
+function handleFileSelect(evt) {
+    var files = evt.target.files; // FileList object
+
+    // use the 1st file from the list
+    f = files[0];
+
+    var reader = new FileReader();
+
+    // Closure to capture the file information.
+    reader.onload = (function(theFile) {
+        return function(e) {
+
+		//console.log(e.target.result)
+		var arr = e.target.result.split('\n');
+		console.log(arr);
+
+		document.getElementById("checkfontecsv").checked = true;
+		printCSV(arr);
+        };
+      })(f);
+
+      // Read in the image file as a data URL.
+      reader.readAsText(f);
+  }
+
+function printCSV(lines){
+	var body = '';
+	for (i = 0; i < lines.length; i++) {
+
+			var values = lines[i].split(',');
+			//alert(i);
+			longitude = 0;
+			latitude = 0;
+
+			taxon = values[0];
+			tombo = values[1];
+			coletor = values[2];
+			numcoleta = values[3];
+			pais = '';
+			estado = '';
+			cidade = '';
+			
+			var idexperimento = document.getElementById('id').value;
+			
+			var Jval = idexperimento + '|2|'+latitude+'|'+longitude+'|'+taxon+'|'+ coletor+'|'+numcoleta+'||||'+ pais+'|'+ estado+'|'+ cidade; 
+
+				body += '<tr class="even pointer"><td class="a-center "><input name="chtestemunho[]" id="chtestemunho[]" value="'+Jval+'" type="checkbox" ></td>';
+				body +='<td class=" ">'+taxon+'</td>';
+				body +='<td class="a-right a-right ">'+tombo+'</td>';
+				body +='<td class="a-right a-right ">'+coletor+' '+numcoleta+'</td>';
+				body +='<td class=" ">'+latitude+', '+longitude+'</td>';
+				body +='<td class=" ">'+pais+', '+estado+' - '+cidade+'</td>';
+				body +='<td class=" last"><a><i class="fa fa-globe"></i></a><a><i class="fa fa-save"></i></a></td></tr>';
+
+		}
+		
+		var table = '';
+		table += '<table class="table table-striped responsive-utilities jambo_table bulk_action"><thead><tr class="headings"><th><input type="checkbox" id="chkboxtodos2" name="chkboxtodos2" onclick="selecionaTodos2(true);">';
+		table += '</th><th class="column-title">Táxon </th><th class="column-title">Tombo </th><th class="column-title">Coletor </th><th class="column-title">Latitude </th>';
+		table += '<th class="column-title">Logitude</th><th class="column-title no-link last"><span class="nobr">Action</span></th><th class="bulk-actions" colspan="7">';
+		table += '<a class="antoo" style="color:#fff; font-weight:500;">Total de Registros selecionados: ( <span class="action-cnt"> </span> ) </a>';
+		table += '</th></tr></thead>';
+		table += '<tbody>'+body+'</tbody></table>';
+		table += '';
+		
+		document.getElementById("div_resultadobusca").innerHTML = table;
+}
+
+  document.getElementById('upload').addEventListener('change', handleFileSelect, false);
 
     </script>
 	 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhi_DlmaFvRu7eP357bOzl29fyZXKIJE0&callback=initMap" async defer>

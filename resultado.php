@@ -649,7 +649,7 @@ foreach($results_array as $value)
 
 							<div class="col-md-12 col-sm-12 col-xs-12">
                                 <div class="x_content map-content">
-                                <input type="range" min="0" max="100" step="1" onchange="updateOpacity(this.value)" data-toggle="tooltip" data-placement="top" title="Arraste para alterar transparência da imagem no Mapa">
+                                <input type="range" min="0" max="1" step="0.1" value="1" onchange="updateOpacity(this.value)" data-toggle="tooltip" data-placement="top" title="Arraste para alterar transparência da imagem no Mapa">
 								 <div id="map">
                                  </div>
                                     <!-- end pop-over -->
@@ -838,14 +838,6 @@ function setSelection(shape) {
     shape.setEditable(true);
 }
 
-// function deleteSelectedShape() {
-//     console.log('entrou delete');
-//     if (selectedShape) {
-//         console.log(selectedShape.getPath())
-//         // selectedShape.setMap(null);
-//     }
-// }
-
 function CenterControl(controlDiv, map) {
 
     // Set CSS for the control border.
@@ -914,27 +906,24 @@ function ExportShapeControl(controlDiv, map) {
     controlUI.addEventListener('click', function() {
         if(selectedShape.type == 'polygon'){
             for(var i = 0; i < selectedShape.getPath().getLength(); i++){
-                console.log(selectedShape.getPath().getAt(i).toUrlValue(5),'\n');
+                // console.log(selectedShape.getPath().getAt(i).toUrlValue(5),'\n');
             }
         } else {
-            //for(var i = 0; i < selectedShape.getPath().getLength(); i++){
-                var bounds = selectedShape.getBounds();
-                var start = bounds.getNorthEast().toString().replace('(','').replace(')','').split(',');
-                var end = bounds.getSouthWest().toString().replace('(','').replace(')','').split(',');
-                var center = bounds.getCenter().toString().replace('(','').replace(')','').split(',');
-                console.log('start ', start);
-                console.log('end ', end);
-                console.log('center ', center);
-            //}
+            var bounds = selectedShape.getBounds();
+            var start = bounds.getNorthEast().toString().replace('(','').replace(')','').split(',');
+            var end = bounds.getSouthWest().toString().replace('(','').replace(')','').split(',');
+            var center = bounds.getCenter().toString().replace('(','').replace(')','').split(',');
+            // console.log('start ', start);
+            // console.log('end ', end);
+            // console.log('center ', center);
         }
 
-        imageOverlay.setOpacity(1);
     });
 
 }
 
 function updateOpacity (value){
-    imageOverlay.setOpacity(value/100);
+    imageOverlay.setOpacity(Number(value));
 }
 
 function initMap() {
@@ -1023,7 +1012,7 @@ function initMap() {
    // center: {lat: <?php echo $latcenter;?>, lng: <?php echo $longcenter;?>},
     zoom: 2
   });
-
+  
   var centerControlDiv = document.createElement('div');
 var centerControl = new CenterControl(centerControlDiv, map);
 
@@ -1048,13 +1037,12 @@ map.controls[google.maps.ControlPosition.TOP_CENTER].push(exportShapeDiv);
     // 	preserveViewport: true
   	// });
 
-console.log('entrou')
       var imageBounds = new google.maps.LatLngBounds(
         new google.maps.LatLng(-22.14671,-46.53809),
         new google.maps.LatLng(-5.04717,-28.65234));
     mapOverlay = new google.maps.GroundOverlay(
     'http://model-r.jbrj.gov.br/ensemble_geral.png',
-    imageBounds,{opacity:0.3});
+    imageBounds,{opacity:1});
     mapOverlay.setMap(map);
 
     imageOverlay = mapOverlay;

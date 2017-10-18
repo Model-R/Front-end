@@ -163,6 +163,7 @@ class Experimento
 		'".$m."'
 		)";
 		// 8 status occurrence = OK
+
 		$resultado = pg_exec($this->conn,$sql);
 		
 //		echo $sql;

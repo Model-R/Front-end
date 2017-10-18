@@ -21,8 +21,8 @@ $fontedados = $_REQUEST['fontebiotico'][0];
 
 //$idfontedados = 1;
 
-//print_r($_REQUEST);
-//exit;
+// print_r($_REQUEST);
+// exit;
 
 if ($fontedados==1)
 {
@@ -73,6 +73,8 @@ if ($fontedados==1)
 if ($fontedados==2)
 { // gbif
 	$box=$_POST['chtestemunho'];
+	// print_r($box);
+	// exit;
 	$in = 'extracao_jabot.codtestemunho in (';
 	while (list ($key,$val) = @each($box)) { 
 		//$result = $Cobertura->excluir($val);

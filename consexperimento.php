@@ -79,7 +79,7 @@
                                         <i class="fa fa-eraser"></i>
                                     </a>
                                    ';
-									if ($qtdok>0)
+									if ($qtdok>0 && $_SESSION['s_idtipousuario']==1) //apenas o dono do projeto pode modelar
 									{
 										$html.='
 									<a class="btn btn-app '.$disabled.'" onclick="modelar('.$row['idexperiment'].')" data-toggle="tooltip" data-placement="top" title="Modelar">
