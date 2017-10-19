@@ -134,6 +134,31 @@ if ($op=='A')
 				<br>Processando...  
 				<br> 
 			</div> 
+
+	<div id="instructionModal" class="modal fade">
+		<div class="modal-dialog"> 
+			<div class="modal-content"> 
+			<div class="modal-header">
+				<h4 class="modal-title" >Instruções CSV</h4>
+			</div>
+			<!-- dialog body -->
+			<div class="modal-body"> 
+				<p>
+					Lorem Ipsum é simplesmente uma simulação de texto da indústria tipográfica e de impressos, e vem sendo utilizado desde o século XVI, 
+					quando um impressor desconhecido pegou uma bandeja de tipos e os embaralhou para fazer um livro de modelos de tipos. Lorem Ipsum 
+					sobreviveu não só a cinco séculos, como também ao salto para a editoração eletrônica, permanecendo essencialmente inalterado. Se
+					popularizou na década de 60, quando a Letraset lançou decalques contendo passagens de Lorem Ipsum, e mais recentemente quando passou 
+					a ser integrado a softwares de editoração eletrônica como Aldus PageMaker.
+				</p>
+			</div>
+			<!-- dialog buttons -->
+			<div class="modal-footer csv-modal-footer"> 
+				<button type="button" class="btn btn-primary" data-dismiss="modal">Fechar</button>
+			</div>
+			</div>
+		</div>
+	</div>
+
 	<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
@@ -338,9 +363,23 @@ if ($op=='A')
 																					<div><input type="radio" name="fontebiotico[]" id="checkfontegbif" value="2" <?php if ($_REQUEST['fontebiotico'][0]=='2') echo "checked";?>/> GBIF</div>
 																					<div><input type="radio" name="fontebiotico[]" id="checkfontecsv" value="2" <?php if ($_REQUEST['fontebiotico'][0]=='2') echo "checked";?>/> CSV</div>
 																				</div>
-																				<form enctype="multipart/form-data"><label id="label-arquivo" for='upload'>Arquivo CSV</label><input id="upload" type=file accept="text/csv" name="files[]" size=30></form>
+																				<div class="csv-button">
+																					<form enctype="multipart/form-data"><label id="label-arquivo" for='upload'>Arquivo CSV</label><input id="upload" type=file accept="text/csv" name="files[]" size=30></form>
+																					<div class="csv-instruction" data-toggle="tooltip" data-placement="right" title data-original-title="Instruções">
+																					<span class="glyphicon glyphicon-modal-window" data-toggle="modal" data-target="#instructionModal"></span>
+																				</div>
 																			</div>
-												
+																			
+																			<span id="filename"></span>
+																			</div>
+																			</div>
+																			<div id="csv-separator" class="item form-group files-options">
+																				<label class="control-label" for="email">Selecione o separador do CSV<span class="required">*</span></label>
+																				<select id="csv-select">
+																					<option value=",">Vírgula (,)</option>
+																					<option value=";">Ponto e vírgula (;) </option>
+																					<option value=":">Dois pontos (:)</option>
+																				</select>
 																			</div>
 																			<div class="item form-group species-name">
 																				<div class="">
@@ -355,18 +394,6 @@ if ($op=='A')
 																		<!--id="check-all" class="flat"-->
 																		<div id='div_resultadobusca'>
 																			<table class="table table-striped responsive-utilities jambo_table bulk_action">
-																				<thead>
-																					<tr class="headings">
-																						<th>
-																							<input type="checkbox" id="chkboxtodos2" name="chkboxtodos2" onclick="selecionaTodos2(true);">
-																						</th>
-																						<th class="column-title">Táxon </th>
-																						<th class="column-title">Tombo </th>
-																						<th class="column-title">Coletor </th>
-																						<th class="column-title">Coordenadas </th>
-																						<th class="column-title">Localização</th>
-																					</tr>
-																				</thead>
 	<?php 
 	//1 jabot
 	//2 Gbif
@@ -381,6 +408,19 @@ if ($op=='A')
 		$totalregistroselecionados = pg_num_rows($res);
 	?>
 																				<tbody>
+
+		<thead>
+			<tr class="headings">
+				<th>
+					<input type="checkbox" id="chkboxtodos2" name="chkboxtodos2" onclick="selecionaTodos2(true);">
+				</th>
+				<th class="column-title">Táxon </th>
+				<th class="column-title">Tombo </th>
+				<th class="column-title">Coletor </th>
+				<th class="column-title">Coordenadas </th>
+				<th class="column-title">Localização</th>
+			</tr>
+		</thead>
 	<?php while ($row = pg_fetch_array($res))
 		{
 		$codigobarras= str_pad($row['codtestemunho'], 8, "0", STR_PAD_LEFT);	
@@ -645,7 +685,7 @@ function editar()
 function buscar()
 {
 	//alert(document.getElementById('checkfontegbif').checked);
-	if (document.getElementById('edtespecie').value=='')
+	if (document.getElementById('edtespecie').value=='' && document.getElementById('checkfontecsv').checked==false)
 	{
 		criarNotificacao('Atenção','Informe o nome da espécie','warning')
 	}
@@ -653,7 +693,7 @@ function buscar()
 	{
 		var texto = document.getElementById('edtespecie').value;
 		var palavra = texto.split(' ');
-		if ((palavra.length)<2)
+		if ((palavra.length)<2 && document.getElementById('checkfontecsv').checked==false)
 		{
 			criarNotificacao('Atenção','Informe o nome da espécie','warning');
 		}
@@ -665,12 +705,13 @@ function buscar()
 				getTaxonKeyGbif(texto);
 				//gbif(texto);
 			}
-			else
+			else if (document.getElementById('checkfontejabot').checked==true)
 			{
 				//alert('jabot');
 				document.getElementById('frm').action="cadexperimento.php?busca=TRUE";
 				document.getElementById('frm').submit();
 			}
+			else printCSV(file);
 		}
 	}
 }
@@ -723,7 +764,6 @@ function gbif(taxonKey)
 				body +='<td class="a-right a-right ">'+coletor+' '+numcoleta+'</td>';
 				body +='<td class=" ">'+latitude+', '+longitude+'</td>';
 				body +='<td class=" ">'+pais+', '+estado+' - '+cidade+'</td>';
-				body +='<td class=" last"><a><i class="fa fa-globe"></i></a><a><i class="fa fa-save"></i></a></td></tr>';
 			
 			//var str = "insert into modelr.occurrence (idexperiment,iddatasource,lat,long,taxon,collector,collectnumber,server,path,file,idstatusoccurrence,country,majorarea,minorarea) values (";
 			//str+=idexperiment+','+'2'+','+latitude+','+longitude+",'"+taxon+"','"+coletor+"','"+numcoleta+"','','','','','',
@@ -736,8 +776,8 @@ function gbif(taxonKey)
 		
 		var table = '';
 		table += '<table class="table table-striped responsive-utilities jambo_table bulk_action"><thead><tr class="headings"><th><input type="checkbox" id="chkboxtodos2" name="chkboxtodos2" onclick="selecionaTodos2(true);">';
-		table += '</th><th class="column-title">Táxon </th><th class="column-title">Tombo </th><th class="column-title">Coletor </th><th class="column-title">Latitude </th>';
-		table += '<th class="column-title">Logitude</th><th class="column-title no-link last"><span class="nobr">Action</span></th><th class="bulk-actions" colspan="7">';
+		table += '</th><th class="column-title">Táxon </th><th class="column-title">Tombo </th><th class="column-title">Coletor </th><th class="column-title">Coordenadas </th>';
+		table += '<th class="column-title">Localização</th>';
 		table += '<a class="antoo" style="color:#fff; font-weight:500;">Total de Registros selecionados: ( <span class="action-cnt"> </span> ) </a>';
 		table += '</th></tr></thead>';
 		table += '<tbody>'+body+'</tbody></table>';
@@ -939,6 +979,8 @@ function abreModal(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquiv
 	$('#myModal').modal('show');
 }
 
+var file;
+
 function handleFileSelect(evt) {
     var files = evt.target.files; // FileList object
 
@@ -953,10 +995,11 @@ function handleFileSelect(evt) {
 
 		//console.log(e.target.result)
 		var arr = e.target.result.split('\n');
-		console.log(arr);
 
 		document.getElementById("checkfontecsv").checked = true;
-		printCSV(arr);
+		document.getElementById("filename").innerHTML = f.name;
+		document.getElementById("csv-separator").style.display = 'flex';
+		file = arr;
         };
       })(f);
 
@@ -966,45 +1009,35 @@ function handleFileSelect(evt) {
 
 function printCSV(lines){
 	var body = '';
-	for (i = 0; i < lines.length; i++) {
+	var separator = document.getElementById("csv-select").options[document.getElementById("csv-select").selectedIndex].value;
+	for (i = 0; i < lines.length-1; i++) {
 
-			var values = lines[i].split(',');
-			//alert(i);
-			longitude = 0;
-			latitude = 0;
+		var values = lines[i].split(separator);
+		//alert(i);
+		longitude = values[1] || 0;
+		latitude = values[2] || 0;
 
-			taxon = values[0];
-			tombo = values[1];
-			coletor = values[2];
-			numcoleta = values[3];
-			pais = '';
-			estado = '';
-			cidade = '';
-			
-			var idexperimento = document.getElementById('id').value;
-			
-			var Jval = idexperimento + '|2|'+latitude+'|'+longitude+'|'+taxon+'|'+ coletor+'|'+numcoleta+'||||'+ pais+'|'+ estado+'|'+ cidade; 
-
-				body += '<tr class="even pointer"><td class="a-center "><input name="chtestemunho[]" id="chtestemunho[]" value="'+Jval+'" type="checkbox" ></td>';
-				body +='<td class=" ">'+taxon+'</td>';
-				body +='<td class="a-right a-right ">'+tombo+'</td>';
-				body +='<td class="a-right a-right ">'+coletor+' '+numcoleta+'</td>';
-				body +='<td class=" ">'+latitude+', '+longitude+'</td>';
-				body +='<td class=" ">'+pais+', '+estado+' - '+cidade+'</td>';
-				body +='<td class=" last"><a><i class="fa fa-globe"></i></a><a><i class="fa fa-save"></i></a></td></tr>';
-
-		}
+		taxon = values[0];
 		
-		var table = '';
-		table += '<table class="table table-striped responsive-utilities jambo_table bulk_action"><thead><tr class="headings"><th><input type="checkbox" id="chkboxtodos2" name="chkboxtodos2" onclick="selecionaTodos2(true);">';
-		table += '</th><th class="column-title">Táxon </th><th class="column-title">Tombo </th><th class="column-title">Coletor </th><th class="column-title">Latitude </th>';
-		table += '<th class="column-title">Logitude</th><th class="column-title no-link last"><span class="nobr">Action</span></th><th class="bulk-actions" colspan="7">';
-		table += '<a class="antoo" style="color:#fff; font-weight:500;">Total de Registros selecionados: ( <span class="action-cnt"> </span> ) </a>';
-		table += '</th></tr></thead>';
-		table += '<tbody>'+body+'</tbody></table>';
-		table += '';
+		var idexperimento = document.getElementById('id').value;
 		
-		document.getElementById("div_resultadobusca").innerHTML = table;
+		var Jval = idexperimento + '|2|'+latitude+'|'+longitude+'|'+taxon+'||||||||'; 
+
+		body += '<tr class="even pointer"><td class="a-center "><input name="chtestemunho[]" id="chtestemunho[]" value="'+Jval+'" type="checkbox" ></td>';
+		body +='<td class=" ">'+taxon+'</td>';
+		body +='<td class=" ">'+latitude+', '+longitude+'</td>';
+
+	}
+	
+	var table = '';
+	table += '<table class="table table-csv table-striped responsive-utilities jambo_table bulk_action"><thead><tr class="headings"><th><input type="checkbox" id="chkboxtodos2" name="chkboxtodos2" onclick="selecionaTodos2(true);">';
+	table += '</th><th class="column-title">Táxon </th><th class="column-title">Coordenadas</th>';
+	table += '<a class="antoo" style="color:#fff; font-weight:500;">Total de Registros selecionados: ( <span class="action-cnt"> </span> ) </a>';
+	table += '</th></tr></thead>';
+	table += '<tbody>'+body+'</tbody></table>';
+	table += '';
+	
+	document.getElementById("div_resultadobusca").innerHTML = table;
 }
 
   document.getElementById('upload').addEventListener('change', handleFileSelect, false);

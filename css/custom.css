@@ -6460,6 +6460,11 @@ ul.notifications {
 
 /*  ---------------- cadexperimento.php --------------------*/
 
+.table-csv {
+    width: 50%;
+    margin: auto;
+}
+
 .files-options{
     display: flex;
     flex-direction: row;
@@ -6475,7 +6480,7 @@ ul.notifications {
 
 .files-options > div{
     display: flex;
-    width: 400px;
+    width: 500px;
     justify-content: space-evenly;
     align-items: center;
 }
@@ -6518,6 +6523,26 @@ display: none
 
 .new_experiment_send_button{
     text-align: center;
+}
+
+.csv-instruction{
+    font-size: 20px;
+    margin-left: -5px;
+    margin-top: -3px;
+}
+
+.csv-modal-footer{
+    display: flex;
+    justify-content: center;
+}
+
+.csv-button{
+    display: flex;
+    align-items: center;
+}
+
+#csv-separator{
+    display: none;
 }
 
 /* ------------------ cadmodelagem.php ----------------------- */
