@@ -54,7 +54,7 @@
 			$resoccurrenceok = pg_exec($this->conn,$sqloccurrenceok);
 			$rowoccurrenceok = pg_fetch_array($resoccurrenceok);
 			$qtdok = $rowoccurrenceok[0];
-			
+            
 			$disabled = '';
 			if (($_SESSION['s_idtipousuario'])==1)
 			{
@@ -79,7 +79,7 @@
                                         <i class="fa fa-eraser"></i>
                                     </a>
                                    ';
-									if ($qtdok>0 && $_SESSION['s_idtipousuario']==1) //apenas o dono do projeto pode modelar
+									if ($qtdok>0)
 									{
 										$html.='
 									<a class="btn btn-app '.$disabled.'" onclick="modelar('.$row['idexperiment'].')" data-toggle="tooltip" data-placement="top" title="Modelar">
