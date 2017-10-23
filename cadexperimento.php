@@ -757,7 +757,7 @@ function gbif(taxonKey)
 			taxon = myObj.results[i].species;
 			tombo = myObj.results[i].catalogNumber;
 			coletor = myObj.results[i].recordedBy;
-			numcoleta = myObj.results[i].catalogNumber;
+			numcoleta = myObj.results[i].recordNumber;
 			pais = myObj.results[i].country;
 			estado = myObj.results[i].stateProvince;
 			cidade = myObj.results[i].municipality;
