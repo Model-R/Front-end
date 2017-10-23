@@ -6,6 +6,7 @@ require_once('classes/conexao.class.php');
 require_once('classes/usuario.class.php');
 require_once('classes/situacaousuario.class.php');
 require_once('classes/tipousuario.class.php');
+require_once('classes/instituicao.class.php');
 $clConexao = new Conexao;
 $conn = $clConexao->Conectar();
 
@@ -17,6 +18,9 @@ $SituacaoUsuario->conn = $conn;
 
 $TipoUsuario = new TipoUsuario();
 $TipoUsuario->conn = $conn;
+
+$Instituicao = new Instituicao();
+$Instituicao->conn = $conn;
 
 $op=$_REQUEST['op'];
 $id=$_REQUEST['id'];
@@ -30,6 +34,7 @@ if ($op=='A')
 	$email = $Usuario->email;
 	$idtipousuario = $Usuario->idusertype;
 	$idsituacaousuario = $Usuario->idstatususer;
+	$idinstituicaousuario = $Usuario->idinstitution;
 	
 }
 
@@ -212,6 +217,14 @@ if ($op=='A')
                                             </label>
                                             <div class="col-md-6 col-sm-6 col-xs-12">
                                                 <?php echo $TipoUsuario->listaCombo('cmboxtipousuario',$idtipousuario,'N','class="form-control"');?>
+                                            </div>
+                                        </div>
+
+                                        <div class="item form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">Instituição do Usuário<span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                <?php echo $Instituicao->listaCombo('cmboxinstituicaousuario',$idinstituicaousuario,'N','class="form-control"');?>
                                             </div>
                                         </div>
                                         

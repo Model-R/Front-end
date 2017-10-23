@@ -28,6 +28,7 @@ require_once('classes/conexao.class.php');
                                                     <input type="checkbox" id="check-all" class="flat">
                                                 </th>
                                                 <th class="column-title">Nome </th>
+                                                <th class="column-title">Instituição </th>
                                                 <th class="column-title">Login </th>
                                                 <th class="column-title">Email </th>
                                                 <th class="column-title">Situação </th>
@@ -48,6 +49,7 @@ require_once('classes/conexao.class.php');
 			
 			$html = '<td class="a-center "><input type="checkbox" class="flat" name="id_usuario[]" id="id_usuario" value="'.$row["iduser"].'" ></td>
                                     <td class=" ">'.$row['name'].'</td>
+                                    <td class=" ">'.$row['institution'].'</td>
                                     <td class=" ">'.$row['login'].'</td>
                                     <td class=" ">'.$row['email'].'</td>
                                     <td class=" ">'.$row['statususer'].'</td>
@@ -72,9 +74,10 @@ $conn = $clConexao->Conectar();
 
 $Paginacao = new MyPag();
 $Paginacao->conn = $conn;
-$sql = 'select * from modelr.user  u, modelr.statususer su, modelr.usertype tu where 
+$sql = 'select * from modelr.user  u, modelr.statususer su, modelr.usertype tu, modelr.institution inst where 
 u.idusertype = tu.idusertype and
-u.idstatususer = su.idstatususer 
+u.idstatususer = su.idstatususer and
+u.idinstitution = inst.idinstitution
  ';
 if ($ativo=='S')
 {
@@ -89,6 +92,10 @@ if ($tipofiltro=='LOGIN')
 {
    $sql.= " and u.login ilike '%".$valorfiltro."%'";	
 }
+if ($tipofiltro=='INSTITUIÇÃO')
+{
+   $sql.= " and inst.institution ilike '%".$valorfiltro."%'";	
+}
 
 if (($ordenapor=='NOME') || ($ordenapor==''))
 {
@@ -98,6 +105,11 @@ if (($ordenapor=='NOME') || ($ordenapor==''))
 if ($ordenapor=='LOGIN')
 {
    $sql.= " order by upper(u.login)";	
+}
+
+if ($ordenapor=='INSTITUIÇÃO')
+{
+   $sql.= " order by upper(inst.institution)";	
 }
 
 
@@ -223,9 +235,10 @@ if ($ordenapor=='LOGIN')
 								<div class="form-group">
                                     <label for="cmboxtipofiltro">Tipo</label>
                                     <select id="cmboxtipofiltro" name="cmboxtipofiltro" class="form-control">
-                                                    <option value="NOME" <?php if ($tipofiltro=='NOME') echo "selected";?>>Nome</option>
-                                                    <option value="LOGIN" <?php if ($tipofiltro=='LOGIN') echo "selected";?>>Login</option>
-                                                </select>
+                                        <option value="NOME" <?php if ($tipofiltro=='NOME') echo "selected";?>>Nome</option>
+                                        <option value="LOGIN" <?php if ($tipofiltro=='LOGIN') echo "selected";?>>Login</option>
+                                        <option value="INSTITUIÇÃO" <?php if ($tipofiltro=='INSTITUIÇÃO') echo "selected";?>>Instituição</option>
+                                    </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="edtvalorfiltro">Filtro</label>
@@ -234,9 +247,10 @@ if ($ordenapor=='LOGIN')
                                 <div class="form-group">
                                     <label for="cmboxordenar">Ordenar por</label>
                                     <select id="cmboxordenar" name="cmboxordenar" class="form-control">
-                                                    <option value="NOME" <?php if ($ordenapor=='NOME') echo "selected";?>>Nome</option>
-                                                    <option value="LOGIN" <?php if ($ordenapor=='LOGIN') echo "selected";?>>Login</option>
-												</select>
+                                        <option value="NOME" <?php if ($ordenapor=='NOME') echo "selected";?>>Nome</option>
+                                        <option value="LOGIN" <?php if ($ordenapor=='LOGIN') echo "selected";?>>Login</option>
+                                        <option value="INSTITUIÇÃO" <?php if ($ordenapor=='INSTITUIÇÃO') echo "selected";?>>Instituição</option>
+                                    </select>
                                 </div>
 								<input type="checkbox" class="flat" name="chkboxativo" id="chkboxativo" value="S" <?php if ($ativo=='S') {echo 'checked';}?>> Ativos
 								<button type="button" class="btn btn-success" onClick='filterApply()'>Filtrar</button>

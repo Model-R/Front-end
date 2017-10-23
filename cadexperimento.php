@@ -144,11 +144,20 @@ if ($op=='A')
 			<!-- dialog body -->
 			<div class="modal-body"> 
 				<p>
-					Lorem Ipsum é simplesmente uma simulação de texto da indústria tipográfica e de impressos, e vem sendo utilizado desde o século XVI, 
-					quando um impressor desconhecido pegou uma bandeja de tipos e os embaralhou para fazer um livro de modelos de tipos. Lorem Ipsum 
-					sobreviveu não só a cinco séculos, como também ao salto para a editoração eletrônica, permanecendo essencialmente inalterado. Se
-					popularizou na década de 60, quando a Letraset lançou decalques contendo passagens de Lorem Ipsum, e mais recentemente quando passou 
-					a ser integrado a softwares de editoração eletrônica como Aldus PageMaker.
+					O CSV deve seguir o seguinte modelo:
+	  				<br><br>
+					[espécie],[longitude],[latitude]
+					<br><br>
+					Todos os dados podem ser separados por vírgula(,), dois pontos(:) ou ponto e vírgula(;).
+					Não é necessário marcar o final da linha. 
+					<br><br>
+					Restrições:
+					<br><br>
+					Espécies: O nome da espécie deve ser sem acento;
+					<br><br>
+					Longitude: Valor decimal (ex.: -11.6358334);
+					<br><br>
+					Latitude: Valor decimal (ex.: -41.0013889);
 				</p>
 			</div>
 			<!-- dialog buttons -->
@@ -562,7 +571,7 @@ while ($row = pg_fetch_array($res))
 																					<td class="a-center "><input type="checkbox" name="table_records[]" id="table_records[]" value="<?php echo $row['idoccurrence'];?>" ></td><td><?php echo $html_imagem.' ';?></td>
 																					<td class="a-right a-right "><?php echo $row['taxon'];?><?php echo $row['numtombo'];?>
 																					<?php echo $row['collector'];?> <?php echo $row['collectnumber'];?></td>
-																					<td class=" "><?php echo $row['country'];?>, <?php echo $row['majorarea'];?> - <?php echo $row['minorarea'];?>.(<?php echo $row['lat'];?>,<?php echo $row['long'];?>)</td>
+																					<td class=" "><?php if($row['country']) echo $row['country'] . ',';?> <?php if($row['majorarea']) echo $row['majorarea'] . '-';?> <?php if($row['minorarea']) echo $row['minorarea'] . '.';?>(<?php echo $row['lat'];?>,<?php echo $row['long'];?>)</td>
 																					<td class=" "><?php echo "<image src='".$icone."'>".' '.$row['statusoccurrence'];?>
 																					<a data-toggle="tooltip" data-placement="top" title data-original-title="Editar" onclick="abreModal('<?php echo $row['taxon'];?>','<?php echo $row['lat'];?>','<?php echo $row['long'];?>','<?php echo $row['idoccurrence'];?>','<?php echo $row[''];?>','<?php echo $row[''];?>','<?php echo $servidor;?>','<?php echo $path;?>','<?php echo $arquivo;?>','<?php echo $row['idstatusoccurrence'];?>','<?php echo $localizacao;?>')">  <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
 																				</tr>

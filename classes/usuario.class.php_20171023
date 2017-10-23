@@ -18,7 +18,6 @@ class Usuario
 	var $email;// character varying(150) NOT NULL,
 	var $idstatususer;// integer NOT NULL,
 	var $idusertype;// integer,	
-	var $idinstitution;// integer,	
 	
 	
 	
@@ -37,8 +36,8 @@ class Usuario
 			$this->password = 'trocar';
 		}
 		
- 		$sql = "insert into modelr.user (login,password,name,email,idstatususer,idusertype,idinstitution) values 
-									('".$this->login."','".$this->password."','".$this->name."','".$this->email."',".$this->idstatususer.",".$this->idusertype.",".$this->idinstitution.")";
+ 		$sql = "insert into modelr.user (login,password,name,email,idstatususer,idusertype) values 
+									('".$this->login."','".$this->password."','".$this->name."','".$this->email."',".$this->idstatususer.",".$this->idusertype.")";
 
 		$resultado = pg_exec($this->conn,$sql);
        	if ($resultado){
@@ -69,7 +68,6 @@ class Usuario
 			, login = '".$this->login."'
 			, idusertype = '".$this->idusertype."'
 			, idstatususer = ".$this->idstatususer." 
-			, idinstitution = ".$this->idinstitution." 
 			 where iduser='".$id."' ";
 	   $resultado = pg_exec($this->conn,$sql);
 
@@ -105,8 +103,6 @@ class Usuario
 		   	//$this->datacadastro = $row['datacadastro'];
 		   	$this->idstatususer= $row['idstatususer'];
 		   	$this->idusertype= $row['idusertype'];
-		   	$this->idinstitution= $row['idinstitution'];
-			
 			
 			
 			/*$sql = 'select * from modelr.project where idusuario = '.$row['idusuario'];

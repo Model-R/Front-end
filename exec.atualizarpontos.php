@@ -17,6 +17,7 @@ $latinf = $_REQUEST['latinf'];
 $longinf = $_REQUEST['longinf'];
 
 $MSGCODIGO = 19;
+
 if (($idponto != 'undefined') && (!empty($idponto)))
 {
 	

@@ -649,7 +649,7 @@ foreach($results_array as $value)
 
 							<div class="col-md-12 col-sm-12 col-xs-12">
                                 <div class="x_content map-content">
-                                <input type="range" min="0" max="1" step="0.1" value="1" onchange="updateOpacity(this.value)" data-toggle="tooltip" data-placement="top" title="Arraste para alterar transparência da imagem no Mapa">
+                                <input class="opacity-slider" type="range" min="0" max="1" step="0.1" value="1" onchange="updateOpacity(this.value)" data-toggle="tooltip" data-placement="top" title="Arraste para alterar transparência da imagem no Mapa">
 								 <div id="map">
                                  </div>
                                     <!-- end pop-over -->
