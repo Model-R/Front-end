@@ -386,11 +386,11 @@ if (($ordenapor=='USUARIO'))
                                                     include_once 'templates/ordenarfiltro.php';
                                                 }
                                             ?>
-                                            <button type="button" class="btn btn-success" onClick='filterApply()'>Filtrar</button>
+                                            <button type="button" class="btn btn-success" onClick='filterApply()' data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar experimentos">Filtrar</button>
                                         </div>
                                         <div class="row-action">
-                                            <button type="button" class="btn btn-info" onClick='novo()'>Novo</button>
-                                            <button type="button" class="btn btn-danger" onClick='showExcluir()'>Excluir</button>
+                                            <button type="button" class="btn btn-info" onClick='novo()' data-toggle="tooltip" data-placement="top" title data-original-title="Criar novo experimento">Novo</button>
+                                            <button type="button" class="btn btn-danger" onClick='showExcluir()' data-toggle="tooltip" data-placement="top" title data-original-title="Excluir experimento">Excluir</button>
                                         </div>
                                     </div>
                             </p>

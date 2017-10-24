@@ -304,7 +304,7 @@ if ($op=='A')
 											<?php if ($op!='I')
 											{?>
 											<div class="new_experiment_send_button">
-												<button id="send" type="button" onclick="enviar()" class="btn btn-info">Salvar</button>
+												<button id="send" type="button" onclick="enviar()" class="btn btn-info" data-toggle="tooltip" data-placement="top" title data-original-title="Salvar informações">Salvar</button>
 
 												<?php
 												$sql = "select idoccurrence,idexperiment,iddatasource,taxon,collector,collectnumber,server,
@@ -321,9 +321,9 @@ if ($op=='A')
 												$total = pg_num_rows($res);
 
 												if($total > 0){
-													echo '<button id="send2" type="button" onclick="liberarExperimento()" class="btn btn-success">Liberar experimento para modelagem</button>';
+													echo '<button id="send2" type="button" onclick="liberarExperimento()" class="btn btn-success" data-toggle="tooltip" data-placement="top" title data-original-title="Liberar experimento para modelagem">Liberar</button>';
 												} else {
-													echo '<button id="send2" type="button" onclick="liberarExperimento()" class="btn btn-success hide">Liberar experimento para modelagem</button>';
+													echo '<button id="send2" type="button" onclick="liberarExperimento()" class="btn btn-success hide" data-toggle="tooltip" data-placement="top" title data-original-title="Liberar experimentos para modelagem" >Liberar</button>';
 												}
 												?>
 											</div>
@@ -472,15 +472,15 @@ if ($op=='A')
 																	</div>
 																	<div class="row">
 																			<div class="col-md-12 col-sm-12 col-xs-12">
-																			<button id="send1" type="button" onclick="atualizarPontos('',10,'','')" class="btn btn-xs btn-warning">Fora limite Brasil</button>
-																			<button id="send2" type="button" onclick="atualizarPontos('',2,'','')" class="btn btn-xs btn-warning">Fora Município coleta</button>
-																			<!--<button id="send3" type="button" onclick="atualizarPontos('',11,'','')" class="btn btn-xs btn-warning">Coordenada no mar</button>
-																			<button id="send3" type="button" onclick="atualizarPontos('',12,'','')" class="btn btn-xs btn-warning">Coordenada invertida</button>
-																			--><button id="send3" type="button" onclick="atualizarPontos('',13,'','')" class="btn btn-xs btn-warning">Coordenada com zero</button>
+																			<button id="send1" type="button" onclick="atualizarPontos('',10,'','')" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos fora do Brasil">Fora limite Brasil</button>
+																			<button id="send2" type="button" onclick="atualizarPontos('',2,'','')" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos fora do município coletado">Fora Município coleta</button>
+																			<!--<button id="send3" type="button" onclick="atualizarPontos('',11,'','')" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos no mar">Coordenada no mar</button>
+																			<button id="send3" type="button" onclick="atualizarPontos('',12,'','')" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos com coordenada invertida">Coordenada invertida</button>
+																			--><button id="send3" type="button" onclick="atualizarPontos('',13,'','')" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos com ambas as coordenadas 0">Coordenada com zero</button>
 																			
-																			<button id="send4" type="button" onclick="marcarPontosDuplicados()" class="btn btn-xs btn-danger">Duplicatas</button>
-																			<button id="send3" type="button" onclick="atualizarPontos('',99,'','')" class="btn btn-xs btn-warning">Executar Todos</button>
-																			<!--<button id="send5" type="button" onclick="liberarParaModelagem()" class="btn btn-xs btn-success">Liberar Modelagem</button>-->
+																			<button id="send4" type="button" onclick="marcarPontosDuplicados()" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos duplicados">Duplicatas</button>
+																			<button id="send3" type="button" onclick="atualizarPontos('',99,'','')" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Executar todos os filtros">Executar Todos</button>
+																			<!--<button id="send5" type="button" onclick="liberarParaModelagem()" class="btn btn-xs btn-success" data-toggle="tooltip" data-placement="top" title data-original-title="Liberar experimento para modelagem">Liberar Modelagem</button>-->
 																			</div>
 																	</div>
 																	<div class="x_content">
@@ -500,7 +500,7 @@ if ($op=='A')
 																				<?php echo $StatusOccurrence->listaCombo('cmboxstatusoccurrencefiltro',$idstatusoccurrencefiltro,'N','class="form-control"','');?>
 																			</div>
 																			<div class="col-md-6 col-sm-6 col-xs-12">
-																			<button id="send" type="button" onclick="filtrar(document.getElementById('cmboxstatusoccurrencefiltro').value)" class="btn btn btn-success">Filtrar</button>
+																			<button id="send" type="button" onclick="filtrar(document.getElementById('cmboxstatusoccurrencefiltro').value)" class="btn btn btn-success" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos">Filtrar</button>
 																			</div>
 																		</div>	
 																		<table id="points_table" class="table table-striped responsive-utilities jambo_table bulk_action">
@@ -512,7 +512,7 @@ if ($op=='A')
 																					<th class="column-title">Imagem</th>
 																					<th class="column-title">Identificação</th>
 																					<th class="column-title">Localização</th>
-																					<th class="column-title">Status <a data-toggle="tooltip" data-placement="top" title data-original-title="Editar" onclick="abreModelStatusOcorrencia()"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></th>
+																					<th class="column-title">Status <a data-toggle="tooltip" data-placement="top" title data-original-title="Editar" onclick="abreModelStatusOcorrencia()"><span class="glyphicon glyphicon-edit edit-button" aria-hidden="true"></span></a></th>
 																				</tr>
 																			</thead>
 <?php 
@@ -573,7 +573,7 @@ while ($row = pg_fetch_array($res))
 																					<?php echo $row['collector'];?> <?php echo $row['collectnumber'];?></td>
 																					<td class=" "><?php if($row['country']) echo $row['country'] . ',';?> <?php if($row['majorarea']) echo $row['majorarea'] . '-';?> <?php if($row['minorarea']) echo $row['minorarea'] . '.';?>(<?php echo $row['lat'];?>,<?php echo $row['long'];?>)</td>
 																					<td class=" "><?php echo "<image src='".$icone."'>".' '.$row['statusoccurrence'];?>
-																					<a data-toggle="tooltip" data-placement="top" title data-original-title="Editar" onclick="abreModal('<?php echo $row['taxon'];?>','<?php echo $row['lat'];?>','<?php echo $row['long'];?>','<?php echo $row['idoccurrence'];?>','<?php echo $row[''];?>','<?php echo $row[''];?>','<?php echo $servidor;?>','<?php echo $path;?>','<?php echo $arquivo;?>','<?php echo $row['idstatusoccurrence'];?>','<?php echo $localizacao;?>')">  <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
+																					<a data-toggle="tooltip" data-placement="top" title data-original-title="Editar" onclick="abreModal('<?php echo $row['taxon'];?>','<?php echo $row['lat'];?>','<?php echo $row['long'];?>','<?php echo $row['idoccurrence'];?>','<?php echo $row[''];?>','<?php echo $row[''];?>','<?php echo $servidor;?>','<?php echo $path;?>','<?php echo $arquivo;?>','<?php echo $row['idstatusoccurrence'];?>','<?php echo $localizacao;?>')">  <span class="glyphicon glyphicon-edit edit-button" aria-hidden="true"></span></a></td>
 																				</tr>
 	<?php }// while  ?>
 																			</tbody>
@@ -599,7 +599,7 @@ if ($op=='A')
 	{?>
 								<div class="form-group">
 									<div class="col-md-6 col-md-offset-5">
-										<button id="send" type="button" onclick="enviar()" class="btn btn-success">Salvar</button>
+										<button id="send" type="button" onclick="enviar()" class="btn btn-success" data-toggle="tooltip" data-placement="top" title data-original-title="Salvar modificações">Salvar</button>
 									</div>
 								</div>
 <?php } ?>

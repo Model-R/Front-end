@@ -320,7 +320,7 @@ $tss = $Experimento->tss;
                             </div>
                             <div class="form-group">
                                     <div class="send-button">
-                                        <button id="send" type="button" onclick="enviar()" class="btn btn-success">Salvar</button>
+                                        <button id="send" type="button" onclick="enviar()" class="btn btn-success" data-toggle="tooltip" data-placement="top" title data-original-title="Salvar informações">Salvar</button>
                                     </div>
                                 </div>
                         </div>
@@ -437,7 +437,7 @@ $rowsource = pg_fetch_array($ressource);
                             </div>
                             <div class="form-group">
                                     <div class="send-button">
-                                        <button id="send" type="button" onclick="enviar()" class="btn btn-success">Salvar</button>
+                                        <button id="send" type="button" onclick="enviar()" class="btn btn-success" data-toggle="tooltip" data-placement="top" title data-original-title="Salvar informações">Salvar</button>
                                     </div>
                                 </div>
                         </div>
@@ -539,7 +539,7 @@ $rowsource = pg_fetch_array($ressource);
                             </div>
                             <div class="form-group">
                                     <div class="send-button">
-                                        <button id="send" type="button" onclick="enviar()" class="btn btn-success">Salvar</button>
+                                        <button id="send" type="button" onclick="enviar()" class="btn btn-success" data-toggle="tooltip" data-placement="top" title data-original-title="Salvar informações">Salvar</button>
                                     </div>
                                 </div>
                         </div>

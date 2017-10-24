@@ -104,7 +104,7 @@ $Usuario->conn = $conn;
                                         <div class="ln_solid"></div>
                                         <div class="form-group">
                                             <div class="form-group-buttons">
-                                                <button id="send" type="button" onclick="enviar()" class="btn btn-success">Enviar</button>
+                                                <button id="send" type="button" onclick="enviar()" class="btn btn-success" data-toggle="tooltip" data-placement="top" title data-original-title="Salvar usuário">Enviar</button>
                                             </div>
                                         </div>
                                     </form>

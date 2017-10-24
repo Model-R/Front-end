@@ -11,7 +11,7 @@
                         
                            <ul class="nav navbar-nav navbar-left">
                             <li class="">
-							<a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+							<a href="consexperimento.php" class="user-profile dropdown-toggle">
                                     <img src="imagens/R.sh-600x600.png" alt="">Model-R
                                 </a>
 							</li>

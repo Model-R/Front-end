@@ -232,42 +232,44 @@ if ($ordenapor=='INSTITUIÇÃO')
                                 <div class="x_content">
                                    
                                 <p>
-								<div class="form-group">
-                                    <label for="cmboxtipofiltro">Tipo</label>
-                                    <select id="cmboxtipofiltro" name="cmboxtipofiltro" class="form-control">
-                                        <option value="NOME" <?php if ($tipofiltro=='NOME') echo "selected";?>>Nome</option>
-                                        <option value="LOGIN" <?php if ($tipofiltro=='LOGIN') echo "selected";?>>Login</option>
-                                        <option value="INSTITUIÇÃO" <?php if ($tipofiltro=='INSTITUIÇÃO') echo "selected";?>>Instituição</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="edtvalorfiltro">Filtro</label>
-                                    <input id="edtvalorfiltro" name="edtvalorfiltro" class="form-control" placeholder="Filtro" value="<?php echo $valorfiltro;?>">
-                                </div>
-                                <div class="form-group">
-                                    <label for="cmboxordenar">Ordenar por</label>
-                                    <select id="cmboxordenar" name="cmboxordenar" class="form-control">
-                                        <option value="NOME" <?php if ($ordenapor=='NOME') echo "selected";?>>Nome</option>
-                                        <option value="LOGIN" <?php if ($ordenapor=='LOGIN') echo "selected";?>>Login</option>
-                                        <option value="INSTITUIÇÃO" <?php if ($ordenapor=='INSTITUIÇÃO') echo "selected";?>>Instituição</option>
-                                    </select>
-                                </div>
-								<input type="checkbox" class="flat" name="chkboxativo" id="chkboxativo" value="S" <?php if ($ativo=='S') {echo 'checked';}?>> Ativos
-								<button type="button" class="btn btn-success" onClick='filterApply()'>Filtrar</button>
-                                <div class="row-action">
-                                    <button type="button" class="btn btn-info"><a role="menuitem" class="menu-item" tabindex="-1" href="cadusuario.php?op=I">Novo</a></button>
-                                    <button type="button" class="btn btn-danger"><a role="menuitem" class="menu-item" tabindex="-1" onClick='showExcluir()'>Excluir</a></button>
-                                </div>
-                                <!-- <a id="drop4" href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
-                                Ação
-                                <span class="caret"></span>
-                            </a>
-                                        <ul id="menu6" class="dropdown-menu animated fadeInDown" role="menu">
-                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="cadusuario.php?op=I">Novo</a>
-                                            </li>
-                                            <li role="presentation"><a role="menuitem" tabindex="-1" onClick='showExcluir()'>Excluir</a>
-                                            </li>
+                                <div>
+                                    <div class="form-group">
+                                        <label for="cmboxtipofiltro">Tipo</label>
+                                        <select id="cmboxtipofiltro" name="cmboxtipofiltro" class="form-control">
+                                            <option value="NOME" <?php if ($tipofiltro=='NOME') echo "selected";?>>Nome</option>
+                                            <option value="LOGIN" <?php if ($tipofiltro=='LOGIN') echo "selected";?>>Login</option>
+                                            <option value="INSTITUIÇÃO" <?php if ($tipofiltro=='INSTITUIÇÃO') echo "selected";?>>Instituição</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="edtvalorfiltro">Filtro</label>
+                                        <input id="edtvalorfiltro" name="edtvalorfiltro" class="form-control" placeholder="Filtro" value="<?php echo $valorfiltro;?>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cmboxordenar">Ordenar por</label>
+                                        <select id="cmboxordenar" name="cmboxordenar" class="form-control">
+                                            <option value="NOME" <?php if ($ordenapor=='NOME') echo "selected";?>>Nome</option>
+                                            <option value="LOGIN" <?php if ($ordenapor=='LOGIN') echo "selected";?>>Login</option>
+                                            <option value="INSTITUIÇÃO" <?php if ($ordenapor=='INSTITUIÇÃO') echo "selected";?>>Instituição</option>
+                                        </select>
+                                    </div>
+                                    <input type="checkbox" class="flat" name="chkboxativo" id="chkboxativo" value="S" <?php if ($ativo=='S') {echo 'checked';}?>> Ativos
+                                    <button type="button" class="btn btn-success" onClick='filterApply()' data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar usuários">Filtrar</button>
+                                    <div class="row-action">
+                                        <button type="button" class="btn btn-info" data-toggle="tooltip" data-placement="top" title data-original-title="Criar usuário"><a role="menuitem" class="menu-item" tabindex="-1" href="cadusuario.php?op=I">Novo</a></button>
+                                        <button type="button" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title data-original-title="Excluir usuário"><a role="menuitem" class="menu-item" tabindex="-1" onClick='showExcluir()'>Excluir</a></button>
+                                    </div>
+                                    <!-- <a id="drop4" href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
+                                    Ação
+                                    <span class="caret"></span>
+                                </a>
+                                            <ul id="menu6" class="dropdown-menu animated fadeInDown" role="menu">
+                                                <li role="presentation"><a role="menuitem" tabindex="-1" href="cadusuario.php?op=I">Novo</a>
+                                                </li>
+                                                <li role="presentation"><a role="menuitem" tabindex="-1" onClick='showExcluir()'>Excluir</a>
+                                                </li>
                                         </ul> -->
+                                </div>
 								
                             </p>
 							    
