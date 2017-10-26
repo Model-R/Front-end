@@ -247,7 +247,7 @@ if ($op=='A')
 					</p>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
 					<button type="button" class="btn btn-primary" onclick="atualizarPontos('',document.getElementById('cmboxstatusoccurrence222').value)">Salvar</button>
 				</div>
 
@@ -336,7 +336,7 @@ if ($op=='A')
 										if ($op=='I'){?>
 										<div class="form-group">
                                             <div class="new_experiment_send_button">
-                                                <button id="send" type="button" onclick="enviar()" class="btn btn-success">Salvar</button>
+                                                <button id="send" type="button" onclick="enviar()" class="btn btn-success" data-toggle="tooltip" data-placement="top" title data-original-title="Salvar experimento">Salvar</button>
                                             </div>
 										</div>
 										<?php } ?>
@@ -499,8 +499,12 @@ if ($op=='A')
 																			<div class="col-md-6 col-sm-6 col-xs-12">
 																				<?php echo $StatusOccurrence->listaCombo('cmboxstatusoccurrencefiltro',$idstatusoccurrencefiltro,'N','class="form-control"','');?>
 																			</div>
-																			<div class="col-md-6 col-sm-6 col-xs-12">
-																			<button id="send" type="button" onclick="filtrar(document.getElementById('cmboxstatusoccurrencefiltro').value)" class="btn btn btn-success" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos">Filtrar</button>
+																			<div class="col-md-6 col-sm-6 col-xs-12 points-table-options">
+																				<button id="send" type="button" onclick="filtrar(document.getElementById('cmboxstatusoccurrencefiltro').value)" class="btn btn btn-success" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos">Filtrar</button>
+																				<div class="print-options">
+																					<a  class="btn btn-default btn-sm" onClick="imprimir('PDF');" data-toggle="tooltip" data-placement="top" title="Exportar tabela em PDF"><?php echo " PDF ";?></a>
+																					<a  class="btn btn-default btn-sm" onClick="imprimir('CSV');"data-toggle="tooltip" data-placement="top" title="Exportar tabela em XLS"><?php echo " XLS";?></a>
+																				</div>
 																			</div>
 																		</div>	
 																		<table id="points_table" class="table table-striped responsive-utilities jambo_table bulk_action">
@@ -512,7 +516,8 @@ if ($op=='A')
 																					<th class="column-title">Imagem</th>
 																					<th class="column-title">Identificação</th>
 																					<th class="column-title">Localização</th>
-																					<th class="column-title">Status <a data-toggle="tooltip" data-placement="top" title data-original-title="Editar" onclick="abreModelStatusOcorrencia()"><span class="glyphicon glyphicon-edit edit-button" aria-hidden="true"></span></a></th>
+																					<th class="column-title">Status</th>
+																					<th class="column-title">Ação<a data-toggle="tooltip" data-placement="top" title data-original-title="Editar" onclick="abreModelStatusOcorrencia()" class="points-table-action-header"><span class="glyphicon glyphicon-edit edit-button" aria-hidden="true"></span></a></th>
 																				</tr>
 																			</thead>
 <?php 
@@ -535,7 +540,7 @@ $info = '';
 ?>
 																			<tbody>
 <tr class="even pointer">
-	<td class="a-center " colspan=5>Total: <?php echo $conta;?></td>
+	<td class="a-center " colspan=6>Total: <?php echo $conta;?></td>
 </tr>
 
 <?php 
@@ -567,13 +572,13 @@ while ($row = pg_fetch_array($res))
 	}
 	?>
 								
-																				<tr class="even pointer">
+																				<tr class="even pointer points-table-line">
 																					<td class="a-center "><input type="checkbox" name="table_records[]" id="table_records[]" value="<?php echo $row['idoccurrence'];?>" ></td><td><?php echo $html_imagem.' ';?></td>
 																					<td class="a-right a-right "><?php echo $row['taxon'];?><?php echo $row['numtombo'];?>
 																					<?php echo $row['collector'];?> <?php echo $row['collectnumber'];?></td>
 																					<td class=" "><?php if($row['country']) echo $row['country'] . ',';?> <?php if($row['majorarea']) echo $row['majorarea'] . '-';?> <?php if($row['minorarea']) echo $row['minorarea'] . '.';?>(<?php echo $row['lat'];?>,<?php echo $row['long'];?>)</td>
-																					<td class=" "><?php echo "<image src='".$icone."'>".' '.$row['statusoccurrence'];?>
-																					<a data-toggle="tooltip" data-placement="top" title data-original-title="Editar" onclick="abreModal('<?php echo $row['taxon'];?>','<?php echo $row['lat'];?>','<?php echo $row['long'];?>','<?php echo $row['idoccurrence'];?>','<?php echo $row[''];?>','<?php echo $row[''];?>','<?php echo $servidor;?>','<?php echo $path;?>','<?php echo $arquivo;?>','<?php echo $row['idstatusoccurrence'];?>','<?php echo $localizacao;?>')">  <span class="glyphicon glyphicon-edit edit-button" aria-hidden="true"></span></a></td>
+																					<td class=" "><?php echo "<image src='".$icone."'>".' '.$row['statusoccurrence'];?></td>
+																					<td class="points-table-action"><a data-toggle="tooltip" data-placement="top" title data-original-title="Editar" onclick="abreModal('<?php echo $row['taxon'];?>','<?php echo $row['lat'];?>','<?php echo $row['long'];?>','<?php echo $row['idoccurrence'];?>','<?php echo $row[''];?>','<?php echo $row[''];?>','<?php echo $servidor;?>','<?php echo $path;?>','<?php echo $arquivo;?>','<?php echo $row['idstatusoccurrence'];?>','<?php echo $localizacao;?>')">  <span class="glyphicon glyphicon-edit edit-button" aria-hidden="true"></span></a></td>
 																				</tr>
 	<?php }// while  ?>
 																			</tbody>
@@ -685,6 +690,22 @@ function selecionaTodos(isChecked) {
 	
 }
 
+function imprimir(tipo)
+{
+	document.getElementById('frm').target="_blank";//"'cons<?php echo strtolower($FORM_ACTION);?>.php';
+	if (tipo=='PDF')
+	{
+		console.log(document.getElementById('frm').action='export' + tipo + '.php?table=points')
+		document.getElementById('frm').action='export' + tipo + '.php';
+		document.getElementById('frm').submit();
+	}
+	if (tipo=='CSV')
+	{
+		console.log(document.getElementById('frm').action='export' + tipo + '.php?table=points')
+		document.getElementById('frm').action='export' + tipo + '.php';
+		document.getElementById('frm').submit();
+	}
+}
 
 function editar()
 {

@@ -536,7 +536,7 @@ foreach($results_array as $value)
                                     <p><?php //echo $value;?></a><br>
                                     <?php //echo str_replace('.png','.tiff',$value);?>
                                     <a href="<?php echo $log_directory.'/'.$value;?>" class="btn btn-default btn-sm download-button" download data-toggle="tooltip" data-placement="top" title data-original-title="Baixar arquivo PNG"><i class="fa fa-download"></i>PNG</a>
-                                    <a href="<?php echo $log_directory.'/'.str_replace('png','tif',$value);?>" class="btn btn-default btn-sm download-button" download data-toggle="tooltip" data-placement="top" title data-original-title="Baixar arquivo PNG"><i class="fa fa-download"></i>RASTER</a>
+                                    <a href="<?php echo $log_directory.'/'.str_replace('png','tif',$value);?>" class="btn btn-default btn-sm download-button" download data-toggle="tooltip" data-placement="top" title data-original-title="Baixar arquivo Raster"><i class="fa fa-download"></i>RASTER</a>
                                     </p>
                                     
                                 
@@ -617,7 +617,7 @@ foreach($results_array as $value)
           <p><?php //echo $value;?></a><br>
           <?php //echo str_replace('.png','.tiff',$value);?>
           <a href="<?php echo $log_directory.'/'.$value;?>" class="btn btn-default btn-sm download-button" download data-toggle="tooltip" data-placement="top" title data-original-title="Baixar arquivo PNG"><i class="fa fa-download"></i>PNG</a>
-          <a href="<?php echo $log_directory.'/'.str_replace('png','tif',$value);?>" class="btn btn-default btn-sm download-button" download data-toggle="tooltip" data-placement="top" title data-original-title="Baixar arquivo PNG"><i class="fa fa-download"></i>RASTER</a>
+          <a href="<?php echo $log_directory.'/'.str_replace('png','tif',$value);?>" class="btn btn-default btn-sm download-button" download data-toggle="tooltip" data-placement="top" title data-original-title="Baixar arquivo Raster"><i class="fa fa-download"></i>RASTER</a>
 		  </p>
         
       

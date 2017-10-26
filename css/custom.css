@@ -3835,7 +3835,7 @@ ul.social li {
     padding: 5px !important;
     line-height: 1.42857143 !important;
     vertical-align: middle !important;
-    border-top: 1px solid #ddd !important;
+    border-top: 1px solid #ddd;
 }
 
 .actions a{
@@ -6471,7 +6471,7 @@ ul.notifications {
     PADDING: 8px;
     border-color: #26b99a;
     border-radius: 50%;
-    margin-left: 5px;
+    margin-left: 0px !important;
 }
 
 .files-options{
@@ -6494,6 +6494,24 @@ ul.notifications {
     align-items: center;
 }
 
+.points-table-action{
+    border-top: 2px solid #73879c !important;
+    text-align: center;
+}
+
+.points-table-action-header{
+    margin-left: 8px;
+}
+
+.points-table-line{
+    height: 82px !important;
+}
+
+.points-table-options{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 /* Esconde o input */
 input[type='file'] {
 display: none
