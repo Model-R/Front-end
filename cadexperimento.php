@@ -95,7 +95,10 @@ if ($op=='A')
       }
 	  #map3 {
         height: 65%;
-      }
+	  }
+	  #map4 {
+        height: 400px;
+	  }
     </style>
 
 
@@ -191,7 +194,7 @@ if ($op=='A')
 		</div>
 	</div>
 	
-	 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+	 <div class="modal fade" id="pointModal" tabindex="-1" role="dialog" aria-hidden="true">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 
@@ -205,12 +208,14 @@ if ($op=='A')
 					<p>Dados originais<br>
 					<div id="dadosoriginais"></div><br>
 					<div class="row">
-						<div class="col-md-3 col-sm-3 col-xs-3">
+						<div class="col-md-1 col-sm-1 col-xs-1"></div>
+						<div class="col-md-2 col-sm-2 col-xs-2">
 							<div id="divimagem"></div><br>
 						</div>
-						<div class="col-md-9 col-sm-9 col-xs-9">
+						
+						<div class="col-md-8 col-sm-8 col-xs-8">
 							<b>Dados inferidos</b><br>
-							<?php echo $StatusOccurrence->listaCombo('cmboxstatusoccurrence',$idstatusoccurrence,'N','class="form-control"','1,4,6,7,16,17');?>
+							<?php echo $StatusOccurrence->listaCombo('cmboxstatusoccurrence',$idstatusoccurrence,'N','class="form-control"','1,2,4,6,8,10,11,12,13,16,17,18');?>
 							<div class="row">
 								<div class="col-md-6 col-sm-6 col-xs-6">
 									Latitude:<input type="text" name="edtlatitude" id="edtlatitude" class="form-control"><br>
@@ -219,7 +224,10 @@ if ($op=='A')
 									Longitude:<input type="text" name="edtlongitude" id="edtlongitude" class="form-control"><br>
 								</div>
 							</div>
+	
+								<div id="map4"></div>
 						</div>
+						<div class="col-md-1 col-sm-1 col-xs-1"></div>
 					</div>
 					</p>
 				</div>
@@ -232,6 +240,37 @@ if ($op=='A')
 		</div>
 	</div>
 
+	<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-body">
+				<h4><div id="divtaxonconfirmacao">Deseja alterar a localização do ponto ?</div></h4>
+				<div id="dadosoriginaisconfirmacao"></div><br>
+				<div class="row">
+					<div class="col-md-8 col-sm-8 col-xs-8">
+						<b>Dados inferidos</b><br>
+						<?php echo $StatusOccurrence->listaCombo('cmboxstatusoccurrenceconfirmacao',$idstatusoccurrenceconfirmacao,'N','class="form-control"','1,2,4,6,8,10,11,12,13,16,17,18');?>
+						<div class="row">
+							<div class="col-md-6 col-sm-6 col-xs-6">
+								Latitude:<input type="text" name="edtlatitude" id="edtlatitudeconfirmacao" class="form-control"><br>
+							</div>
+							<div class="col-md-6 col-sm-6 col-xs-6">
+								Longitude:<input type="text" name="edtlongitude" id="edtlongitudeconfirmacao" class="form-control"><br>
+							</div>
+						</div>
+					</div>
+				</div>
+				</p>
+			</div>
+			<div class="modal-footer">
+				<input type="hidden" name="edidocorrencia" id="edidocorrenciaconfirmacao">
+				<button type="button" class="btn btn-default" data-dismiss="modal" onclick="initMapModal(document.getElementById('edidocorrenciaconfirmacao').value)">Fechar</button>
+				<button type="button" class="btn btn-primary" onclick="atualizarPontos(document.getElementById('edidocorrenciaconfirmacao').value,document.getElementById('cmboxstatusoccurrenceconfirmacao').value,document.getElementById('edtlatitudeconfirmacao').value,document.getElementById('edtlongitudeconfirmacao').value)">Salvar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 	 <div class="modal fade" id="myModalstatusoccurrence" tabindex="-1" role="dialog" aria-hidden="true">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
@@ -243,7 +282,7 @@ if ($op=='A')
 				</div>
 				<div class="modal-body">
 					<p>
-					<?php echo $StatusOccurrence->listaCombo('cmboxstatusoccurrence222',$idstatusoccurrence222,'N','class="form-control"','1,4,6,7,16,17');?>
+					<?php echo $StatusOccurrence->listaCombo('cmboxstatusoccurrence222',$idstatusoccurrence222,'N','class="form-control"','1,2,4,6,8,10,11,12,13,16,17,18');?>
 					</p>
 				</div>
 				<div class="modal-footer">
@@ -940,6 +979,139 @@ function initMap() {
         marker = new google.maps.Marker({
             position: position,
             map: map3,
+			draggable: false,
+            title: markers[i][0],
+			icon: icone
+        });
+        
+        // Allow each marker to have an info window    
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function() {
+				abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],'','',markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9]);
+				
+            }
+        })(marker, i));
+		
+        // Automatically center the map fitting all markers on the screen
+       // map3.fitBounds(bounds);
+    }
+
+	initMapModal()//start map inside modal
+  
+}
+
+var modalMap;
+
+function initMapModal(idocorrencia) {
+	<?php if (empty($latcenter))
+	{
+		$latcenter = -24.5452;
+		$longcenter = -42.5389;
+	}
+	?>
+	
+    var map4 = new google.maps.Map(document.getElementById('map4'), {
+     center: {lat: <?php echo $latcenter;?>, lng: <?php echo $longcenter;?>},
+	 mapTypeId: 'terrain',
+        mapTypeControl: true,
+        mapTypeControlOptions: {
+            mapTypeIds: ['terrain','roadmap', 'satellite']
+        },
+        styles: [
+            {
+                "featureType": "landscape",
+                "stylers": [
+                    {"hue": "#FFA800"},
+                    {"saturation": 0},
+                    {"lightness": 0},
+                    {"gamma": 1}
+                ]
+            },
+            {
+                "featureType": "road.highway",
+                "stylers": [
+                    {"hue": "#53FF00"},
+                    {"saturation": -73},
+                    {"lightness": 40},
+                    {"gamma": 1}
+                ]
+            },
+            {
+                "featureType": "road.arterial",
+                "stylers": [
+                    {"hue": "#FBFF00"},
+                    {"saturation": 0},
+                    {"lightness": 0},
+                    {"gamma": 1}
+                ]
+            },
+            {
+                "featureType": "road.local",
+                "stylers": [
+                    {"hue": "#00FFFD"},
+                    {"saturation": 0},
+                    {"lightness": 30},
+                    {"gamma": 1}
+                ]
+            },
+            {
+                "featureType": "water",
+                "stylers": [
+                    {"hue": "#00BFFF"},
+                    {"saturation": 6},
+                    {"lightness": 8},
+                    {"gamma": 1}
+                ]
+            },
+            {
+                "featureType": "poi",
+                "stylers": [
+                    {"hue": "#679714"},
+                    {"saturation": 33.4},
+                    {"lightness": -25.4},
+                    {"gamma": 1}
+                ]
+            }
+        ],
+    zoom: 2
+  });
+ 
+  	var markers = [
+        <?php echo $marker;?>
+    ];
+                        
+    // Info Window Content
+	
+	var infoWindowContent = [
+		<?php echo $info;?>
+    ];
+
+//        ['<div class="info_content">' +
+ //       '<h3>Caesalpinia Echinata</h3>' +
+  //      '<p><button id="send" type="button" onclick="enviar()" class="btn btn-danger">Excluir</button><button id="send" type="button" onclick="excluirPonto()" class="btn btn-default">Salvar Posição</button></p>' +        '</div>'],
+   //     ['<div class="info_content">' +
+    //    '<h3>Caesalpinia echinata</h3>' +
+     //   '<p><button id="send" type="button" onclick="enviar()" class="btn btn-danger">Excluir</button><button id="send" type="button" onclick="excluirPonto()" class="btn btn-default">Salvar Posição</button></p>' +
+      //  '</div>']
+	
+    // Display multiple markers on a map
+    var infoWindow = new google.maps.InfoWindow(), marker, i;
+    
+    // Loop through our array of markers & place each one on the map  
+
+    for( i = 0; i < markers.length; i++ ) {
+		if(markers[i][3] != idocorrencia) continue; //only print clicked ocurrence
+        var position = new google.maps.LatLng(markers[i][1], markers[i][2]);
+        //bounds.extend(position);
+		var icone = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
+		if (markers[i][7]!='')
+		{
+			icone = 'http://maps.google.com/mapfiles/ms/icons/'+markers[i][7];
+		}
+		
+        marker = new google.maps.Marker({
+            position: position,
+            map: map4,
 			draggable: true,
             title: markers[i][0],
 			icon: icone
@@ -955,13 +1127,16 @@ function initMap() {
 		
         google.maps.event.addListener(marker, 'dragend', (function(marker, i) {
             return function() {
-				abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],this.position.lat(),this.position.lng(),markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9]);
+				abreConfirmacao(markers[i][0],markers[i][1],markers[i][2],markers[i][3],this.position.lat(),this.position.lng(),markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9]);
+				//abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],this.position.lat(),this.position.lng(),markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9]);
 				
             }
         })(marker, i));
         // Automatically center the map fitting all markers on the screen
        // map3.fitBounds(bounds);
     }
+
+	modalMap = map4;
 
   
 }
@@ -1003,10 +1178,25 @@ function abreModal(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquiv
 	document.getElementById('edidocorrencia').value=idocorrencia;
 	document.getElementById('divimagem').innerHTML=html_imagem;
 	document.getElementById('dadosoriginais').innerHTML='Latitude: '+lat+' Longitude: '+lng+' - '+localizacao;
-	document.getElementById('edtlatitude').value=latinf;
-	document.getElementById('edtlongitude').value=lnginf;
+	document.getElementById('edtlatitude').value=lat;
+	document.getElementById('edtlongitude').value=lng;
 	document.getElementById('cmboxstatusoccurrence').value=idstatusocorrence;
-	$('#myModal').modal('show');
+	$('#pointModal').modal('show');
+	setTimeout(() => { 
+		initMapModal(idocorrencia);
+	}, 200);
+}
+
+function abreConfirmacao(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquivo,idstatusocorrence,localizacao)
+{
+	
+	html_imagem='<a href=templaterb2.php?colbot=rb&codtestemunho=&arquivo='+arquivo+' target=\"Visualizador\"><img src="http://'+servidor+'/fsi/server?type=image&source='+path+'/'+arquivo+'&width=600&height=200&profile=jpeg&quality=20"></a>';
+
+	document.getElementById('edidocorrenciaconfirmacao').value=idocorrencia;
+	document.getElementById('edtlatitudeconfirmacao').value=latinf;
+	document.getElementById('edtlongitudeconfirmacao').value=lnginf;
+	document.getElementById('cmboxstatusoccurrenceconfirmacao').value=idstatusocorrence;
+	$('#confirmationModal').modal('show');
 }
 
 var file;
@@ -1094,7 +1284,6 @@ $(document ).ready(function() {
 	//alert('');
  	//$('.nav-tabs a[href="#tab_content<?php echo $tab;?>"]').tab('show')
 	
-	
 });
 		
 $('.nav-tabs a[href="#tab_content2"]').click(function(){
@@ -1107,6 +1296,15 @@ $('.nav-tabs a[href="#tab_content3"]').click(function(){
     $(this).tab('show');
 	initMap();
 })	
+
+// $('.points-table-action').click(function(){
+// 	google.maps.event.trigger(modalMap, "resize");
+// })
+
+$('#pointModal').on('shown', function () {
+        console.log('entroiu')
+		google.maps.event.trigger(modalMap, "resize");
+    });
 
 
 
