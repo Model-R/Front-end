@@ -497,14 +497,14 @@ require 'MSGCODIGO.php';
 		document.getElementById('frm').target="_blank";//"'cons<?php echo strtolower($FORM_ACTION);?>.php';
 		if (tipo=='PDF')
 		{
-            console.log(document.getElementById('frm').action='export' + tipo + '.php?table=exp')
-			document.getElementById('frm').action='export' + tipo + '.php';
+            //console.log(document.getElementById('frm').action='export' + tipo + '.php?table=exp')
+			document.getElementById('frm').action='export' + tipo + '.php?table=exp&expid=';
 			document.getElementById('frm').submit();
 		}
 		if (tipo=='CSV')
 		{
-			console.log(document.getElementById('frm').action='export' + tipo + '.php?table=exp')
-			document.getElementById('frm').action='export' + tipo + '.php';
+			//console.log(document.getElementById('frm').action='export' + tipo + '.php?table=exp')
+			document.getElementById('frm').action='export' + tipo + '.php?table=exp&expid';
 			document.getElementById('frm').submit();
 		}
 	}

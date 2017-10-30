@@ -734,14 +734,14 @@ function imprimir(tipo)
 	document.getElementById('frm').target="_blank";//"'cons<?php echo strtolower($FORM_ACTION);?>.php';
 	if (tipo=='PDF')
 	{
-		console.log(document.getElementById('frm').action='export' + tipo + '.php?table=points')
-		document.getElementById('frm').action='export' + tipo + '.php';
+		//console.log(document.getElementById('frm').action='export' + tipo + '.php?table=points')
+		document.getElementById('frm').action='export' + tipo + '.php?table=points&expid=' + <?php echo $id;?>;
 		document.getElementById('frm').submit();
 	}
 	if (tipo=='CSV')
 	{
-		console.log(document.getElementById('frm').action='export' + tipo + '.php?table=points')
-		document.getElementById('frm').action='export' + tipo + '.php';
+		//console.log(document.getElementById('frm').action='export' + tipo + '.php?table=points')
+		document.getElementById('frm').action='export' + tipo + '.php?table=points&expid=' + <?php echo $id;?>;
 		document.getElementById('frm').submit();
 	}
 }
@@ -1305,8 +1305,6 @@ $('#pointModal').on('shown', function () {
         console.log('entroiu')
 		google.maps.event.trigger(modalMap, "resize");
     });
-
-
 
 function toggle(isChecked) {
 	var chks = document.getElementsByName('chtestemunho[]');

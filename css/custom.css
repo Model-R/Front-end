@@ -6585,6 +6585,11 @@ display: none
     margin-top: 25px;
 }
 
+.radio-group-buffer{
+    display: flex;
+    justify-content: space-around;
+}
+
 /* ------------------ conusuario.php ----------------------- */
 
 .menu-item{
