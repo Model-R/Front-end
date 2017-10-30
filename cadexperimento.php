@@ -554,6 +554,7 @@ if ($op=='A')
 																					</th>
 																					<th class="column-title">Imagem</th>
 																					<th class="column-title">Identificação</th>
+																					<th class="column-title">Coletor</th>
 																					<th class="column-title">Localização</th>
 																					<th class="column-title">Status</th>
 																					<th class="column-title">Ação<a data-toggle="tooltip" data-placement="top" title data-original-title="Editar" onclick="abreModelStatusOcorrencia()" class="points-table-action-header"><span class="glyphicon glyphicon-edit edit-button" aria-hidden="true"></span></a></th>
@@ -613,8 +614,8 @@ while ($row = pg_fetch_array($res))
 								
 																				<tr class="even pointer points-table-line">
 																					<td class="a-center "><input type="checkbox" name="table_records[]" id="table_records[]" value="<?php echo $row['idoccurrence'];?>" ></td><td><?php echo $html_imagem.' ';?></td>
-																					<td class="a-right a-right "><?php echo $row['taxon'];?><?php echo $row['numtombo'];?>
-																					<?php echo $row['collector'];?> <?php echo $row['collectnumber'];?></td>
+																					<td class="a-right a-right "><?php echo $row['taxon'];?><?php echo $row['numtombo'];?></td>
+																					<td class="a-right a-right "><?php echo $row['collector'];?> <?php echo $row['collectnumber'];?></td>
 																					<td class=" "><?php if($row['country']) echo $row['country'] . ',';?> <?php if($row['majorarea']) echo $row['majorarea'] . '-';?> <?php if($row['minorarea']) echo $row['minorarea'] . '.';?>(<?php echo $row['lat'];?>,<?php echo $row['long'];?>)</td>
 																					<td class=" "><?php echo "<image src='".$icone."'>".' '.$row['statusoccurrence'];?></td>
 																					<td class="points-table-action"><a data-toggle="tooltip" data-placement="top" title data-original-title="Editar" onclick="abreModal('<?php echo $row['taxon'];?>','<?php echo $row['lat'];?>','<?php echo $row['long'];?>','<?php echo $row['idoccurrence'];?>','<?php echo $row[''];?>','<?php echo $row[''];?>','<?php echo $servidor;?>','<?php echo $path;?>','<?php echo $arquivo;?>','<?php echo $row['idstatusoccurrence'];?>','<?php echo $localizacao;?>')">  <span class="glyphicon glyphicon-edit edit-button" aria-hidden="true"></span></a></td>
