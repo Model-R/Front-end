@@ -214,12 +214,17 @@ if ($MSGCODIGO=='72')
 if ($MSGCODIGO=='73')
 {
 		echo "
-		criarNotificacao('Filtro automático','Pontos fora do município de origem verificado!','success');";
+		criarNotificacao('Filtro Fora do Município','Pontos fora do município de origem verificado!','success');";
 }
 if ($MSGCODIGO=='74')
 {
 		echo "
-		criarNotificacao('Filtro automático','Pontos fora do limit do Brasil verificado!','success');";
+		criarNotificacao('Filtro Fora Limite Brasil','Pontos fora do limit do Brasil verificado!','success');";
+}
+if ($MSGCODIGO=='75')
+{
+		echo "
+		criarNotificacao('Filtro Automático','Filtro automático executado!','success');";
 }
 ?>
 

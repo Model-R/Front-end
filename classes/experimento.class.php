@@ -17,6 +17,8 @@ class Experimento
 	var $tss;
 	
 	var $iduser;
+	var $type;
+	var $automaticfilter;
 	
 	function incluirRaster($id,$idraster)
 	{
@@ -195,12 +197,13 @@ class Experimento
 	
 	function incluir()
 	{
-		
- 		$sql = "insert into modelr.experiment (name,description,iduser,idstatusexperiment
+ 		$sql = "insert into modelr.experiment (name,description,iduser,idstatusexperiment,type,automatic_filter
 		) values (
 		'".$this->name."',
 		'".$this->description."',
-		'".$this->iduser."',1
+		'".$this->iduser."',1,
+		'".$this->type."',
+		'".$this->automaticfilter."'
 		)";
 		
 		$resultado = pg_exec($this->conn,$sql);

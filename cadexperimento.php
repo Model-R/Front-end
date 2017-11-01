@@ -3,6 +3,10 @@
 //ini_set('display_errors','1');
 ?><html lang="pt-BR">
 <?php
+
+header('Access-Control-Allow-Origin: *'); 
+header('Access-Control-Allow-Origin: https://modelr.jbrj.gov.br');
+
 require_once('classes/conexao.class.php');
 require_once('classes/projeto.class.php');
 require_once('classes/experimento.class.php');
@@ -42,6 +46,15 @@ $op=$_REQUEST['op'];
 $id=$_REQUEST['id'];
 $idsource = $_REQUEST['cmboxfonte'];
 $especie = $_REQUEST['edtespecie'];
+
+if($id){
+	$sql = "select automatic_filter from modelr.experiment where idexperiment = ".$id;
+
+	$res = pg_exec($conn,$sql);
+	$row = pg_fetch_array($res);
+	if($row['automatic_filter'] == 'f' || $row['automatic_filter'] == '') $automaticfilter = false;
+	else $automaticfilter = true;
+}
 
 if ($op=='A')
 {
@@ -339,6 +352,34 @@ if ($op=='A')
 													</div>
 												</div>
 											</div>
+
+											<?php 
+												// incluir opção de tipo de projeto e filtros automáticos na hora da criação do projeto
+												// OPÇÃO FOR ALTERAR
+												
+											if ($op=='I'){?>
+												<div class="">
+													<div class="item form-group" style="display: flex;align-items: center;">
+													<label class="control-label col-md-3 col-sm-3 col-xs-12" for="edtdescricao">Tipo do Projeto</label>
+														<div class="col-md-6 col-sm-6 col-xs-12">
+															<div class="radio-group-new-experiment">
+																<form action="">
+																	<div class="radio-terrestre"><input type="radio" name="edttipo" id="edttipoterrestre" value="terrestre" checked/> Terrestre</div>
+																	<div class="radio-maritimo"><input type="radio" name="edttipo" id="edttipomaritimo" value="marítimo"/> Marítimo</div>
+																</form>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="">
+													<div class="item form-group">
+													<label class="control-label col-md-3 col-sm-3 col-xs-12" for="edtfiltroautomatico"></label>
+														<div class="col-md-6 col-sm-6 col-xs-12">
+															<input type="checkbox" name="edtfiltroautomatico" id="edtfiltroautomatico" checked>Executar filtros automaticamente<br>
+														</div>
+													</div>
+												</div>
+											<?php } ?>
 											<div class="ln_solid"></div>
 											<?php if ($op!='I')
 											{?>
@@ -409,6 +450,7 @@ if ($op=='A')
 																				<div class="radio-group">
 																					<div><input type="radio" name="fontebiotico[]" id="checkfontejabot" value="1" <?php if ($_REQUEST['fontebiotico'][0]=='1') echo "checked";?> /> JABOT</div>
 																					<div><input type="radio" name="fontebiotico[]" id="checkfontegbif" value="2" <?php if ($_REQUEST['fontebiotico'][0]=='2') echo "checked";?>/> GBIF</div>
+																					<div><input type="radio" name="fontebiotico[]" id="checkfontesibbr" value="2" <?php if ($_REQUEST['fontebiotico'][0]=='3') echo "checked";?>/> SiBBr</div>
 																					<div><input type="radio" name="fontebiotico[]" id="checkfontecsv" value="2" <?php if ($_REQUEST['fontebiotico'][0]=='2') echo "checked";?>/> CSV</div>
 																				</div>
 																				<div class="csv-button">
@@ -509,19 +551,23 @@ if ($op=='A')
 																		<h2>Data Cleaning</h2>
 																		<div class="clearfix"></div>
 																	</div>
-																	<div class="row">
-																			<div class="col-md-12 col-sm-12 col-xs-12">
-																			<button id="send1" type="button" onclick="atualizarPontos('',10,'','')" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos fora do Brasil">Fora limite Brasil</button>
-																			<button id="send2" type="button" onclick="atualizarPontos('',2,'','')" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos fora do município coletado">Fora Município coleta</button>
-																			<!--<button id="send3" type="button" onclick="atualizarPontos('',11,'','')" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos no mar">Coordenada no mar</button>
-																			<button id="send3" type="button" onclick="atualizarPontos('',12,'','')" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos com coordenada invertida">Coordenada invertida</button>
-																			--><button id="send3" type="button" onclick="atualizarPontos('',13,'','')" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos com ambas as coordenadas 0">Coordenada com zero</button>
-																			
-																			<button id="send4" type="button" onclick="marcarPontosDuplicados()" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos duplicados">Duplicatas</button>
-																			<button id="send3" type="button" onclick="atualizarPontos('',99,'','')" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Executar todos os filtros">Executar Todos</button>
-																			<!--<button id="send5" type="button" onclick="liberarParaModelagem()" class="btn btn-xs btn-success" data-toggle="tooltip" data-placement="top" title data-original-title="Liberar experimento para modelagem">Liberar Modelagem</button>-->
-																			</div>
-																	</div>
+																	<?php 
+																		// so mostra os filtros se não tiver filtro automatico setado	
+																	if ($automaticfilter == false){?>
+																		<div class="row">
+																				<div class="col-md-12 col-sm-12 col-xs-12">
+																				<button id="send1" type="button" onclick="atualizarPontos('',10,'','')" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos fora do Brasil">Fora limite Brasil</button>
+																				<button id="send2" type="button" onclick="atualizarPontos('',2,'','')" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos fora do município coletado">Fora Município coleta</button>
+																				<!--<button id="send3" type="button" onclick="atualizarPontos('',11,'','')" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos no mar">Coordenada no mar</button>
+																				<button id="send3" type="button" onclick="atualizarPontos('',12,'','')" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos com coordenada invertida">Coordenada invertida</button>
+																				--><button id="send3" type="button" onclick="atualizarPontos('',13,'','')" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos com ambas as coordenadas 0">Coordenada com zero</button>
+																				
+																				<button id="send4" type="button" onclick="marcarPontosDuplicados()" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos duplicados">Duplicatas</button>
+																				<button id="send3" type="button" onclick="atualizarPontos('',99,'','')" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Executar todos os filtros">Executar Todos</button>
+																				<!--<button id="send5" type="button" onclick="liberarParaModelagem()" class="btn btn-xs btn-success" data-toggle="tooltip" data-placement="top" title data-original-title="Liberar experimento para modelagem">Liberar Modelagem</button>-->
+																				</div>
+																		</div>
+																	<?php } ?>
 																	<div class="x_content">
 																	 <p style="padding: 5px;">
 																	 <div id="map3"></div>
@@ -781,6 +827,11 @@ function buscar()
 				document.getElementById('frm').action="cadexperimento.php?busca=TRUE";
 				document.getElementById('frm').submit();
 			}
+			else if (document.getElementById('checkfontesibbr').checked==true)
+			{
+				//alert('jabot');
+				getSibbr(texto);
+			}
 			else printCSV(file);
 		}
 	}
@@ -863,6 +914,143 @@ function gbif(taxonKey)
 	};
 	xmlhttp.open("GET", "http://api.gbif.org/v1/occurrence/search?taxonKey="+taxonKey+'&hasCoordinate=true', true);
 	xmlhttp.send();
+}
+
+function getSibbr(sp)
+{
+	//alert('');
+	// var xmlhttp = new XMLHttpRequest();
+	// xmlhttp.onreadystatechange = function() {
+    // if (this.readyState == 4 && this.status == 200) {
+    //     var myObj = JSON.parse(this.responseText);
+    //     document.getElementById("demo").innerHTML = myObj.results[0]["key"]; //this.responseText;//myObj.result[key];//count;
+	// 		printSibbr(myObj.ocurrences, sp);
+	// 	}
+	// };
+	// console.log(sp);
+	// xmlhttp.open("GET", "http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=" + sp + "&ignoreNullCoordinates=true&limit=50", true);
+	// xmlhttp.setRequestHeader( 'Access-Control-Allow-Origin', '*');
+	// // xmlhttp.setRequestHeader( 'Access-Control-Allow-Methods', 'GET');
+	// // xmlhttp.setRequestHeader( 'Access-Control-Allow-Headers', 'Content-Type, Authorization');
+	// // xmlhttp.setRequestHeader('Access-Control-Allow-Credentials', 'true');
+	// xmlhttp.send();
+
+	// $.ajax({
+
+	// 	url: 'http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=prepusa%20montana&ignoreNullCoordinates=true&limit=50',
+	// 	type: 'GET',
+	// 	crossDomain: true,
+	// 	dataType: 'jsonp',
+	// 	success: function() { alert("Success"); },
+	// 	error: function() { alert('Failed!'); }
+	// });
+	makeTheCall('cwsc');
+}
+
+var url = 'http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=prepusa%20montana&ignoreNullCoordinates=true&limit=50';
+
+function getCORS(url, success) {
+    var xhr = new XMLHttpRequest();
+    if (!('withCredentials' in xhr)) xhr = new XDomainRequest(); // fix IE8/9
+    xhr.open('GET', url);
+    xhr.onload = success;
+    xhr.send();
+    return xhr;
+}
+
+// example request
+getCORS(url, function(request){
+    var response = request.currentTarget.response || request.target.responseText;
+    console.log(response);
+});
+
+// Create the XHR object.
+function createCORSRequest(method, url) {
+  var xhr = new XMLHttpRequest();
+  if ("withCredentials" in xhr) {
+    // XHR for Chrome/Firefox/Opera/Safari.
+    xhr.open(method, url, true);
+  } else if (typeof XDomainRequest != "undefined") {
+    // XDomainRequest for IE.
+    xhr = new XDomainRequest();
+    xhr.open(method, url);
+  } else {
+	  console.log('cors not supported')
+    // CORS not supported.
+    xhr = null;
+  }
+  return xhr;
+}
+
+// Helper method to parse the title tag from the response.
+function getTitle(text) {
+  return text.match('<title>(.*)?</title>')[1];
+}
+
+// Make the actual CORS request.
+function makeCorsRequest() {
+  // This is a sample server that supports CORS.
+  var url = 'http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=prepusa%20montana&ignoreNullCoordinates=true&limit=50';
+
+  var xhr = createCORSRequest('GET', url);
+  if (!xhr) {
+    alert('CORS not supported');
+    return;
+  }
+
+  // Response handlers.
+  xhr.onload = function() {
+    var text = xhr.responseText;
+    var title = getTitle(text);
+    alert('Response from CORS request to ' + url + ': ' + title);
+  };
+
+  xhr.onerror = function(err) {
+	  console.log(err)
+    alert('Woops, there was an error making the request.');
+  };
+
+  xhr.send();
+}
+
+
+function printSibbr(data, taxon)
+{
+       
+	for (i = 0; i < data.length; i++) {
+		//alert(i);
+		longitude = data[i].decimalLongitude;
+		latitude = data[i].decimalLatitude;
+
+		// taxon = data[i].species;
+		// tombo = data[i].catalogNumber;
+		// coletor = data[i].recordedBy;
+		// numcoleta = data[i].recordNumber;
+		// pais = data[i].country;
+		// estado = data[i].stateProvince;
+		// cidade = data[i].municipality;
+		
+		//$idexperimento,$idfontedados,$lat,$long,$taxon,$coletor,$numcoleta,$imagemservidor,$imagemcaminho,$imagemarquivo,$pais,$estado,$municipio
+		var idexperimento = document.getElementById('id').value;
+		
+		var Jval = idexperimento + '|2|'+latitude+'|'+longitude+'|'+taxon+'||||||||'; 
+
+		body += '<tr class="even pointer"><td class="a-center "><input name="chtestemunho[]" id="chtestemunho[]" value="'+Jval+'" type="checkbox" ></td>';
+		body +='<td class=" ">'+taxon+'</td>';
+		body +='<td class=" ">'+latitude+', '+longitude+'</td>';
+
+	}
+	
+	var table = '';
+	table += '<table class="table table-csv table-striped responsive-utilities jambo_table bulk_action"><thead><tr class="headings"><th><input type="checkbox" id="chkboxtodos2" name="chkboxtodos2" onclick="selecionaTodos2(true);">';
+	table += '</th><th class="column-title">Táxon </th><th class="column-title">Coordenadas</th>';
+	table += '<a class="antoo" style="color:#fff; font-weight:500;">Total de Registros selecionados: ( <span class="action-cnt"> </span> ) </a>';
+	table += '</th></tr></thead>';
+	table += '<tbody>'+body+'</tbody></table>';
+	table += '';
+	
+	document.getElementById("div_resultadobusca").innerHTML = table;
+
 }
 
 function atualizar(tab)
@@ -1156,6 +1344,29 @@ function contaSelecionados(objeto)
 	return conta;
 }
 
+function atualizarPontos(idponto,idstatus,latinf,longinf)
+{
+	//alert('?idstatus='+idstatus+'&idponto='+idponto+'&latinf='+latinf+'&longinf='+longinf);
+	
+	exibe('loading');
+	document.getElementById('frm').action='exec.atualizarpontos.php?idstatus='+idstatus+'&idponto='+idponto+'&latinf='+latinf+'&longinf='+longinf;
+	document.getElementById('frm').submit();
+}
+
+function adicionarOcorrencia()
+{
+
+	if (contaSelecionados(document.getElementsByName('chtestemunho[]'))>0)
+	{
+		exibe('loading');
+		document.getElementById('frm').action='exec.adicionarocorrencia.php';
+		document.getElementById('frm').submit();
+	}
+	else
+	{
+		criarNotificacao('Atenção','Selecione os registros que deseja adicionar','warning');
+	}
+}
 
 function abreModelStatusOcorrencia()
 {
@@ -1277,14 +1488,12 @@ require 'MSGCODIGO.php';
 
 ?>
 <?php $MSGCODIGO = $_REQUEST['MSGCODIGO'];
-
 //$tab = $_REQUEST['tab'];
 ?>
-
 $(document ).ready(function() {
-	//alert('');
- 	//$('.nav-tabs a[href="#tab_content<?php echo $tab;?>"]').tab('show')
-	
+	var automaticFilter = <?php echo $automaticfilter;?>;
+	var MSGCODIGO = <?php echo $MSGCODIGO;?>;
+	if(automaticFilter && MSGCODIGO == 71) atualizarPontos('',99,'','');
 });
 		
 $('.nav-tabs a[href="#tab_content2"]').click(function(){
@@ -1318,35 +1527,10 @@ function toggle(isChecked) {
 	}
 }
 
-	
-function adicionarOcorrencia()
-{
-
-	if (contaSelecionados(document.getElementsByName('chtestemunho[]'))>0)
-	{
-		exibe('loading');
-		document.getElementById('frm').action='exec.adicionarocorrencia.php';
-		document.getElementById('frm').submit();
-	}
-	else
-	{
-		criarNotificacao('Atenção','Selecione os registros que deseja adicionar','warning');
-	}
-}
-
 
 function liberarParaModelagem()
 {
 	document.getElementById('frm').action='exec.liberarmodelagtem.php';
-	document.getElementById('frm').submit();
-}
-
-function atualizarPontos(idponto,idstatus,latinf,longinf)
-{
-	//alert('?idstatus='+idstatus+'&idponto='+idponto+'&latinf='+latinf+'&longinf='+longinf);
-	
-	exibe('loading');
-	document.getElementById('frm').action='exec.atualizarpontos.php?idstatus='+idstatus+'&idponto='+idponto+'&latinf='+latinf+'&longinf='+longinf;
 	document.getElementById('frm').submit();
 }
 

@@ -30,7 +30,6 @@ else
 	
 	foreach($lista as $idponto){
 		
-				
 			$sql = "update modelr.occurrence set idstatusoccurrence=$idstatus ";
 			
 			$sql.="	where
@@ -197,6 +196,7 @@ or shape.nm_mun <> minorarea)
 	{
 		// pontos duplicados 
 		$Experimento->marcarPontosDuplicados($idexperimento);
+		$MSGCODIGO = 75;
 	}
 
 }

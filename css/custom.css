@@ -6530,7 +6530,7 @@ display: none
 
 .radio-group{
     display: flex;
-    width: 200px;
+    width: 250px;
     justify-content: space-around;
 }
 
@@ -6572,6 +6572,20 @@ display: none
     display: none;
 }
 
+
+.radio-group-new-experiment{
+    display: flex;
+    align-items: center;
+}
+
+.radio-terrestre{
+    display: flex;
+    margin-right: 20px;
+}
+
+.radio-maritimo{
+    display: flex;
+}
 /* ------------------ cadmodelagem.php ----------------------- */
 
 .send-button{
@@ -6589,7 +6603,6 @@ display: none
     display: flex;
     justify-content: space-around;
 }
-
 /* ------------------ conusuario.php ----------------------- */
 
 .menu-item{
