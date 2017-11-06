@@ -217,7 +217,6 @@ if (($ordenapor=='USUARIO'))
 	$Paginacao->mostra_informe = 'T';//
 	$Paginacao->pagina = $_REQUEST['p'];//$_REQUEST['p']; // p⨩na que est኉$paginacao->tamanho_imagem = '60';
 	$Paginacao->separador = '' ; // sepador linha que separa as rows
-	  
 ?>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <!-- Meta, title, CSS, favicons, etc. -->
@@ -327,14 +326,14 @@ if (($ordenapor=='USUARIO'))
                             <div class="x_panel">
                                 <div class="x_title_consexperimentos">
                                     <h2> Experimentos 
-                                        <div data-toggle="tooltip" data-placement="right" title data-original-title="Instruções">
-                                            <!-- <span class="glyphicon glyphicon-modal-window" data-toggle="modal" data-target="#instructionModal"></span> -->
+                                        <!-- <div data-toggle="tooltip" data-placement="right" title data-original-title="Instruções">
+                                             <span class="glyphicon glyphicon-modal-window" data-toggle="modal" data-target="#instructionModal"></span>
                                             <span class="glyphicon glyphicon-modal-window instruction-icon"></span>
-                                        </div>
+                                        </div> -->
                                     </h2>
                                     <div class="print-options">
                                         <a  class="btn btn-default btn-sm" onClick="imprimir('PDF');" data-toggle="tooltip" data-placement="top" title="Exportar tabela em PDF"><?php echo " PDF ";?></a>
-                                        <a  class="btn btn-default btn-sm" onClick="imprimir('CSV');"data-toggle="tooltip" data-placement="top" title="Exportar tabela em XLS"><?php echo " XLS";?></a>
+                                        <a  class="btn btn-default btn-sm" onClick="imprimir('CSV');"data-toggle="tooltip" data-placement="top" title="Exportar tabela em CSV"><?php echo " CSV";?></a>
                                     </div>
 
                                     <?php 

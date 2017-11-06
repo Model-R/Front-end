@@ -237,7 +237,6 @@ if ($ordenapor=='INSTITUIÇÃO')
                                         <label for="cmboxtipofiltro">Tipo</label>
                                         <select id="cmboxtipofiltro" name="cmboxtipofiltro" class="form-control">
                                             <option value="NOME" <?php if ($tipofiltro=='NOME') echo "selected";?>>Nome</option>
-                                            <option value="LOGIN" <?php if ($tipofiltro=='LOGIN') echo "selected";?>>Login</option>
                                             <option value="INSTITUIÇÃO" <?php if ($tipofiltro=='INSTITUIÇÃO') echo "selected";?>>Instituição</option>
                                         </select>
                                     </div>
@@ -249,12 +248,11 @@ if ($ordenapor=='INSTITUIÇÃO')
                                         <label for="cmboxordenar">Ordenar por</label>
                                         <select id="cmboxordenar" name="cmboxordenar" class="form-control">
                                             <option value="NOME" <?php if ($ordenapor=='NOME') echo "selected";?>>Nome</option>
-                                            <option value="LOGIN" <?php if ($ordenapor=='LOGIN') echo "selected";?>>Login</option>
                                             <option value="INSTITUIÇÃO" <?php if ($ordenapor=='INSTITUIÇÃO') echo "selected";?>>Instituição</option>
                                         </select>
                                     </div>
                                     <input type="checkbox" class="flat" name="chkboxativo" id="chkboxativo" value="S" <?php if ($ativo=='S') {echo 'checked';}?>> Ativos
-                                    <button type="button" class="btn btn-success" onClick='filterApply()' data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar usuários">Filtrar</button>
+                                    <button type="button" class="btn btn-success" onClick='filterApply()' data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar usuários" style="margin-top: 5px;">Filtrar</button>
                                     <div class="row-action">
                                         <button type="button" class="btn btn-info" data-toggle="tooltip" data-placement="top" title data-original-title="Criar usuário"><a role="menuitem" class="menu-item" tabindex="-1" href="cadusuario.php?op=I">Novo</a></button>
                                         <button type="button" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title data-original-title="Excluir usuário"><a role="menuitem" class="menu-item" tabindex="-1" onClick='showExcluir()'>Excluir</a></button>

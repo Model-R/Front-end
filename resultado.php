@@ -906,16 +906,16 @@ function ExportShapeControl(controlDiv, map) {
     controlUI.addEventListener('click', function() {
         if(selectedShape.type == 'polygon'){
             for(var i = 0; i < selectedShape.getPath().getLength(); i++){
-                // console.log(selectedShape.getPath().getAt(i).toUrlValue(5),'\n');
+                console.log(selectedShape.getPath().getAt(i).toUrlValue(5),'\n');
             }
         } else {
             var bounds = selectedShape.getBounds();
             var start = bounds.getNorthEast().toString().replace('(','').replace(')','').split(',');
             var end = bounds.getSouthWest().toString().replace('(','').replace(')','').split(',');
             var center = bounds.getCenter().toString().replace('(','').replace(')','').split(',');
-            // console.log('start ', start);
-            // console.log('end ', end);
-            // console.log('center ', center);
+            console.log('start ', start);
+            console.log('end ', end);
+            console.log('center ', center);
         }
 
     });
@@ -1038,8 +1038,8 @@ map.controls[google.maps.ControlPosition.TOP_CENTER].push(exportShapeDiv);
   	// });
 
       var imageBounds = new google.maps.LatLngBounds(
-        new google.maps.LatLng(-22.14671,-46.53809),
-        new google.maps.LatLng(-5.04717,-28.65234));
+        new google.maps.LatLng(-33.5353,-74.6274),
+        new google.maps.LatLng(7.6456,-34.3883));
     mapOverlay = new google.maps.GroundOverlay(
     'http://model-r.jbrj.gov.br/ensemble_geral.png',
     imageBounds,{opacity:1});

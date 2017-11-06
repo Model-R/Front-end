@@ -22,7 +22,7 @@ if($type == 'exp'){
     $output = fopen('php://output', 'w');
 
     // output the column headings
-    fputs($output, implode(array('Experimento', 'Descrição', 'Usuário', 'Status'), ',')."\n");
+    fputs($output, implode(array('Experimento', 'Descrição', 'Usuário', 'Status'), ';')."\n");
 
     if ($_SESSION['s_idtipousuario']=='1') {
     // fetch the data
@@ -44,7 +44,7 @@ if($type == 'exp'){
         if($row['idstatusexperiment'] == 2) $row['idstatusexperiment'] = 'Liberado';
         if($row['idstatusexperiment'] == 3) $row['idstatusexperiment'] = 'Em processamento';
         if($row['idstatusexperiment'] == 4) $row['idstatusexperiment'] = 'Processado';
-        fputs($output, implode($row, ',')."\n");
+        fputs($output, implode($row, ';')."\n");
     }
 }
 else if ($type == 'points'){
@@ -56,11 +56,11 @@ else if ($type == 'points'){
     $output = fopen('php://output', 'w');
 
     // output the column headings
-    fputs($output, implode(array('idocorrencia', 'idexperimento', 'taxon','coletor','número coleta', 'status','localização', 'latitude', 'longitude'), ',')."\n");
+    fputs($output, implode(array('idexperimento', 'taxon','coletor','número coleta', 'status','localização', 'latitude', 'longitude'), ';')."\n");
 
  
     // fetch the data
-    $sql = "select idoccurrence,idexperiment,taxon,collector,collectnumber,statusoccurrence,country || ' - ' || majorarea || ' - ' ||  minorarea as localizacao,
+    $sql = "select idexperiment,taxon,collector,collectnumber,statusoccurrence,country || ' - ' || majorarea || ' - ' ||  minorarea as localizacao,
     case when lat2 is not null then lat2 else lat end as lat,
     case when long2 is not null then long2
     else long end as long
@@ -72,7 +72,7 @@ else if ($type == 'points'){
 
     // loop over the rows, outputting them
     while ($row = pg_fetch_assoc($res)) {
-        fputs($output, implode($row, ',')."\n");
+        fputs($output, implode($row, ';')."\n");
     }
 }
 

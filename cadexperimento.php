@@ -588,7 +588,7 @@ if ($op=='A')
 																				<button id="send" type="button" onclick="filtrar(document.getElementById('cmboxstatusoccurrencefiltro').value)" class="btn btn btn-success" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos">Filtrar</button>
 																				<div class="print-options">
 																					<a  class="btn btn-default btn-sm" onClick="imprimir('PDF');" data-toggle="tooltip" data-placement="top" title="Exportar tabela em PDF"><?php echo " PDF ";?></a>
-																					<a  class="btn btn-default btn-sm" onClick="imprimir('CSV');"data-toggle="tooltip" data-placement="top" title="Exportar tabela em XLS"><?php echo " XLS";?></a>
+																					<a  class="btn btn-default btn-sm" onClick="imprimir('CSV');"data-toggle="tooltip" data-placement="top" title="Exportar tabela em CSV"><?php echo " CSV";?></a>
 																				</div>
 																			</div>
 																		</div>	
@@ -1170,7 +1170,8 @@ function initMap() {
             map: map3,
 			draggable: false,
             title: markers[i][0],
-			icon: icone
+			icon: icone,
+			scrollwheel:true
         });
         
         // Allow each marker to have an info window    
@@ -1303,7 +1304,8 @@ function initMapModal(idocorrencia) {
             map: map4,
 			draggable: true,
             title: markers[i][0],
-			icon: icone
+			icon: icone,
+			scrollwheel:true
         });
         
         // Allow each marker to have an info window    
@@ -1411,6 +1413,121 @@ function abreConfirmacao(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,
 	$('#confirmationModal').modal('show');
 }
 
+function filtrar(idstatusoccurrence)
+{
+	exibe('loading');
+	document.getElementById('frm').action='cadexperimento.php?tab=2&filtro='+idstatusoccurrence;
+	document.getElementById('frm').submit();
+}
+
+function toggle(isChecked) {
+	var chks = document.getElementsByName('chtestemunho[]');
+	var hasChecked = false;
+	var conta = 0;
+	for (var i=0 ; i< chks.length; i++)
+	{
+		chks[i].checked=isChecked
+		
+	}
+}
+
+
+function liberarParaModelagem()
+{
+	document.getElementById('frm').action='exec.liberarmodelagtem.php';
+	document.getElementById('frm').submit();
+}
+
+function excluirPontosDuplicados()
+{
+	exibe('loading');
+	document.getElementById('frm').action='exec.excluirpontosduplicados.php';
+	document.getElementById('frm').submit();
+}
+
+function marcarPontosDuplicados()
+{
+	exibe('loading');
+	document.getElementById('frm').action='exec.marcarpontosduplicados.php';
+	document.getElementById('frm').submit();
+}
+		
+function liberarExperimento()
+{
+	if (
+		(document.getElementById('edtexperimento').value=='')  ||
+		(document.getElementById('edtdescricao').value=='') 
+		)
+		{
+			criarNotificacao('Atenção','Verifique o preenchimento','warning');
+		}
+		else
+		{
+			exibe('loading');
+			document.getElementById('op').value='LE';
+			document.getElementById('frm').action='exec.experimento.php';
+			document.getElementById('frm').submit();
+		}
+}
+		
+function enviar()
+		{
+			exibe('loading');
+			if (
+			(document.getElementById('edtexperimento').value=='')  ||
+			(document.getElementById('edtdescricao').value=='') 
+			)
+			{
+				criarNotificacao('Atenção','Verifique o preenchimento','warning');
+			}
+			else
+			{
+				document.getElementById('frm').action='exec.experimento.php';
+				document.getElementById('frm').submit();
+			}
+		}			
+	
+        // initialize the validator function
+        validator.message['date'] = 'not a real date';
+
+        // validate a field on "blur" event, a 'select' on 'change' event & a '.reuired' classed multifield on 'keyup':
+        $('form')
+            .on('blur', 'input[required], input.optional, select.required', validator.checkField)
+            .on('change', 'select.required', validator.checkField)
+            .on('keypress', 'input[required][pattern]', validator.keypress);
+
+        $('.multi.required')
+            .on('keyup blur', 'input', function () {
+                validator.checkField.apply($(this).siblings().last()[0]);
+            });
+
+        // bind the validation to the form submit event
+        //$('#send').click('submit');//.prop('disabled', true);
+
+        $('form').submit(function (e) {
+            e.preventDefault();
+            var submit = true;
+            // evaluate the form using generic validaing
+            if (!validator.checkAll($(this))) {
+                submit = false;
+            }
+
+            if (submit)
+                this.submit();
+            return false;
+        });
+
+        /* FOR DEMO ONLY */
+        $('#vfields').change(function () {
+            $('form').toggleClass('mode2');
+        }).prop('checked', false);
+
+        $('#alerts').change(function () {
+            validator.defaults.alerts = (this.checked) ? false : true;
+            if (this.checked)
+                $('form .alert').remove();
+        }).prop('checked', false);
+
 var file;
 
 function handleFileSelect(evt) {
@@ -1516,121 +1633,6 @@ $('#pointModal').on('shown', function () {
 		google.maps.event.trigger(modalMap, "resize");
     });
 
-function toggle(isChecked) {
-	var chks = document.getElementsByName('chtestemunho[]');
-	var hasChecked = false;
-	var conta = 0;
-	for (var i=0 ; i< chks.length; i++)
-	{
-		chks[i].checked=isChecked
-		
-	}
-}
-
-
-function liberarParaModelagem()
-{
-	document.getElementById('frm').action='exec.liberarmodelagtem.php';
-	document.getElementById('frm').submit();
-}
-
-function excluirPontosDuplicados()
-{
-	exibe('loading');
-	document.getElementById('frm').action='exec.excluirpontosduplicados.php';
-	document.getElementById('frm').submit();
-}
-
-function marcarPontosDuplicados()
-{
-	exibe('loading');
-	document.getElementById('frm').action='exec.marcarpontosduplicados.php';
-	document.getElementById('frm').submit();
-}
-
-
-function filtrar(idstatusoccurrence)
-{
-	exibe('loading');
-	document.getElementById('frm').action='cadexperimento.php?tab=2&filtro='+idstatusoccurrence;
-	document.getElementById('frm').submit();
-}
-		
-function liberarExperimento()
-{
-	if (
-		(document.getElementById('edtexperimento').value=='')  ||
-		(document.getElementById('edtdescricao').value=='') 
-		)
-		{
-			criarNotificacao('Atenção','Verifique o preenchimento','warning');
-		}
-		else
-		{
-			exibe('loading');
-			document.getElementById('op').value='LE';
-			document.getElementById('frm').action='exec.experimento.php';
-			document.getElementById('frm').submit();
-		}
-}
-		
-function enviar()
-		{
-			exibe('loading');
-			if (
-			(document.getElementById('edtexperimento').value=='')  ||
-			(document.getElementById('edtdescricao').value=='') 
-			)
-			{
-				criarNotificacao('Atenção','Verifique o preenchimento','warning');
-			}
-			else
-			{
-				document.getElementById('frm').action='exec.experimento.php';
-				document.getElementById('frm').submit();
-			}
-		}			
-	
-        // initialize the validator function
-        validator.message['date'] = 'not a real date';
-
-        // validate a field on "blur" event, a 'select' on 'change' event & a '.reuired' classed multifield on 'keyup':
-        $('form')
-            .on('blur', 'input[required], input.optional, select.required', validator.checkField)
-            .on('change', 'select.required', validator.checkField)
-            .on('keypress', 'input[required][pattern]', validator.keypress);
-
-        $('.multi.required')
-            .on('keyup blur', 'input', function () {
-                validator.checkField.apply($(this).siblings().last()[0]);
-            });
-
-        // bind the validation to the form submit event
-        //$('#send').click('submit');//.prop('disabled', true);
-
-        $('form').submit(function (e) {
-            e.preventDefault();
-            var submit = true;
-            // evaluate the form using generic validaing
-            if (!validator.checkAll($(this))) {
-                submit = false;
-            }
-
-            if (submit)
-                this.submit();
-            return false;
-        });
-
-        /* FOR DEMO ONLY */
-        $('#vfields').change(function () {
-            $('form').toggleClass('mode2');
-        }).prop('checked', false);
-
-        $('#alerts').change(function () {
-            validator.defaults.alerts = (this.checked) ? false : true;
-            if (this.checked)
-                $('form .alert').remove();
-        }).prop('checked', false);
     </script>
 
 </body>
