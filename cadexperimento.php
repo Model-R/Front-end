@@ -220,6 +220,7 @@ if ($op=='A')
 					<h4><div id="divtaxon"></div></h4>
 					<p>Dados originais<br>
 					<div id="dadosoriginais"></div><br>
+					<div id="dadoscoletor"></div><br>
 					<div class="row">
 						<div class="col-md-1 col-sm-1 col-xs-1"></div>
 						<div class="col-md-2 col-sm-2 col-xs-2">
@@ -637,17 +638,18 @@ while ($row = pg_fetch_array($res))
 	$path =  $row['path'];
 	$arquivo =  $row['file'];
 	$localizacao = $row['country'].', '.$row['majorarea'].' - '.$row['minorarea'];
+	$coletor = $row['collector'].' '.$row['collectnumber'];
 	
 	$html_imagem='<a href=templaterb2.php?colbot=rb&codtestemunho='.$row['codtestemunho'].'&arquivo='.$arquivo.' target=\"Visualizador\"><img src="http://'.$servidor.'/fsi/server?type=image&source='.$path.'/'.$arquivo.'&width=300&height=70&profile=jpeg&quality=20"></a>';
 	
 	// preparo os quadros de informação para cada ponto
 	$c++;
 	if ($c < $conta) {
-		$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."'],";
+		$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."','".$coletor."'],";
 	}
 	else
 	{
-		$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."']";
+		$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."','".$coletor."']";
 		$latcenter = $row['lat'];
 		$longcenter = $row['long'];
 	}
@@ -664,7 +666,7 @@ while ($row = pg_fetch_array($res))
 																					<td class="a-right a-right "><?php echo $row['collector'];?> <?php echo $row['collectnumber'];?></td>
 																					<td class=" "><?php if($row['country']) echo $row['country'] . ',';?> <?php if($row['majorarea']) echo $row['majorarea'] . '-';?> <?php if($row['minorarea']) echo $row['minorarea'] . '.';?><br>(<?php echo $row['lat'];?>,<?php echo $row['long'];?>)</td>
 																					<td class=" " style="min-width: 250px;"><?php echo "<image src='".$icone."'>".' '.$row['statusoccurrence'];?></td>
-																					<td class="points-table-action"><a data-toggle="tooltip" data-placement="top" title data-original-title="Editar" onclick="abreModal('<?php echo $row['taxon'];?>','<?php echo $row['lat'];?>','<?php echo $row['long'];?>','<?php echo $row['idoccurrence'];?>','<?php echo $row[''];?>','<?php echo $row[''];?>','<?php echo $servidor;?>','<?php echo $path;?>','<?php echo $arquivo;?>','<?php echo $row['idstatusoccurrence'];?>','<?php echo $localizacao;?>')">  <span class="glyphicon glyphicon-edit edit-button" aria-hidden="true"></span></a></td>
+																					<td class="points-table-action"><a data-toggle="tooltip" data-placement="top" title data-original-title="Editar" onclick="abreModal('<?php echo $row['taxon'];?>','<?php echo $row['lat'];?>','<?php echo $row['long'];?>','<?php echo $row['idoccurrence'];?>','<?php echo $row[''];?>','<?php echo $row[''];?>','<?php echo $servidor;?>','<?php echo $path;?>','<?php echo $arquivo;?>','<?php echo $row['idstatusoccurrence'];?>','<?php echo $localizacao;?>','<?php echo $coletor;?>')">  <span class="glyphicon glyphicon-edit edit-button" aria-hidden="true"></span></a></td>
 																				</tr>
 	<?php }// while  ?>
 																			</tbody>
@@ -1177,7 +1179,7 @@ function initMap() {
         // Allow each marker to have an info window    
         google.maps.event.addListener(marker, 'click', (function(marker, i) {
             return function() {
-				abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],'','',markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9]);
+				abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],'','',markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10]);
 				
             }
         })(marker, i));
@@ -1311,14 +1313,14 @@ function initMapModal(idocorrencia) {
         // Allow each marker to have an info window    
         google.maps.event.addListener(marker, 'click', (function(marker, i) {
             return function() {
-				abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],'','',markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9]);
+				abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],'','',markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10]);
 				
             }
         })(marker, i));
 		
         google.maps.event.addListener(marker, 'dragend', (function(marker, i) {
             return function() {
-				abreConfirmacao(markers[i][0],markers[i][1],markers[i][2],markers[i][3],this.position.lat(),this.position.lng(),markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9]);
+				abreConfirmacao(markers[i][0],markers[i][1],markers[i][2],markers[i][3],this.position.lat(),this.position.lng(),markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10]);
 				//abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],this.position.lat(),this.position.lng(),markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9]);
 				
             }
@@ -1382,7 +1384,7 @@ function abreModelStatusOcorrencia()
 	}
 }
 
-function abreModal(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquivo,idstatusocorrence,localizacao)
+function abreModal(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquivo,idstatusocorrence,localizacao, coletor)
 {
 
    document.getElementById('divtaxon').innerHTML=taxon;
@@ -1392,6 +1394,7 @@ function abreModal(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquiv
 	document.getElementById('edidocorrencia').value=idocorrencia;
 	document.getElementById('divimagem').innerHTML=html_imagem;
 	document.getElementById('dadosoriginais').innerHTML='Latitude: '+lat+' Longitude: '+lng+' - '+localizacao;
+	document.getElementById('dadoscoletor').innerHTML='Coletor: '+coletor;
 	document.getElementById('edtlatitude').value=lat;
 	document.getElementById('edtlongitude').value=lng;
 	document.getElementById('cmboxstatusoccurrence').value=idstatusocorrence;

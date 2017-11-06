@@ -879,7 +879,7 @@ else long end as long
  from modelr.occurrence, modelr.statusoccurrence where 
 							occurrence.idstatusoccurrence = statusoccurrence.idstatusoccurrence and
 							idexperiment = ".$id. ' 
- and occurrence.idstatusoccurrence in (4,17) ';
+ and occurrence.idstatusoccurrence in (4,17) ';';
 
 //echo $sql; 
 $res = pg_exec($conn,$sql);
@@ -893,7 +893,7 @@ $marker = '';
 								// preparo os quadros de informação para cada ponto
 								$c++;
 								if ($c < $conta) {
-									$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."'],";
+									$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."']";
 								}
 								else
 								{
@@ -904,7 +904,7 @@ $marker = '';
 							}   
 ?>							
   	var markers = [
-        <?php echo $marker;;?>
+        <?php echo $marker;?>
     ];
 
     // Info Window Content
