@@ -90,7 +90,7 @@
 									}
 									
 									$hash = md5($row['idexperiment']);
-									$log_directory = './result/'.$hash.'/';
+                                    $log_directory = './result/'.$hash.'/';
 									$results_array = array();
 									$conta_arquivos = 0;
 									if (is_dir($log_directory))

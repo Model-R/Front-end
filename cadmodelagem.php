@@ -320,7 +320,7 @@ $tss = $Experimento->tss;
                             </div>
                             <div class="form-group">
                                     <div class="send-button">
-                                        <button id="send" type="button" onclick="enviar()" class="btn btn-success" data-toggle="tooltip" data-placement="top" title data-original-title="Salvar informações">Salvar</button>
+                                        <button id="send" type="button" onclick="enviar()" class="btn btn-success">Salvar</button>
                                     </div>
                                 </div>
                         </div>
@@ -437,7 +437,7 @@ $rowsource = pg_fetch_array($ressource);
                             </div>
                             <div class="form-group">
                                     <div class="send-button">
-                                        <button id="send" type="button" onclick="enviar()" class="btn btn-success" data-toggle="tooltip" data-placement="top" title data-original-title="Salvar informações">Salvar</button>
+                                        <button id="send" type="button" onclick="enviar()" class="btn btn-success">Salvar</button>
                                     </div>
                                 </div>
                         </div>
@@ -490,7 +490,7 @@ $rowsource = pg_fetch_array($ressource);
                                             </div>
 
                                         </div>
-										<div class="item form-group">
+                                        <div class="item form-group">
                                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">TSS<span class="required">*</span>
                                             </label>
                                             <div class="col-md-6 col-sm-6 col-xs-6">
@@ -500,13 +500,13 @@ $rowsource = pg_fetch_array($ressource);
                                                 <input id="lbltss" onchange="document.getElementById('edttss').value= this.value " value="<?php echo $tss;?>"  name="lbltss" class="form-control col-md-2 col-xs-12" data-toggle="tooltip" data-placement="top" title="Valor decimal entre 0 e 1 (exemplo: 0.3)">
                                             </div>
                                         </div>
-                                        <div class="item form-group">
+										<div class="item form-group">
                                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">Buffer<span class="required">*</span>
                                             </label>
                                             <div class="col-md-6 col-sm-6 col-xs-6">
                                                 <div class="radio-group-buffer">
                                                     <div><input onchange="document.getElementById('lblbuffer').value=this.value" type="radio" name="edtbuffer[]" id="checkbuffermin" value="min" <?php if ($_REQUEST['edtbuffer'][0]=='mínima') echo "checked";?> />Mínima</div>
-                                                    <div><input onchange="document.getElementById('lblbuffer').value=this.value" type="radio" name="edtbuffer[]" id="checkbuffermedim" value="medium" <?php if ($_REQUEST['edtbuffer'][0]=='média') echo "checked";?>/>Médias</div>
+                                                    <div><input onchange="document.getElementById('lblbuffer').value=this.value" type="radio" name="edtbuffer[]" id="checkbuffermedim" value="mean" <?php if ($_REQUEST['edtbuffer'][0]=='média') echo "checked";?>/>Médias</div>
                                                     <div><input onchange="document.getElementById('lblbuffer').value=this.value" type="radio" name="edtbuffer[]" id="checkbuffermedian" value="median" <?php if ($_REQUEST['edtbuffer'][0]=='mediana') echo "checked";?>/>Mediana</div>
                                                     <div><input onchange="document.getElementById('lblbuffer').value=this.value" type="radio" name="edtbuffer[]" id="checkbuffermax" value="max" <?php if ($_REQUEST['edtbuffer'][0]=='máxima') echo "checked";?>/>Máxima</div>
                                                 </div>
@@ -544,7 +544,7 @@ $rowsource = pg_fetch_array($ressource);
                             </div>
                             <div class="form-group">
                                     <div class="send-button">
-                                        <button id="send" type="button" onclick="enviar()" class="btn btn-success" data-toggle="tooltip" data-placement="top" title data-original-title="Salvar informações">Salvar</button>
+                                        <button id="send" type="button" onclick="enviar()" class="btn btn-success">Salvar</button>
                                     </div>
                                 </div>
                         </div>
@@ -879,7 +879,7 @@ else long end as long
  from modelr.occurrence, modelr.statusoccurrence where 
 							occurrence.idstatusoccurrence = statusoccurrence.idstatusoccurrence and
 							idexperiment = ".$id. ' 
- and occurrence.idstatusoccurrence in (4,17) ';';
+ and occurrence.idstatusoccurrence in (4,17) ';
 
 //echo $sql; 
 $res = pg_exec($conn,$sql);
@@ -893,7 +893,7 @@ $marker = '';
 								// preparo os quadros de informação para cada ponto
 								$c++;
 								if ($c < $conta) {
-									$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."']";
+									$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."'],";
 								}
 								else
 								{
@@ -904,7 +904,7 @@ $marker = '';
 							}   
 ?>							
   	var markers = [
-        <?php echo $marker;?>
+        <?php echo $marker;;?>
     ];
 
     // Info Window Content
@@ -1020,13 +1020,6 @@ function abreModal(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquiv
 	$('#myModal').modal('show');
 }
 
-function enviar()
-{   
-    exibe('loading');
-    document.getElementById('frm').action='exec.modelagem.php';
-    document.getElementById('frm').submit();
-}		
-
     </script>
 	 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhi_DlmaFvRu7eP357bOzl29fyZXKIJE0&callback=initMap" async defer>
     </script>	
@@ -1045,7 +1038,7 @@ require 'MSGCODIGO.php';
 //$tab = $_REQUEST['tab'];
 ?>
 
-$(document).ready(function() {
+$(document ).ready(function() {
 	//alert('');
  	//$('.nav-tabs a[href="#tab_content<?php echo $tab;?>"]').tab('show')
 	initMap();
@@ -1055,7 +1048,7 @@ $(document).ready(function() {
 $('.nav-tabs a[href="#tab_content3"]').click(function(){
 	// alert('3');
     $(this).tab('show');
-});	
+})	
 
 $('.nav-tabs').on('shown.bs.tab', function () {
     google.maps.event.trigger(window, 'resize', {});
@@ -1080,14 +1073,13 @@ function filtrar(idstatusoccurrence)
 	document.getElementById('frm').submit();
 }
 		
-// function enviar()
-// 		{   
-//             console.log('renncew');
-// 			exibe('loading');
-// 			document.getElementById('frm').action='exec.modelagem.php';
-// 			document.getElementById('frm').submit();
-// 		}			
-    
+function enviar()
+		{
+			exibe('loading');
+			document.getElementById('frm').action='exec.modelagem.php';
+			document.getElementById('frm').submit();
+		}			
+	
         // initialize the validator function
         validator.message['date'] = 'not a real date';
 

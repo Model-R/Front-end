@@ -90,7 +90,7 @@ or shape.nm_mun <> minorarea)
 
 		//teste inverter coordenada
 		// pago o que foi marcado como idstatusocurrence = 2
-		$sql2 = 'select * from modelr.occurrence where (idstatusoccurrence = 2 or idstatusoccurrence = 8 or idstatusoccurrence = 10 or idstatusoccurrence = 11) and
+		$sql2 = 'select * from modelr.occurrence where (idstatusoccurrence = 2 or idstatusoccurrence = 8 or idstatusoccurrence = 10 or idstatusoccurrence = 11 or idstatusoccurrence = 19) and
 				idexperiment = '.$idexperimento;
 		$res2 = pg_exec($conn,$sql2);
 		while ($row = pg_fetch_array($res2))
@@ -114,7 +114,7 @@ or shape.nm_mun <> minorarea)
 		}
 
 		//teste trocar sinal de coordenada (latitude)
-		$sql5 = 'select * from modelr.occurrence where (idstatusoccurrence = 2 or idstatusoccurrence = 8 or idstatusoccurrence = 10 or idstatusoccurrence = 11) and
+		$sql5 = 'select * from modelr.occurrence where (idstatusoccurrence = 2 or idstatusoccurrence = 8 or idstatusoccurrence = 10 or idstatusoccurrence = 11 or idstatusoccurrence = 19) and
 				idexperiment = '.$idexperimento.' and lat > 0';
 		$res5 = pg_exec($conn,$sql5);
 		while ($row3 = pg_fetch_array($res5))
@@ -138,7 +138,7 @@ or shape.nm_mun <> minorarea)
 		}
 
 		//teste trocar sinal de coordenada (longitude)
-		$sql8 = 'select * from modelr.occurrence where (idstatusoccurrence = 2 or idstatusoccurrence = 8 or idstatusoccurrence = 10 or idstatusoccurrence = 11) and
+		$sql8 = 'select * from modelr.occurrence where (idstatusoccurrence = 2 or idstatusoccurrence = 8 or idstatusoccurrence = 10 or idstatusoccurrence = 11 or idstatusoccurrence = 19) and
 				idexperiment = '.$idexperimento.' and long > 0';
 		$res8 = pg_exec($conn,$sql8);
 		while ($row5 = pg_fetch_array($res8))
@@ -162,7 +162,7 @@ or shape.nm_mun <> minorarea)
 		}
 
 		//teste trocar sinal de coordenada (latitude e longitude)
-		$sql11 = 'select * from modelr.occurrence where (idstatusoccurrence = 2 or idstatusoccurrence = 8 or idstatusoccurrence = 10 or idstatusoccurrence = 11) and
+		$sql11 = 'select * from modelr.occurrence where (idstatusoccurrence = 2 or idstatusoccurrence = 8 or idstatusoccurrence = 10 or idstatusoccurrence = 11 or idstatusoccurrence = 19) and
 				idexperiment = '.$idexperimento.' and (long > 0) and (lat > 0)';
 		$res11 = pg_exec($conn,$sql11);
 		while ($row7 = pg_fetch_array($res11))
@@ -191,6 +191,11 @@ or shape.nm_mun <> minorarea)
 
 		$MSGCODIGO = 73;
 	}
+
+	//marcar pontos com verificados pelo filtro
+	$sql = "update modelr.occurrence set idstatusoccurrence=19 where
+	idstatusoccurrence=8 and idexperiment = ".$idexperimento;
+	$res = pg_exec($conn,$sql);
 	
 	if ($idstatus=='99')
 	{
