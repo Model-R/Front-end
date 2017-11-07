@@ -741,6 +741,7 @@ function initMap() {
   var map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: -24.5452, lng: -42.5389},
     mapTypeId: 'terrain',
+    gestureHandling: 'greedy',
         mapTypeControl: true,
         mapTypeControlOptions: {
             mapTypeIds: ['terrain','roadmap', 'satellite']

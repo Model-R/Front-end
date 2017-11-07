@@ -571,7 +571,7 @@ if ($op=='A')
 																	<?php } ?>
 																	<div class="x_content">
 																	 <p style="padding: 5px;">
-																	 <div id="map3"></div>
+																	<div id="map3"></div>
 																		<!-- end pop-over -->
 																	</div>
 																</div>
@@ -1073,6 +1073,7 @@ function initMap() {
     var map3 = new google.maps.Map(document.getElementById('map3'), {
      center: {lat: <?php echo $latcenter;?>, lng: <?php echo $longcenter;?>},
 	 mapTypeId: 'terrain',
+	 gestureHandling: 'greedy',
         mapTypeControl: true,
         mapTypeControlOptions: {
             mapTypeIds: ['terrain','roadmap', 'satellite']
@@ -1205,6 +1206,7 @@ function initMapModal(idocorrencia) {
     var map4 = new google.maps.Map(document.getElementById('map4'), {
      center: {lat: <?php echo $latcenter;?>, lng: <?php echo $longcenter;?>},
 	 mapTypeId: 'terrain',
+	 gestureHandling: 'greedy',
         mapTypeControl: true,
         mapTypeControlOptions: {
             mapTypeIds: ['terrain','roadmap', 'satellite']
@@ -1614,6 +1616,7 @@ $(document ).ready(function() {
 	var automaticFilter = <?php echo $automaticfilter;?>;
 	var MSGCODIGO = <?php echo $MSGCODIGO;?>;
 	if(automaticFilter && MSGCODIGO == 71) atualizarPontos('',99,'','');
+
 });
 		
 $('.nav-tabs a[href="#tab_content2"]').click(function(){
