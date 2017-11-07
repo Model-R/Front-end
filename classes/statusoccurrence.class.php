@@ -65,13 +65,23 @@ class StatusOccurrence
 	   	$this->usefull = $row['usefull'];
 	}
 	
-	function listaCombo($nomecombo,$id,$refresh='N',$classe,$filtro='')
-	{
+	function listaCombo($nomecombo,$id,$refresh='N',$classe,$filtro='',$expid)
+	{	
+
+		$sqlList = "select distinct idstatusoccurrence from modelr.occurrence where idexperiment = " . $expid;
+		$resList = pg_exec($this->conn,$sqlList);
+
+		$column = array();
+		while($row = pg_fetch_array($resList)){
+			$column[] = $row['idstatusoccurrence'];
+		}
+
 	   	$sql = "select * from modelr.statusoccurrence where idstatusoccurrence = idstatusoccurrence ";
-		
 		if (!empty($filtro))
 		{
 		 $sql.=" and idstatusoccurrence in (".$filtro.")  ";
+		} else{
+			$sql.= "and idstatusoccurrence in (".implode($column, ',').")";
 		}
 		$sql.=' order by statusoccurrence.statusoccurrence ';
 		$res = pg_exec($this->conn,$sql);

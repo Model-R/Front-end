@@ -583,7 +583,7 @@ if ($op=='A')
 																		<div class="clearfix"></div>
 																		<div class="row">
 																			<div class="col-md-6 col-sm-6 col-xs-12">
-																				<?php echo $StatusOccurrence->listaCombo('cmboxstatusoccurrencefiltro',$idstatusoccurrencefiltro,'N','class="form-control"','');?>
+																				<?php echo $StatusOccurrence->listaCombo('cmboxstatusoccurrencefiltro',$idstatusoccurrencefiltro,'N','class="form-control"','',$id);?>
 																			</div>
 																			<div class="col-md-6 col-sm-6 col-xs-12 points-table-options">
 																				<button id="send" type="button" onclick="filtrar(document.getElementById('cmboxstatusoccurrencefiltro').value)" class="btn btn btn-success" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos">Filtrar</button>
