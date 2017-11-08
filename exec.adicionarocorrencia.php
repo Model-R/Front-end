@@ -26,7 +26,7 @@ $fontedados = $_REQUEST['fontebiotico'][0];
 
 if ($fontedados==1)
 {
-	$sql = "select numtombo,taxoncompleto,codtestemunho,coletor,numcoleta,latitude,longitude,pais,estado_prov as estado,cidade as municipio
+	$sql = "select numtombo,taxoncompleto,codtestemunho,coletor,numcoleta,latitude,longitude,pais,estado_prov as estado,cidade as municipio, siglacolecao as herbario
 			from  
 								publicacao.extracao_jabot where latitude is not null and longitude is not null and ";
 //								familia || ' ' || taxoncompleto ilike '%".$especie."%' ";
@@ -51,11 +51,13 @@ if ($fontedados==1)
 		$lat = $row['latitude'];
 		$long = $row['longitude'];
 		$taxon = $row['taxoncompleto'];
+		$herbario = $row['herbario'];
 		$coletor = $row['coletor'];
 		$numcoleta = $row['numcoleta'];
 		$pais = $row['pais'];
 		$estado = $row['estado'];
 		$municipio = $row['municipio'];
+		$tombo = $row['numtombo'];
 		
 //		echo $pais.','.$estado.','.$municipio;
 //		exit;
@@ -67,7 +69,7 @@ if ($fontedados==1)
 		$imagemcaminho =  $rowimagem ['path'];
 		$imagemarquivo =  $rowimagem ['arquivo'];
 	
-		$Experimento->adicionarOcorrencia($idexperimento,$fontedados,$lat,$long,$taxon,$coletor,$numcoleta,$imagemservidor,$imagemcaminho,$imagemarquivo,$pais,$estado,$municipio);
+		$Experimento->adicionarOcorrencia($idexperimento,$fontedados,$lat,$long,$taxon,$coletor,$numcoleta,$imagemservidor,$imagemcaminho,$imagemarquivo,$pais,$estado,$municipio, $herbario,$tombo);
 	}
 }
 if ($fontedados==2)
@@ -93,7 +95,9 @@ if ($fontedados==2)
 		$pais=$val[10];
 		$estado = $val[11];
 		$municipio=$val[12]; 
-		$Experimento->adicionarOcorrencia($idexperimento,$fontedados,$latitude,$longitude,$taxon,$coletor,$numcoleta,$imagemservidor,$imagemcaminho,$imagemarquivo,$pais,$estado,$municipio);
+		$herbario=$val[13]; 
+		$tombo=$val[14]; 
+		$Experimento->adicionarOcorrencia($idexperimento,$fontedados,$latitude,$longitude,$taxon,$coletor,$numcoleta,$imagemservidor,$imagemcaminho,$imagemarquivo,$pais,$estado,$municipio,$herbario,$tombo);
 	} 
 	
 }

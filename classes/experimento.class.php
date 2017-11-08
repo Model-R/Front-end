@@ -132,13 +132,15 @@ class Experimento
 //		exit;
 	}
 
-	function adicionarOcorrencia($idexperimento,$idfontedados,$lat,$long,$taxon,$coletor,$numcoleta,$imagemservidor,$imagemcaminho,$imagemarquivo,$p,$e,$m)
+	function adicionarOcorrencia($idexperimento,$idfontedados,$lat,$long,$taxon,$coletor,$numcoleta,$imagemservidor,$imagemcaminho,$imagemarquivo,$p,$e,$m,$herbario,$tombo)
 	{
  		$sql = "insert into modelr.occurrence (idexperiment,
 		iddatasource,
 		lat,
 		long,
 		taxon,
+		herbario,
+		numtombo,
 		collector,
 		collectnumber,
 		server,
@@ -154,6 +156,8 @@ class Experimento
 		".$lat.",
 		".$long.",
 		'".$taxon."',
+		'".$herbario."',
+		'".$tombo."',
 		'".$coletor."',
 		'".$numcoleta."',
 		'".$imagemservidor."',

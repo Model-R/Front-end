@@ -221,6 +221,7 @@ if ($op=='A')
 					<p>Dados originais<br>
 					<div id="dadosoriginais"></div><br>
 					<div id="dadoscoletor"></div><br>
+					<div id="dadosherbario"></div><br>
 					<div class="row">
 						<div class="col-md-1 col-sm-1 col-xs-1"></div>
 						<div class="col-md-2 col-sm-2 col-xs-2">
@@ -491,7 +492,7 @@ if ($op=='A')
 	if ((!empty($especie)) && ($_REQUEST['fontebiotico'][0]=='1'))
 	{
 		$sql = "select numtombo,taxoncompleto,codtestemunho,coletor,numcoleta,latitude,longitude,
-		pais,estado_prov as estado,cidade as municipio
+		pais,estado_prov as estado,cidade as municipio, siglacolecao as herbario
 			from  
 		publicacao.extracao_jabot where latitude is not null and longitude is not null and
 		familia || ' ' || taxoncompleto ilike '%".$especie."%'";
@@ -507,6 +508,7 @@ if ($op=='A')
 				</th>
 				<th class="column-title">Táxon </th>
 				<th class="column-title">Tombo </th>
+				<th class="column-title">Herbário </th>
 				<th class="column-title">Coletor </th>
 				<th class="column-title">Coordenadas </th>
 				<th class="column-title">Localização</th>
@@ -527,6 +529,7 @@ if ($op=='A')
 																						<td class="a-center "><input name="chtestemunho[]" id="chtestemunho[]" value="<?php echo $row['codtestemunho'];?>" type="checkbox" ></td>
 																						<td class=" "><?php echo $html_imagem.' ';?><?php echo $row['taxoncompleto'];?></td>
 																						<td class="a-right a-right "><?php echo $row['numtombo'];?></td>
+																						<td class=" "><?php echo $row['herbario'];?></td>
 																						<td class="a-right a-right "><?php echo $row['coletor'];?> <?php echo $row['numcoleta'];?></td>
 																						<td class=" "><?php echo $row['latitude'];?>, <?php echo $row['longitude'];?></td>
 																						<td class=" "><?php echo $row['pais'];?>, <?php echo $row['estado'];?> - <?php echo $row['municipio'];?></td>
@@ -609,7 +612,7 @@ if ($op=='A')
 																			</thead>
 <?php 
 $sql = "select idoccurrence,idexperiment,iddatasource,taxon,collector,collectnumber,server,
-path,file,occurrence.idstatusoccurrence,pathicon,statusoccurrence,country,majorarea,minorarea,
+path,file,occurrence.idstatusoccurrence,pathicon,statusoccurrence,country,majorarea,minorarea,herbario,numtombo,
 case when lat2 is not null then lat2 else lat end as lat,
 case when long2 is not null then long2
 else long end as long
@@ -637,6 +640,8 @@ while ($row = pg_fetch_array($res))
 	$servidor = $row['server'];
 	$path =  $row['path'];
 	$arquivo =  $row['file'];
+	$herbario =  $row['herbario'];
+	$tombo =  $row['numtombo'];
 	$localizacao = $row['country'].', '.$row['majorarea'].' - '.$row['minorarea'];
 	$coletor = $row['collector'].' '.$row['collectnumber'];
 	
@@ -645,11 +650,11 @@ while ($row = pg_fetch_array($res))
 	// preparo os quadros de informação para cada ponto
 	$c++;
 	if ($c < $conta) {
-		$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."','".$coletor."'],";
+		$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."','".$coletor."','".$herbario."','".$tombo."'],";
 	}
 	else
 	{
-		$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."','".$coletor."']";
+		$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."','".$coletor."','".$herbario."','".$tombo."']";
 		$latcenter = $row['lat'];
 		$longcenter = $row['long'];
 	}
@@ -666,7 +671,7 @@ while ($row = pg_fetch_array($res))
 																					<td class="a-right a-right "><?php echo $row['collector'];?> <?php echo $row['collectnumber'];?></td>
 																					<td class=" "><?php if($row['country']) echo $row['country'] . ',';?> <?php if($row['majorarea']) echo $row['majorarea'] . '-';?> <?php if($row['minorarea']) echo $row['minorarea'] . '.';?><br>(<?php echo $row['lat'];?>,<?php echo $row['long'];?>)</td>
 																					<td class=" " style="min-width: 250px;"><?php echo "<image src='".$icone."'>".' '.$row['statusoccurrence'];?></td>
-																					<td class="points-table-action"><a data-toggle="tooltip" data-placement="top" title data-original-title="Editar" onclick="abreModal('<?php echo $row['taxon'];?>','<?php echo $row['lat'];?>','<?php echo $row['long'];?>','<?php echo $row['idoccurrence'];?>','<?php echo $row[''];?>','<?php echo $row[''];?>','<?php echo $servidor;?>','<?php echo $path;?>','<?php echo $arquivo;?>','<?php echo $row['idstatusoccurrence'];?>','<?php echo $localizacao;?>','<?php echo $coletor;?>')">  <span class="glyphicon glyphicon-edit edit-button" aria-hidden="true"></span></a></td>
+																					<td class="points-table-action"><a data-toggle="tooltip" data-placement="top" title data-original-title="Editar" onclick="abreModal('<?php echo $row['taxon'];?>','<?php echo $row['lat'];?>','<?php echo $row['long'];?>','<?php echo $row['idoccurrence'];?>','<?php echo $row[''];?>','<?php echo $row[''];?>','<?php echo $servidor;?>','<?php echo $path;?>','<?php echo $arquivo;?>','<?php echo $row['idstatusoccurrence'];?>','<?php echo $localizacao;?>','<?php echo $coletor;?>','<?php echo $herbario;?>','<?php echo $tombo;?>')">  <span class="glyphicon glyphicon-edit edit-button" aria-hidden="true"></span></a></td>
 																				</tr>
 	<?php }// while  ?>
 																			</tbody>
@@ -875,15 +880,17 @@ function gbif(taxonKey)
 			pais = myObj.results[i].country;
 			estado = myObj.results[i].stateProvince;
 			cidade = myObj.results[i].municipality;
+			herbario = myObj.results[i].datasetName;
 			
 			//$idexperimento,$idfontedados,$lat,$long,$taxon,$coletor,$numcoleta,$imagemservidor,$imagemcaminho,$imagemarquivo,$pais,$estado,$municipio
 			var idexperimento = document.getElementById('id').value;
 			
-			var Jval = idexperimento + '|2|'+latitude+'|'+longitude+'|'+taxon+'|'+ coletor+'|'+numcoleta+'||||'+ pais+'|'+ estado+'|'+ cidade; 
+			var Jval = idexperimento + '|2|'+latitude+'|'+longitude+'|'+taxon+'|'+ coletor+'|'+numcoleta+'||||'+ pais+'|'+ estado+'|'+ cidade + '|' + herbario + '|' + tombo; 
 
 				body += '<tr class="even pointer"><td class="a-center "><input name="chtestemunho[]" id="chtestemunho[]" value="'+Jval+'" type="checkbox" ></td>';
 				body +='<td class=" ">'+taxon+'</td>';
 				body +='<td class="a-right a-right ">'+tombo+'</td>';
+				body +='<td class="a-right a-right ">'+herbario+'</td>';
 				body +='<td class="a-right a-right ">'+coletor+' '+numcoleta+'</td>';
 				body +='<td class=" ">'+latitude+', '+longitude+'</td>';
 				body +='<td class=" ">'+pais+', '+estado+' - '+cidade+'</td>';
@@ -899,7 +906,7 @@ function gbif(taxonKey)
 		
 		var table = '';
 		table += '<table class="table table-striped responsive-utilities jambo_table bulk_action"><thead><tr class="headings"><th><input type="checkbox" id="chkboxtodos2" name="chkboxtodos2" onclick="selecionaTodos2(true);">';
-		table += '</th><th class="column-title">Táxon </th><th class="column-title">Tombo </th><th class="column-title">Coletor </th><th class="column-title">Coordenadas </th>';
+		table += '</th><th class="column-title">Táxon </th><th class="column-title">Tombo </th><th class="column-title">Herbário </th><th class="column-title">Coletor </th><th class="column-title">Coordenadas </th>';
 		table += '<th class="column-title">Localização</th>';
 		table += '<a class="antoo" style="color:#fff; font-weight:500;">Total de Registros selecionados: ( <span class="action-cnt"> </span> ) </a>';
 		table += '</th></tr></thead>';
@@ -1180,7 +1187,7 @@ function initMap() {
         // Allow each marker to have an info window    
         google.maps.event.addListener(marker, 'click', (function(marker, i) {
             return function() {
-				abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],'','',markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10]);
+				abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],'','',markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12]);
 				
             }
         })(marker, i));
@@ -1189,10 +1196,12 @@ function initMap() {
        // map3.fitBounds(bounds);
     }
 
+	tabMap = map3;
+	console.log('rodou1')
 	initMapModal()//start map inside modal
   
 }
-
+var tabMap;
 var modalMap;
 
 function initMapModal(idocorrencia) {
@@ -1315,14 +1324,14 @@ function initMapModal(idocorrencia) {
         // Allow each marker to have an info window    
         google.maps.event.addListener(marker, 'click', (function(marker, i) {
             return function() {
-				abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],'','',markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10]);
+				abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],'','',markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12]);
 				
             }
         })(marker, i));
 		
         google.maps.event.addListener(marker, 'dragend', (function(marker, i) {
             return function() {
-				abreConfirmacao(markers[i][0],markers[i][1],markers[i][2],markers[i][3],this.position.lat(),this.position.lng(),markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10]);
+				abreConfirmacao(markers[i][0],markers[i][1],markers[i][2],markers[i][3],this.position.lat(),this.position.lng(),markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12]);
 				//abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],this.position.lat(),this.position.lng(),markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9]);
 				
             }
@@ -1386,7 +1395,7 @@ function abreModelStatusOcorrencia()
 	}
 }
 
-function abreModal(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquivo,idstatusocorrence,localizacao, coletor)
+function abreModal(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquivo,idstatusocorrence,localizacao, coletor, herbario, tombo)
 {
 
    document.getElementById('divtaxon').innerHTML=taxon;
@@ -1397,6 +1406,7 @@ function abreModal(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquiv
 	document.getElementById('divimagem').innerHTML=html_imagem;
 	document.getElementById('dadosoriginais').innerHTML='Latitude: '+lat+' Longitude: '+lng+' - '+localizacao;
 	document.getElementById('dadoscoletor').innerHTML='Coletor: '+coletor;
+	document.getElementById('dadosherbario').innerHTML='Herbário: '+herbario + ' - Tombo: ' + tombo;
 	document.getElementById('edtlatitude').value=lat;
 	document.getElementById('edtlongitude').value=lng;
 	document.getElementById('cmboxstatusoccurrence').value=idstatusocorrence;
@@ -1533,6 +1543,12 @@ function enviar()
                 $('form .alert').remove();
         }).prop('checked', false);
 
+		$('.nav-tabs a[href="#tab_content2"]').click(function(){
+			$(this).tab('show');
+			initMap();
+			setTimeout(function(){ google.maps.event.trigger(tabMap, "resize");}, 200);
+		})
+
 var file;
 
 function handleFileSelect(evt) {
@@ -1619,15 +1635,14 @@ $(document ).ready(function() {
 
 });
 		
+// $('.nav-tabs a[href="#tab_content1"]').on('shown', function () {
+// 	console.log('entroiu')
+// 	google.maps.event.trigger(tabMap, "resize");
+// });
+
 $('.nav-tabs a[href="#tab_content2"]').click(function(){
     $(this).tab('show');
 	filtrar('');
-})	
-
-$('.nav-tabs a[href="#tab_content3"]').click(function(){
-	//alert('3');
-    $(this).tab('show');
-	initMap();
 })	
 
 // $('.points-table-action').click(function(){
