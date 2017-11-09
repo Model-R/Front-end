@@ -56,11 +56,11 @@ else if ($type == 'points'){
     $output = fopen('php://output', 'w');
 
     // output the column headings
-    fputs($output, implode(array('idexperimento', 'taxon','coletor','número coleta', 'status','localização', 'latitude', 'longitude'), ';')."\n");
+    fputs($output, implode(array('idexperimento', 'herbário', 'tombo', 'taxon','coletor','número coleta', 'status','localização', 'latitude', 'longitude'), ';')."\n");
 
  
     // fetch the data
-    $sql = "select idexperiment,taxon,collector,collectnumber,statusoccurrence,country || ' - ' || majorarea || ' - ' ||  minorarea as localizacao,
+    $sql = "select idexperiment,herbario, numtombo,taxon,collector,collectnumber,statusoccurrence,country || ' - ' || majorarea || ' - ' ||  minorarea as localizacao,
     case when lat2 is not null then lat2 else lat end as lat,
     case when long2 is not null then long2
     else long end as long

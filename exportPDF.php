@@ -91,11 +91,11 @@
             $pdf->SetFont('Arial','B',10);
             $pdf->Ln();
 
-            $c_width=30;
+            $c_width=28;
             $c_height=20;
 
             // fetch the data
-            $sql = "select idoccurrence,idexperiment,taxon,collector,collectnumber,statusoccurrence,country || ' - ' || majorarea || ' - ' ||  minorarea as localizacao,
+            $sql = "select idexperiment,herbario, numtombo,taxon,collector,collectnumber,statusoccurrence,country || ' - ' || majorarea || ' - ' ||  minorarea as localizacao,
             case when lat2 is not null then lat2 else lat end as lat,
             case when long2 is not null then long2
             else long end as long
@@ -103,7 +103,7 @@
             occurrence.idstatusoccurrence = statusoccurrence.idstatusoccurrence and
             idexperiment = ".$expid;
 
-            $header = array('idocorrencia', 'idexperimento', 'taxon','coletor','número coleta', 'status','localização', 'latitude', 'longitude');
+            $header = array('idexperimento', 'herbário', 'tombo', 'taxon','coletor','número coleta', 'status','localização', 'latitude', 'longitude');
             
             $res = pg_exec($conn,$sql);
 
@@ -114,7 +114,7 @@
             }
         
             while($rows = pg_fetch_assoc($res)) {
-                $pdf->SetFont('Arial','',10);
+                $pdf->SetFont('Arial','',8);
                 $pdf->SetTextColor(0,0,0);
                 $pdf->Ln();
         
