@@ -23,6 +23,7 @@ if (($operacao=='I') || ($operacao=='A'))
 	$senha = $_REQUEST['edtsenha'];
 	$idsituacaousuario = $_REQUEST['cmboxsituacaousuario'];
 	$idtipousuario = $_REQUEST['cmboxtipousuario'];
+	$idinstituicaousuario = $_REQUEST['cmboxinstituicaousuario'];
 
 	$usuario->login = $login;
 	$usuario->name = $nome;
@@ -30,6 +31,7 @@ if (($operacao=='I') || ($operacao=='A'))
 	$usuario->password = $senha;
 	$usuario->idstatususer = $idsituacaousuario;
 	$usuario->idusertype = $idtipousuario;
+	$usuario->idinstitution = $idinstituicaousuario;
 }
 
 if ($operacao=='I')
