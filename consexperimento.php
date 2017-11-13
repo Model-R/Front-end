@@ -56,7 +56,7 @@
 			$qtdok = $rowoccurrenceok[0];
             
 			$disabled = '';
-			if (($_SESSION['s_idtipousuario'])==1)
+			if (($_SESSION['s_idtipousuario'])!=2)
 			{
 				
 //				$disabled = 'disabled';
@@ -79,7 +79,8 @@
                                         <i class="fa fa-eraser"></i>
                                     </a>
                                    ';
-									if ($qtdok>0)
+                                    if (($qtdok>0 || $_SESSION['s_idtipousuario']==2) && $_SESSION['s_idtipousuario'] != 3)
+                                    //tipo administrador ve tudo, e tipo modelagem não ve modelagem
 									{
 										$html.='
 									<a class="btn btn-app '.$disabled.'" onclick="modelar('.$row['idexperiment'].')" data-toggle="tooltip" data-placement="top" title="Modelar">
@@ -93,7 +94,7 @@
                                     $log_directory = './result/'.$hash.'/';
 									$results_array = array();
 									$conta_arquivos = 0;
-									if (is_dir($log_directory))
+									if (is_dir($log_directory) || $_SESSION['s_idtipousuario']==2)
 									{
 										$html.='<a class="btn btn-app '.$disabled.'" onclick="resultado('.$row['idexperiment'].')" data-toggle="tooltip" data-placement="top" title="Resultado">
 											<i class="fa fa-globe"></i>
@@ -180,7 +181,7 @@ e.iduser = u.iduser
  ';
 // echo $sql;
 
-if ($_SESSION['s_idtipousuario']=='1')
+if ($_SESSION['s_idtipousuario']!='2')
 {
    $sql.= " and e.iduser = ".$_SESSION['s_idusuario'];	
 }

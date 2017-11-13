@@ -46,10 +46,10 @@ $idsource = $_REQUEST['cmboxfonte'];
 
 $especie = $_REQUEST['edtespecie'];
 
-$extensao1_norte = '6.41';
-$extensao1_sul = '-32.490';
-$extensao1_leste = '-34.443';
-$extensao1_oeste = '-62.649';
+$extensao1_norte = '-2.60';
+$extensao1_sul = '-34.03';
+$extensao1_leste = '-34.70';
+$extensao1_oeste = '-57.19';
 
 $extensao2_norte = '6.41';
 $extensao2_sul = '-32.490';
@@ -852,10 +852,10 @@ function initMap() {
         var ne = rectangle.getBounds().getNorthEast();
         var sw = rectangle.getBounds().getSouthWest();
 
-        document.getElementById('edtextensao1_oeste').value=ne.lat();
+        document.getElementById('edtextensao1_norte').value=ne.lat();
         document.getElementById('edtextensao1_sul').value=sw.lat();
-        document.getElementById('edtextensao1_leste').value=sw.lng();
-        document.getElementById('edtextensao1_norte').value=ne.lng();
+        document.getElementById('edtextensao1_oeste').value=sw.lng();
+        document.getElementById('edtextensao1_leste').value=ne.lng();
 		
       }
  

@@ -1036,12 +1036,11 @@ map.controls[google.maps.ControlPosition.TOP_CENTER].push(exportShapeDiv);
     // 	map: map,
     // 	preserveViewport: true
   	// });
-
       var imageBounds = new google.maps.LatLngBounds(
-        new google.maps.LatLng(-33.5353,-74.6274),
-        new google.maps.LatLng(7.6456,-34.3883));
+        new google.maps.LatLng(-33.77584, -57.84917),
+        new google.maps.LatLng(-2.775838, -30.24917));
     mapOverlay = new google.maps.GroundOverlay(
-    'http://model-r.jbrj.gov.br/ensemble_geral.png',
+    'http://model-r.jbrj.gov.br/v2/final.png',
     imageBounds,{opacity:1});
     mapOverlay.setMap(map);
 
@@ -1271,13 +1270,12 @@ function USGSOverlay(bounds, image, map) {
  */
 <?php 
 	$sql = "select idoccurrence,idexperiment,iddatasource,taxon,collector,collectnumber,server,
-path,file,occurrence.idstatusoccurrence,pathicon,statusoccurrence,country,majorarea,minorarea,
+    path,file,occurrence.idstatusoccurrence,pathicon,statusoccurrence,country,majorarea,minorarea,
 case when lat2 is not null then lat2 else lat end as lat, case when long2 is not null then long2
 else long end as long
  from modelr.occurrence, modelr.statusoccurrence where 
 							occurrence.idstatusoccurrence = statusoccurrence.idstatusoccurrence and
-							idexperiment = ".$id. ' 
- and occurrence.idstatusoccurrence in (4,17) ';
+							idexperiment = ".$id. " and occurrence.idstatusoccurrence in (4,17) ";
 
 //echo $sql; 
 $res = pg_exec($conn,$sql);
@@ -1299,7 +1297,8 @@ $marker = '';
 									$latcenter = $row['lat'];
 									$longcenter = $row['long'];
 								}
-							}   
+							}
+
 ?>							
   	var markers = [
         <?php echo $marker;;?>
