@@ -64,13 +64,25 @@ class Usuario
 		{
 			$this->idusertype = 'null';
 		}
-       		$sql = "update modelr.user set password = '".$this->password."', name = '".$this->name."', 
+
+		if (empty($this->password))
+		{
+			$sql = "update modelr.user set name = '".$this->name."', 
+			email = '".$this->email."'
+			, login = '".$this->login."'
+			, idusertype = '".$this->idusertype."'
+			, idstatususer = ".$this->idstatususer." 
+			, idinstitution = ".$this->idinstitution." 
+			 where iduser='".$id."' ";	
+		} else {
+			$sql = "update modelr.user set password = '".$this->password."', name = '".$this->name."', 
 			email = '".$this->email."'
 			, login = '".$this->login."'
 			, idusertype = '".$this->idusertype."'
 			, idstatususer = ".$this->idstatususer." 
 			, idinstitution = ".$this->idinstitution." 
 			 where iduser='".$id."' ";
+		}
 	   $resultado = pg_exec($this->conn,$sql);
 
        if ($resultado){

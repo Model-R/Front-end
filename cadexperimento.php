@@ -386,7 +386,7 @@ if ($op=='A')
 											<?php if ($op!='I')
 											{?>
 											<div class="new_experiment_send_button">
-												<button id="send" type="button" onclick="enviar()" class="btn btn-info" data-toggle="tooltip" data-placement="top" title data-original-title="Salvar informações">Salvar</button>
+												<button id="send" type="button" onclick="enviarExp()" class="btn btn-info" data-toggle="tooltip" data-placement="top" title data-original-title="Salvar informações">Salvar</button>
 
 												<?php
 												$sql = "select idoccurrence,idexperiment,iddatasource,taxon,collector,collectnumber,server,
@@ -418,7 +418,7 @@ if ($op=='A')
 										if ($op=='I'){?>
 										<div class="form-group">
                                             <div class="new_experiment_send_button">
-                                                <button id="send" type="button" onclick="enviar()" class="btn btn-success" data-toggle="tooltip" data-placement="top" title data-original-title="Salvar experimento">Salvar</button>
+                                                <button id="send" onclick="enviarExp()" type="button" class="btn btn-success" data-toggle="tooltip" data-placement="top" title data-original-title="Salvar experimento">Salvar</button>
                                             </div>
 										</div>
 										<?php } ?>
@@ -697,7 +697,7 @@ if ($op=='A')
 	{?>
 								<div class="form-group">
 									<div class="col-md-6 col-md-offset-5">
-										<button id="send" type="button" onclick="enviar()" class="btn btn-success" data-toggle="tooltip" data-placement="top" title data-original-title="Salvar modificações">Salvar</button>
+										<button id="send" type="button" onclick="enviarExp()" class="btn btn-success" data-toggle="tooltip" data-placement="top" title data-original-title="Salvar modificações">Salvar</button>
 									</div>
 								</div>
 <?php } ?>
@@ -752,9 +752,30 @@ if ($op=='A')
     <script type="text/javascript" src="js/notify/pnotify.core.js"></script>
     <script type="text/javascript" src="js/notify/pnotify.buttons.js"></script>
     <script type="text/javascript" src="js/notify/pnotify.nonblock.js"></script>		
-		
 <script>
 
+function teste(){
+	console.log('entrou');
+}
+
+function enviarExp(){
+	exibe('loading');
+	if (
+	(document.getElementById('edtexperimento').value=='')  ||
+	(document.getElementById('edtdescricao').value=='') 
+	)
+	{
+		criarNotificacao('Atenção','Verifique o preenchimento','warning');
+	}
+	else
+	{
+		document.getElementById('frm').action='exec.experimento.php';
+		document.getElementById('frm').submit();
+	}
+}
+
+</script>		
+<script>
 
 // This example adds a user-editable rectangle to the map.
 function selecionaTodos2(isChecked) {
@@ -925,142 +946,6 @@ function gbif(taxonKey)
 	xmlhttp.send();
 }
 
-function getSibbr(sp)
-{
-	//alert('');
-	// var xmlhttp = new XMLHttpRequest();
-	// xmlhttp.onreadystatechange = function() {
-    // if (this.readyState == 4 && this.status == 200) {
-    //     var myObj = JSON.parse(this.responseText);
-    //     document.getElementById("demo").innerHTML = myObj.results[0]["key"]; //this.responseText;//myObj.result[key];//count;
-	// 		printSibbr(myObj.ocurrences, sp);
-	// 	}
-	// };
-	// console.log(sp);
-	// xmlhttp.open("GET", "http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=" + sp + "&ignoreNullCoordinates=true&limit=50", true);
-	// xmlhttp.setRequestHeader( 'Access-Control-Allow-Origin', '*');
-	// // xmlhttp.setRequestHeader( 'Access-Control-Allow-Methods', 'GET');
-	// // xmlhttp.setRequestHeader( 'Access-Control-Allow-Headers', 'Content-Type, Authorization');
-	// // xmlhttp.setRequestHeader('Access-Control-Allow-Credentials', 'true');
-	// xmlhttp.send();
-
-	// $.ajax({
-
-	// 	url: 'http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=prepusa%20montana&ignoreNullCoordinates=true&limit=50',
-	// 	type: 'GET',
-	// 	crossDomain: true,
-	// 	dataType: 'jsonp',
-	// 	success: function() { alert("Success"); },
-	// 	error: function() { alert('Failed!'); }
-	// });
-	makeTheCall('cwsc');
-}
-
-var url = 'http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=prepusa%20montana&ignoreNullCoordinates=true&limit=50';
-
-function getCORS(url, success) {
-    var xhr = new XMLHttpRequest();
-    if (!('withCredentials' in xhr)) xhr = new XDomainRequest(); // fix IE8/9
-    xhr.open('GET', url);
-    xhr.onload = success;
-    xhr.send();
-    return xhr;
-}
-
-// example request
-getCORS(url, function(request){
-    var response = request.currentTarget.response || request.target.responseText;
-    console.log(response);
-});
-
-// Create the XHR object.
-function createCORSRequest(method, url) {
-  var xhr = new XMLHttpRequest();
-  if ("withCredentials" in xhr) {
-    // XHR for Chrome/Firefox/Opera/Safari.
-    xhr.open(method, url, true);
-  } else if (typeof XDomainRequest != "undefined") {
-    // XDomainRequest for IE.
-    xhr = new XDomainRequest();
-    xhr.open(method, url);
-  } else {
-	  console.log('cors not supported')
-    // CORS not supported.
-    xhr = null;
-  }
-  return xhr;
-}
-
-// Helper method to parse the title tag from the response.
-function getTitle(text) {
-  return text.match('<title>(.*)?</title>')[1];
-}
-
-// Make the actual CORS request.
-function makeCorsRequest() {
-  // This is a sample server that supports CORS.
-  var url = 'http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=prepusa%20montana&ignoreNullCoordinates=true&limit=50';
-
-  var xhr = createCORSRequest('GET', url);
-  if (!xhr) {
-    alert('CORS not supported');
-    return;
-  }
-
-  // Response handlers.
-  xhr.onload = function() {
-    var text = xhr.responseText;
-    var title = getTitle(text);
-    alert('Response from CORS request to ' + url + ': ' + title);
-  };
-
-  xhr.onerror = function(err) {
-	  console.log(err)
-    alert('Woops, there was an error making the request.');
-  };
-
-  xhr.send();
-}
-
-
-function printSibbr(data, taxon)
-{
-       
-	for (i = 0; i < data.length; i++) {
-		//alert(i);
-		longitude = data[i].decimalLongitude;
-		latitude = data[i].decimalLatitude;
-
-		// taxon = data[i].species;
-		// tombo = data[i].catalogNumber;
-		// coletor = data[i].recordedBy;
-		// numcoleta = data[i].recordNumber;
-		// pais = data[i].country;
-		// estado = data[i].stateProvince;
-		// cidade = data[i].municipality;
-		
-		//$idexperimento,$idfontedados,$lat,$long,$taxon,$coletor,$numcoleta,$imagemservidor,$imagemcaminho,$imagemarquivo,$pais,$estado,$municipio
-		var idexperimento = document.getElementById('id').value;
-		
-		var Jval = idexperimento + '|2|'+latitude+'|'+longitude+'|'+taxon+'||||||||'; 
-
-		body += '<tr class="even pointer"><td class="a-center "><input name="chtestemunho[]" id="chtestemunho[]" value="'+Jval+'" type="checkbox" ></td>';
-		body +='<td class=" ">'+taxon+'</td>';
-		body +='<td class=" ">'+latitude+', '+longitude+'</td>';
-
-	}
-	
-	var table = '';
-	table += '<table class="table table-csv table-striped responsive-utilities jambo_table bulk_action"><thead><tr class="headings"><th><input type="checkbox" id="chkboxtodos2" name="chkboxtodos2" onclick="selecionaTodos2(true);">';
-	table += '</th><th class="column-title">Táxon </th><th class="column-title">Coordenadas</th>';
-	table += '<a class="antoo" style="color:#fff; font-weight:500;">Total de Registros selecionados: ( <span class="action-cnt"> </span> ) </a>';
-	table += '</th></tr></thead>';
-	table += '<tbody>'+body+'</tbody></table>';
-	table += '';
-	
-	document.getElementById("div_resultadobusca").innerHTML = table;
-
-}
 
 function atualizar(tab)
 {
@@ -1446,7 +1331,6 @@ function toggle(isChecked) {
 	}
 }
 
-
 function liberarParaModelagem()
 {
 	document.getElementById('frm').action='exec.liberarmodelagtem.php';
@@ -1484,23 +1368,7 @@ function liberarExperimento()
 			document.getElementById('frm').submit();
 		}
 }
-		
-function enviar()
-		{
-			exibe('loading');
-			if (
-			(document.getElementById('edtexperimento').value=='')  ||
-			(document.getElementById('edtdescricao').value=='') 
-			)
-			{
-				criarNotificacao('Atenção','Verifique o preenchimento','warning');
-			}
-			else
-			{
-				document.getElementById('frm').action='exec.experimento.php';
-				document.getElementById('frm').submit();
-			}
-		}			
+				
 	
         // initialize the validator function
         validator.message['date'] = 'not a real date';
@@ -1653,6 +1521,11 @@ $('#pointModal').on('shown', function () {
         console.log('entroiu')
 		google.maps.event.trigger(modalMap, "resize");
     });
+
+$(".enviar-exp").click(function(){
+  // Holds the product ID of the clicked element
+  console.log('entrou')
+});
 
     </script>
 

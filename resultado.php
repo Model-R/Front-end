@@ -944,6 +944,7 @@ function initMap() {
         center: {lat: -24.5452, lng: -42.5389},
 	    panControl:true,
       	zoomControl:true,
+          gestureHandling: 'greedy',
         scaleControl:true,
 	  	zoomControlOptions: {
   		    style:google.maps.ZoomControlStyle.DEFAULT
@@ -1038,9 +1039,9 @@ map.controls[google.maps.ControlPosition.TOP_CENTER].push(exportShapeDiv);
   	// });
       var imageBounds = new google.maps.LatLngBounds(
         new google.maps.LatLng(-33.77584, -57.84917),
-        new google.maps.LatLng(-2.775838, -30.24917));
+        new google.maps.LatLng(-2.775838, -34.84917));
     mapOverlay = new google.maps.GroundOverlay(
-    'http://model-r.jbrj.gov.br/v2/final.png',
+    'http://model-r.jbrj.gov.br/v2/final2.png',
     imageBounds,{opacity:1});
     mapOverlay.setMap(map);
 
