@@ -38,15 +38,31 @@ class Experimento
 	
 	function usaAlgoritmo($id,$idalgoritmos)
 	{
-		$sql = 'select * from modelr.experiment_use_algorithm where idexperiment = '.$id.' and idalgorithm = '.$idalgoritmos.';';
+
+		$sql = 'select * from modelr.experiment_use_algorithm where idexperiment = '.$id.';';
 		$res = pg_exec($this->conn,$sql);
+
 		if (pg_num_rows($res)>0)
 		{
-			return true;
+			$sql2 = 'select * from modelr.experiment_use_algorithm where idexperiment = '.$id.' and idalgorithm = '.$idalgoritmos.';';
+			$res2 = pg_exec($this->conn,$sql2);
+			if (pg_num_rows($res2)>0)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 		else
 		{
-			return false;
+			if($idalgoritmos == 2 || $idalgoritmos == 5){
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
 		
 	}

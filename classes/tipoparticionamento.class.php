@@ -81,6 +81,11 @@ class TipoParticionamento
 			{
 			   $s = "selected";
 			}
+
+			//marcar kfold como padrão
+			if($id == '' && $row['idpartitiontype'] == 1){
+				$s = "selected";
+			}
 	      $html.="<option value='".$row['idpartitiontype']."' ".$s." >".$row['partitiontype']."</option> ";
 	    }
 		$html .= '</select>';

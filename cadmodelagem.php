@@ -64,11 +64,28 @@ $idproject = $Experimento->idproject ;//= $row['nomepropriedade'];
 $name = $Experimento->name ;//= $row['inscricaoestadual'];
 $description = $Experimento->description ;//= $row['inscricaoestadual'];
 $idtipoparticionamento = $Experimento->idpartitiontype;
-$num_partition = $Experimento->num_partition;
+$num_partition = $Experimento->num_partition; //definindo 3 como padrão
 $buffer = $Experimento->buffer;
 $numpontos = $Experimento->num_points;
 $tss = $Experimento->tss;
 
+if (empty($num_partition))
+{
+    $num_partition = 3;
+}
+if (empty($numpontos))
+{
+    $numpontos = 1000;
+}
+if (empty($tss))
+{
+    $tss = 0.6;
+}
+if (empty($buffer))
+{
+    $buffer = 'mean';
+    $_REQUEST['edtbuffer'][0] = 'mean';
+}
 
 ?>
 <head>
@@ -505,10 +522,10 @@ $rowsource = pg_fetch_array($ressource);
                                             </label>
                                             <div class="col-md-6 col-sm-6 col-xs-6">
                                                 <div class="radio-group-buffer">
-                                                    <div><input onchange="document.getElementById('lblbuffer').value=this.value" type="radio" name="edtbuffer[]" id="checkbuffermin" value="min" <?php if ($_REQUEST['edtbuffer'][0]=='mínima') echo "checked";?> />Mínima</div>
-                                                    <div><input onchange="document.getElementById('lblbuffer').value=this.value" type="radio" name="edtbuffer[]" id="checkbuffermedim" value="mean" <?php if ($_REQUEST['edtbuffer'][0]=='média') echo "checked";?>/>Médias</div>
-                                                    <div><input onchange="document.getElementById('lblbuffer').value=this.value" type="radio" name="edtbuffer[]" id="checkbuffermedian" value="median" <?php if ($_REQUEST['edtbuffer'][0]=='mediana') echo "checked";?>/>Mediana</div>
-                                                    <div><input onchange="document.getElementById('lblbuffer').value=this.value" type="radio" name="edtbuffer[]" id="checkbuffermax" value="max" <?php if ($_REQUEST['edtbuffer'][0]=='máxima') echo "checked";?>/>Máxima</div>
+                                                    <div><input onchange="document.getElementById('lblbuffer').value=this.value" type="radio" name="edtbuffer[]" id="checkbuffermin" value="min" <?php if ($_REQUEST['edtbuffer'][0]=='min') echo "checked";?> />Mínima</div>
+                                                    <div><input onchange="document.getElementById('lblbuffer').value=this.value" type="radio" name="edtbuffer[]" id="checkbuffermedim" value="mean" <?php if ($_REQUEST['edtbuffer'][0]=='mean') echo "checked";?>/>Médias</div>
+                                                    <div><input onchange="document.getElementById('lblbuffer').value=this.value" type="radio" name="edtbuffer[]" id="checkbuffermedian" value="median" <?php if ($_REQUEST['edtbuffer'][0]=='median') echo "checked";?>/>Mediana</div>
+                                                    <div><input onchange="document.getElementById('lblbuffer').value=this.value" type="radio" name="edtbuffer[]" id="checkbuffermax" value="max" <?php if ($_REQUEST['edtbuffer'][0]=='max') echo "checked";?>/>Máxima</div>
                                                 </div>
                                             </div>
                                             <div class="col-md-2 col-sm-2 col-xs-2">
