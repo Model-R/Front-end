@@ -34,7 +34,6 @@ $StatusOccurrence->conn = $conn;
 $tab = $_REQUEST['tab'];
 
 $filtro = $_REQUEST['filtro']; 
-
 if (empty($tab))
 {
 	$tab = 3;
@@ -85,7 +84,7 @@ if (empty($buffer))
 {
     $buffer = 'mean';
     $_REQUEST['edtbuffer'][0] = 'mean';
-}
+} else $_REQUEST['edtbuffer'][0] = $buffer;
 
 ?>
 <head>
@@ -1038,6 +1037,13 @@ function abreModal(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquiv
 	$('#myModal').modal('show');
 }
 
+function enviar()
+		{
+			exibe('loading');
+			document.getElementById('frm').action='exec.modelagem.php';
+			document.getElementById('frm').submit();
+		}	
+
     </script>
 	 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhi_DlmaFvRu7eP357bOzl29fyZXKIJE0&callback=initMap" async defer>
     </script>	
@@ -1089,14 +1095,7 @@ function filtrar(idstatusoccurrence)
 	exibe('loading');
 	document.getElementById('frm').action='cadmodelagem.php?tab=3&filtro='+idstatusoccurrence;
 	document.getElementById('frm').submit();
-}
-		
-function enviar()
-		{
-			exibe('loading');
-			document.getElementById('frm').action='exec.modelagem.php';
-			document.getElementById('frm').submit();
-		}			
+}		
 	
         // initialize the validator function
         validator.message['date'] = 'not a real date';

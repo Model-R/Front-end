@@ -290,10 +290,9 @@ class Experimento
 	   tss = ".$this->tss.",
 	   extent_projection = '".$this->extent_projection."'
 	   where idexperiment='".$id."' ";
-	   
 	   $resultado = pg_exec($this->conn,$sql);
-//	   echo $sql;
-//	   exit;
+	//    echo $sql;
+	//    exit;
 	 
 	   if ($resultado){
 	      return true;

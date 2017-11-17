@@ -27,13 +27,12 @@ $buffer = $_REQUEST['edtbuffer'];
 $tss = $_REQUEST['edttss'];
 $numparticoes = $_REQUEST['edtnumparticoes'];
 
-
 $Experimento->name = $nome;//integer,
 $Experimento->description = $descricao;//integer,
 $Experimento->idpartitiontype = $idtipoparticionamento;//integer,
 $Experimento->num_partition = $numparticoes;//integer,
 $Experimento->num_points = $numpontos ;//integer,
-$Experimento->buffer = $buffer;//numeric(10,2),
+$Experimento->buffer = "'" . $buffer[0] . "'" ;//string
 $Experimento->tss = $tss;
 $Experimento->extent_model = $extensao1;
 //$Experimento->extent_projection = $extensao2;
