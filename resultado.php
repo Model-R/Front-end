@@ -406,7 +406,7 @@ echo '<td>'.$meuArray[$i].'</td>';
 								<div class="col-md-12 col-sm-12 col-xs-12">
 								<div class="row">
                                 <div class="x_title">
-                                    <h2>Modelos Gerados <small></small></h2>
+                                    <h2>Modelos Gerados <small></small><a  class="btn btn-default btn-sm" onClick="downloadZip();" data-toggle="tooltip" data-placement="top" title="Baixar ZIP" style="margin-top: 4px;">Download</a></h2>
                                     <div class="clearfix"></div>
                                 </div>
                                 <div class="x_content">
@@ -488,7 +488,7 @@ foreach($results_array as $value)
 
                             <div class="row">
                                                             <div class="x_title">
-                                                                <h2>Modelos Finais (Ensemble) <small></small></h2>
+                                                                <h2>Modelos Finais (Ensemble) <small></small><a  class="btn btn-default btn-sm" onClick="downloadZip();" data-toggle="tooltip" data-placement="top" title="Baixar ZIP" style="margin-top: 4px;">Download</a></h2>
                                                                 <div class="clearfix"></div>
                                                             </div>
                                                             <div class="x_content">
@@ -569,7 +569,7 @@ foreach($results_array as $value)
 
 <div class="row">
                                 <div class="x_title">
-                                    <h2>Modelos Finais (Presfinal) <small></small></h2>
+                                    <h2>Modelos Finais (Presfinal) <small></small><a  class="btn btn-default btn-sm" onClick="downloadZip();" data-toggle="tooltip" data-placement="top" title="Baixar ZIP" style="margin-top: 4px;">Download</a></h2>
                                     <div class="clearfix"></div>
                                 </div>
                                 <div class="x_content">
@@ -735,7 +735,7 @@ foreach($results_array as $value)
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhi_DlmaFvRu7eP357bOzl29fyZXKIJE0&libraries=drawing">
     </script>	
-    		
+
 <script>
 
 // This example adds a user-editable rectangle to the map.
@@ -786,7 +786,6 @@ function buscar()
 		}
 	}
 }
-
 
 function atualizar(tab)
 {
@@ -1523,6 +1522,21 @@ function enviar()
 
     </script>
 
+<<script>
+function downloadZip(tipo)
+	{
+		document.getElementById('frm').target="_blank";
+        document.getElementById('frm').method="POST";
+        document.getElementById('frm').action='downloadZip.php?arquivo=<?php echo $hash;?>';
+        document.getElementById('frm').submit();
+		// if (tipo=='CSV')
+		// {
+		// 	//console.log(document.getElementById('frm').action='export' + tipo + '.php?table=exp')
+		// 	document.getElementById('frm').action='export' + tipo + '.php?table=exp&expid';
+		// 	document.getElementById('frm').submit();
+		// }
+	}
+</script>
 </body>
 
 </html>

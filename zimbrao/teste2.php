@@ -25,13 +25,14 @@ function pad_message( $message ) {
 
 function encrypt_decrypt($action, $string, $iv) {
     $output = false;
+    echo strlen($string);
     $encrypt_method = "aes-128-cbc";
     $key = base64_decode( 'Wk0xOWhnRyMkdz04WC0rJg==' );
     $secret_iv = $iv;//'This is my secret iv';
     if ( $action == 'encrypt' ) {
-        $output = openssl_encrypt(pad_message($string), $encrypt_method, $key, $options=0, $iv);
+        $output = openssl_encrypt(pad_message($string), $encrypt_method, $key, 0, $iv);
     } else if( $action == 'decrypt' ) {
-        $output = openssl_decrypt($string, $encrypt_method, $key, $options=0, $iv);
+        $output = openssl_decrypt($string, $encrypt_method, $key, 0, $iv);
     }
     return $output;
 }
