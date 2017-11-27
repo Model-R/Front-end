@@ -85,7 +85,6 @@ class StatusOccurrence
 		}
 		$sql.=' order by statusoccurrence.statusoccurrence ';
 		$res = pg_exec($this->conn,$sql);
-		
 		$s = '';
 		if (!empty($refresh))
 		{

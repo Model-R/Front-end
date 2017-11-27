@@ -230,7 +230,7 @@ if ($op=='A')
 						
 						<div class="col-md-8 col-sm-8 col-xs-8">
 							<b>Dados inferidos</b><br>
-							<?php echo $StatusOccurrence->listaCombo('cmboxstatusoccurrence',$idstatusoccurrence,'N','class="form-control"','1,2,4,6,8,10,11,12,13,16,17,18');?>
+							<?php echo $StatusOccurrence->listaCombo('cmboxstatusoccurrence',$idstatusoccurrence,'N','class="form-control"','1,2,4,6,8,10,11,12,13,16,17,18,19');?>
 							<div class="row">
 								<div class="col-md-6 col-sm-6 col-xs-6">
 									Latitude:<input type="text" name="edtlatitude" id="edtlatitude" class="form-control"><br>
