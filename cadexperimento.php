@@ -760,10 +760,7 @@ function teste(){
 
 function enviarExp(){
 	exibe('loading');
-	if (
-	(document.getElementById('edtexperimento').value=='')  ||
-	(document.getElementById('edtdescricao').value=='') 
-	)
+	if ((document.getElementById('edtexperimento').value==''))
 	{
 		criarNotificacao('Atenção','Verifique o preenchimento','warning');
 	}
