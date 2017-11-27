@@ -75,5 +75,29 @@ else if ($type == 'points'){
         fputs($output, implode($row, ';')."\n");
     }
 }
+else if ($type == 'data'){
+    //output headers so that the file is downloaded rather than displayed
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename=dadosestatisticos.csv');
+
+    // create a file pointer connected to the output stream
+    $output = fopen('php://output', 'w');
+
+    // output the column headings
+    fputs($output, implode(array('algoritmo','partition','kappa','spec_sens','no_omission','prevalence','equal_sens_spec','sensitivity','AUC','TSS'), ';')."\n");
+
+ 
+    // fetch the data
+    $sql = "select algorithm,partition, kappa,spec_sens,no_omission,prevalence,equal_sens_spec,sensitivity,auc,tss 
+    from modelr.experiment_result 
+    where idexperiment = ".$expid;
+
+    $res = pg_exec($conn,$sql);
+
+    // loop over the rows, outputting them
+    while ($row = pg_fetch_assoc($res)) {
+        fputs($output, implode($row, ';')."\n");
+    }
+}
 
 ?>

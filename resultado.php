@@ -280,7 +280,7 @@ $tss = $Experimento->tss;
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="x_panel">
                                 <div class="x_title">
-                                    <h2>Dados estatísticos <small></small></h2>
+                                    <h2>Dados estatísticos <small></small><a  class="btn btn-default btn-sm" onClick="imprimir();" data-toggle="tooltip" data-placement="top" title="Baixar CSV" style="margin-top: 4px;">CSV</a></h2>
                                     <div class="clearfix"></div>
 									<table class="table table-striped">
    
@@ -1535,6 +1535,14 @@ function downloadZip(tipo)
 		// 	document.getElementById('frm').action='export' + tipo + '.php?table=exp&expid';
 		// 	document.getElementById('frm').submit();
 		// }
+	}
+
+function imprimir(tipo)
+	{
+		document.getElementById('frm').target="_blank";//"'cons<?php echo strtolower($FORM_ACTION);?>.php';
+        //console.log(document.getElementById('frm').action='export' + tipo + '.php?table=exp')
+        document.getElementById('frm').action='exportCSV.php?table=data&expid=<?php echo $id;?>';
+        document.getElementById('frm').submit();
 	}
 </script>
 </body>
