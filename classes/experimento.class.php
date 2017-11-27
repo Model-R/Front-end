@@ -77,7 +77,12 @@ class Experimento
 		}
 		else
 		{
-			return false;
+			if($idraster == 4 || $idraster == 5 || $idraster == 13 || $idraster == 14 || $idraster == 84 || $idraster == 85 || $idraster == 93 || $idraster == 94){
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
 		
 	}	
