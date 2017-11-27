@@ -952,11 +952,10 @@ function atualizar(tab)
 }
 
 function initMap() {
-	<?php if (empty($latcenter))
-	{
+	<?php 
 		$latcenter = -24.5452;
 		$longcenter = -42.5389;
-	}
+	
 	?>
 	
     var map3 = new google.maps.Map(document.getElementById('map3'), {
@@ -1411,7 +1410,10 @@ function liberarExperimento()
 		$('.nav-tabs a[href="#tab_content2"]').click(function(){
 			$(this).tab('show');
 			initMap();
-			setTimeout(function(){ google.maps.event.trigger(tabMap, "resize");}, 200);
+			setTimeout(function(){ 
+				google.maps.event.trigger(tabMap, "resize");
+				tabMap.setCenter({lat: <?php echo $latcenter;?>, lng: <?php echo $longcenter;?>});
+			}, 200);
 		})
 
 var file;
