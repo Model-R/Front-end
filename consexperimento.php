@@ -79,7 +79,7 @@
                                         <i class="fa fa-eraser"></i>
                                     </a>
                                    ';
-                                    if (($qtdok>0 || $_SESSION['s_idtipousuario']==2) && $_SESSION['s_idtipousuario'] != 3)
+                                    if (($qtdok>0 || $_SESSION['s_idtipousuario']==2) && $_SESSION['s_idtipousuario'] != 1)
                                     //tipo administrador ve tudo, e tipo modelagem não ve modelagem
 									{
 										$html.='
