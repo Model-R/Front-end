@@ -99,5 +99,27 @@ else if ($type == 'data'){
         fputs($output, implode($row, ';')."\n");
     }
 }
+else if ($type == 'polygon'){
+
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename=poligonos.csv');
+
+    // create a file pointer connected to the output stream
+    $output = fopen('php://output', 'w');
+
+    // output the column headings
+    fputs($output, implode(array('num_vertices','vertices'), ';')."\n");
+
+    $polygons = $_POST['polygon'];
+
+    // loop over the rows, outputting them
+    foreach($polygons as $p){
+        fputs($output, count(explode(';',$p)) .";");
+        fputs($output, "[" . $p ."]\n");
+    }
+    // print_r($_POST['polygon']);
+    // exit;
+
+}
 
 ?>

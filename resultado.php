@@ -823,6 +823,7 @@ function HomeControl(controlDiv, map) {
 var drawingManager;
 var selectedShape;
 var imageOverlay;
+var polygonArray = [];
 
 function clearSelection() {
     if (selectedShape) {
@@ -903,19 +904,8 @@ function ExportShapeControl(controlDiv, map) {
 
     // Setup the click event listeners: simply set the map to Chicago.
     controlUI.addEventListener('click', function() {
-        if(selectedShape.type == 'polygon'){
-            for(var i = 0; i < selectedShape.getPath().getLength(); i++){
-                console.log(selectedShape.getPath().getAt(i).toUrlValue(5),'\n');
-            }
-        } else {
-            var bounds = selectedShape.getBounds();
-            var start = bounds.getNorthEast().toString().replace('(','').replace(')','').split(',');
-            var end = bounds.getSouthWest().toString().replace('(','').replace(')','').split(',');
-            var center = bounds.getCenter().toString().replace('(','').replace(')','').split(',');
-            console.log('start ', start);
-            console.log('end ', end);
-            console.log('center ', center);
-        }
+        document.getElementById('frm').action='exportCSV.php?table=polygon&expid=';
+        document.getElementById('frm').submit();
 
     });
 
@@ -1096,6 +1086,9 @@ var drawingManager = new google.maps.drawing.DrawingManager({
 
 google.maps.event.addListener(drawingManager, 'overlaycomplete', function(e) {
     if (e.type != google.maps.drawing.OverlayType.MARKER) {
+        console.log('desenho polygon')
+        polygonArray.push(e.overlay);
+        createHiddenInput(e.overlay);
         // Switch back to non-drawing mode after drawing a shape.
         drawingManager.setDrawingMode(null);
         // Add an event listener that selects the newly-drawn shape when the user
@@ -1108,6 +1101,7 @@ google.maps.event.addListener(drawingManager, 'overlaycomplete', function(e) {
         setSelection(newShape);
     }
 });
+
 // Clear the current selection when the drawing mode is changed, or when the
 // map is clicked.
 google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection);
@@ -1169,7 +1163,34 @@ new google.maps.LatLng(6.485, -32.766));
  // rectangle.setMap(map);
  // rectangle2.setMap(map2);
  
- 
+function createHiddenInput (shape) {
+    console.log(shape)
+    if(shape.type != 'rectangle' && shape.type != 'circle'){
+        var vertices = [];
+        for(var i = 0; i < shape.getPath().getLength(); i++){
+            vertices.push(shape.getPath().getAt(i).toUrlValue(5));
+        }
+    } else {
+        var bounds = shape.getBounds();
+        var NE = bounds.getNorthEast();
+        var SW = bounds.getSouthWest();
+        var NW = new google.maps.LatLng(NE.lat(), SW.lng()).toString().replace('(','').replace(')','');
+        var SE = new google.maps.LatLng(SW.lat(), NE.lng()).toString().replace('(','').replace(')','');
+        NE = bounds.getNorthEast().toString().replace('(','').replace(')','');
+        SW = bounds.getSouthWest().toString().replace('(','').replace(')','');
+
+        var vertices = [SW,NW,NE,SE];
+    }
+
+    var input = document.createElement("input");
+    input.setAttribute("type", "hidden");
+    input.setAttribute("name", "polygon[]");
+    input.setAttribute("value", vertices.join(';'));
+
+    //append to form element that you want .
+    document.getElementById("frm").appendChild(input);
+
+} 
 function USGSOverlay(bounds, image, map) {
 
         // Initialize all properties.
@@ -1420,6 +1441,7 @@ function abreModal(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquiv
 
 	$('#myModal').modal('show');
 }
+
 
     </script>
 	
