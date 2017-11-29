@@ -1035,6 +1035,14 @@ function initMap() {
 		<?php echo $info;?>
     ];
 
+	var kmlLayer = new google.maps.KmlLayer({
+    	url: 'http://model-r.jbrj.gov.br/v2/municipios.kml',
+    	suppressInfoWindows: true,
+    	map: map3,
+    	preserveViewport: true
+  	});
+
+
 //        ['<div class="info_content">' +
  //       '<h3>Caesalpinia Echinata</h3>' +
   //      '<p><button id="send" type="button" onclick="enviar()" class="btn btn-danger">Excluir</button><button id="send" type="button" onclick="excluirPonto()" class="btn btn-default">Salvar Posição</button></p>' +        '</div>'],
