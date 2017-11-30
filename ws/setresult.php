@@ -72,6 +72,13 @@ if (isset($_REQUEST['op']))
 	{
 		$spec_sens = 'null';
 	}	
+	
+	if (empty($kappa))
+	{
+		$kappa = 'null';
+	}
+	
+	
 	if ($op=='I')
 	{
 
@@ -83,21 +90,24 @@ if (isset($_REQUEST['op']))
 	$png_cont_path=$_REQUEST['png_cont_path'];
 	$png_cut_path=$_REQUEST['png_cut_path'];
 
-	$kappa=$_REQUEST['kappa'];
+	//$kappa=$_REQUEST['kappa'];
 
+	raster_path character varying(255),
+  raster_png_path character varying(255),
+  png_path
+	
 
 $sql = "insert into modelr.experiment_result (
 			idexperiment ,  idresulttype ,  
 		partition ,  algorithm ,  tss,  auc ,  sensitivity ,  equal_sens_spec ,
   prevalence ,  no_omission ,  spec_sens, raster_bin_path, raster_cont_path, raster_cut_path,
-  png_bin_path, png_cont_path, png_cut_path , kappa
+  png_bin_path, png_cont_path, png_cut_path , kappa, raster_path, raster_png_path, png_path
   ) values
   (".$id.",".$idresulttype.",".$partition.",
   '".$algorithm."',".$tss.",".$auc.",".$sensitivity.",".$equal_sens_spec.",".$prevalence.",
   ".$no_omission.",".$spec_sens.",
-  '".$raster_bin_path."','".$raster_cont_path."','".$raster_cut_path."','".$png_bin_path."','".$png_cont_path."','".$png_cut_path."','".$kappa."'
-  
-  
+  '".$raster_bin_path."','".$raster_cont_path."','".$raster_cut_path."','".$png_bin_path."',
+  '".$png_cont_path."','".$png_cut_path."',".$kappa.",'".$raster_path."','".$raster_png_path."','".$png_path."'
   );";
 //		echo $sql;
 	}

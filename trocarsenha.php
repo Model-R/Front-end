@@ -1,4 +1,11 @@
-<?php session_start();?>
+<?php session_start();
+
+$tokenUsuario = md5('seg'.$_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']);
+if ($_SESSION['donoDaSessao'] != $tokenUsuario)
+{
+	header('Location: login.php');
+}
+?>
 <html lang="pt-BR">
 <?php
 require_once('classes/conexao.class.php');

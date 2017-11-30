@@ -1,4 +1,10 @@
 <?php session_start();
+
+$tokenUsuario = md5('seg'.$_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']);
+if ($_SESSION['donoDaSessao'] != $tokenUsuario)
+{
+	header('Location: index.php');
+}
 ?><!DOCTYPE html>
 <html lang="pt-BR">
 <?php	  

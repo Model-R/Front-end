@@ -1,10 +1,6 @@
 <?php
 header('Content-type: text/html; charset=utf-8');
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 function pad_message( $message ) {
   if (strlen($message) % 16) 
     $message = str_pad($message,strlen($message) + 16 - strlen($message) % 16, "\0");
@@ -25,14 +21,13 @@ function pad_message( $message ) {
 
 function encrypt_decrypt($action, $string, $iv) {
     $output = false;
-    echo strlen($string);
     $encrypt_method = "aes-128-cbc";
     $key = base64_decode( 'Wk0xOWhnRyMkdz04WC0rJg==' );
     $secret_iv = $iv;//'This is my secret iv';
     if ( $action == 'encrypt' ) {
-        $output = openssl_encrypt(pad_message($string), $encrypt_method, $key, 0, $iv);
+        $output = openssl_encrypt(pad_message($string), $encrypt_method, $key, OPENSSL_ZERO_PADDING, $iv);
     } else if( $action == 'decrypt' ) {
-        $output = openssl_decrypt($string, $encrypt_method, $key, 0, $iv);
+        $output = openssl_decrypt($string, $encrypt_method, $key, OPENSSL_ZERO_PADDING, $iv);
     }
     return $output;
 }
