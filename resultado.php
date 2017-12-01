@@ -1,6 +1,6 @@
 <?php session_start();
-//error_reporting(E_ALL);
-//ini_set('display_errors','1');
+// error_reporting(E_ALL);
+// ini_set('display_errors','1');
 $tokenUsuario = md5('seg'.$_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']);
 if ($_SESSION['donoDaSessao'] != $tokenUsuario)
 {
@@ -416,7 +416,8 @@ echo '<td>'.$meuArray[$i].'</td>';
                                 </div>
                                 <div class="x_content">
 <?php								
-								$log_directory = './result/'.$hash.'';
+                                $log_directory = './result/'.$hash.'';
+                                echo $log_directory;
 
 $results_array = array();
 $conta_arquivos = 0;
@@ -427,8 +428,8 @@ if (is_dir($log_directory))
                 //Notice the parentheses I added:
                 while(($file = readdir($handle)) !== FALSE)
                 {
-					$tamanho = strlen($file); 
-					list ($arquivo, $ext) = split ('[.]', $file);
+                    $tamanho = strlen($file);
+					list ($arquivo, $ext) = preg_split ('[.]', $file);
 					
 					$ext = substr($file,-3);
 					
@@ -510,7 +511,7 @@ foreach($results_array as $value)
                                             while(($file = readdir($handle)) !== FALSE)
                                             {
                                                 $tamanho = strlen($file); 
-                                                list ($arquivo, $ext) = split ('[.]', $file);
+                                                list ($arquivo, $ext) = preg_split ('[.]', $file);
                                                 
                                                 $ext = substr($file,-3);
                                                 
@@ -591,7 +592,7 @@ if (is_dir($log_directory))
                 while(($file = readdir($handle)) !== FALSE)
                 {
 					$tamanho = strlen($file); 
-					list ($arquivo, $ext) = split ('[.]', $file);
+					list ($arquivo, $ext) = preg_split ('[.]', $file);
 					
 					$ext = substr($file,-3);
 					
@@ -1170,7 +1171,10 @@ new google.maps.LatLng(6.485, -32.766));
  
 function createHiddenInput (shape) {
     console.log(shape)
-    if(shape.type != 'rectangle' && shape.type != 'circle'){
+    console.log(typeOfShape(shape))
+    console.log(shape.visible)
+    console.log(shape.zIndex)
+    if(typeOfShape(shape) == 'polygon'){
         var vertices = [];
         for(var i = 0; i < shape.getPath().getLength(); i++){
             vertices.push(shape.getPath().getAt(i).toUrlValue(5));
@@ -1196,6 +1200,17 @@ function createHiddenInput (shape) {
     document.getElementById("frm").appendChild(input);
 
 } 
+
+function typeOfShape(shape){
+    if(typeof shape.getPath === "function"){
+        return "polygon";
+    }else if(typeof shape.getRadius === "function"){
+        return "circle";
+    }else{
+        return "unknown";
+    }
+}
+
 function USGSOverlay(bounds, image, map) {
 
         // Initialize all properties.
@@ -1546,6 +1561,12 @@ function enviar()
                 $('form .alert').remove();
         }).prop('checked', false);
 
+        function imprimir(tipo){
+		document.getElementById('frm').target="_blank";//"'cons<?php echo strtolower($FORM_ACTION);?>.php';
+        //console.log(document.getElementById('frm').action='export' + tipo + '.php?table=exp')
+        document.getElementById('frm').action='exportCSV.php?table=data&expid=<?php echo $id;?>';
+        document.getElementById('frm').submit();
+	}
 
     </script>
 
@@ -1562,14 +1583,6 @@ function downloadZip(tipo)
 		// 	document.getElementById('frm').action='export' + tipo + '.php?table=exp&expid';
 		// 	document.getElementById('frm').submit();
 		// }
-	}
-
-function imprimir(tipo)
-	{
-		document.getElementById('frm').target="_blank";//"'cons<?php echo strtolower($FORM_ACTION);?>.php';
-        //console.log(document.getElementById('frm').action='export' + tipo + '.php?table=exp')
-        document.getElementById('frm').action='exportCSV.php?table=data&expid=<?php echo $id;?>';
-        document.getElementById('frm').submit();
 	}
 </script>
 </body>
