@@ -175,7 +175,7 @@ $tab = 1;
                                                         <?php require "infoexperimento.php";?>
 													</div> <!-- table panel -->	
 													<div  class="tab-pane fade <?php if ($tab=='2') echo 'in active';?>" id="tab_content2" aria-labelledby="home-tab">
-                                                        <h2>Teste2</h2>
+                                                        <?php require "dadosbioticos.php";?>
                                                     </div> <!-- table panel -->
                                                     <div  class="tab-pane fade <?php if ($tab=='3') echo 'in active';?>" id="tab_content3" aria-labelledby="home-tab">
                                                         <h2>Teste2</h2>
