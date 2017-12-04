@@ -1170,10 +1170,6 @@ new google.maps.LatLng(6.485, -32.766));
  // rectangle2.setMap(map2);
  
 function createHiddenInput (shape) {
-    console.log(shape)
-    console.log(typeOfShape(shape))
-    console.log(shape.visible)
-    console.log(shape.zIndex)
     if(typeOfShape(shape) == 'polygon'){
         var vertices = [];
         for(var i = 0; i < shape.getPath().getLength(); i++){

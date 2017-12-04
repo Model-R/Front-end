@@ -1471,7 +1471,7 @@ function printCSV(lines){
 		
 		var idexperimento = document.getElementById('id').value;
 		
-		var Jval = idexperimento + '|2|'+latitude+'|'+longitude+'|'+taxon+'||||||||'; 
+		var Jval = idexperimento + '|2|'+latitude+'|'+longitude+'|'+taxon+'||||||||||'; 
 
 		body += '<tr class="even pointer"><td class="a-center "><input name="chtestemunho[]" id="chtestemunho[]" value="'+Jval+'" type="checkbox" ></td>';
 		body +='<td class=" ">'+taxon+'</td>';
@@ -1533,11 +1533,6 @@ $('#pointModal').on('shown', function () {
         console.log('entroiu')
 		google.maps.event.trigger(modalMap, "resize");
     });
-
-$(".enviar-exp").click(function(){
-  // Holds the product ID of the clicked element
-  console.log('entrou')
-});
 
     </script>
 

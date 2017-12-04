@@ -154,7 +154,7 @@ class Experimento
 	}
 
 	function adicionarOcorrencia($idexperimento,$idfontedados,$lat,$long,$taxon,$coletor,$numcoleta,$imagemservidor,$imagemcaminho,$imagemarquivo,$p,$e,$m,$herbario,$tombo)
-	{
+	{	
  		$sql = "insert into modelr.occurrence (idexperiment,
 		iddatasource,
 		lat,
@@ -178,7 +178,7 @@ class Experimento
 		".$long.",
 		'".$taxon."',
 		'".$herbario."',
-		'".$tombo."',
+		".$tombo.",
 		'".$coletor."',
 		'".$numcoleta."',
 		'".$imagemservidor."',
@@ -191,6 +191,8 @@ class Experimento
 		)";
 		// 8 status occurrence = OK
 
+		// echo $sql;
+		// exit;
 		$resultado = pg_exec($this->conn,$sql);
 		
 //		echo $sql;

@@ -80,8 +80,9 @@ if ($fontedados==2)
 	$in = 'extracao_jabot.codtestemunho in (';
 	while (list ($key,$val) = @each($box)) { 
 		//$result = $Cobertura->excluir($val);
+		// echo $val;
+		// exit;
 		$val = explode("|", $val);
-		
 		//echo $val.'<br>';
 		$idexperimento = $val[0];
 		$latitude = $val[2];
@@ -96,7 +97,11 @@ if ($fontedados==2)
 		$estado = $val[11];
 		$municipio=$val[12]; 
 		$herbario=$val[13]; 
-		$tombo=$val[14]; 
+		if ($val[14] == ''){
+			$tombo = 'null';
+		} else {
+			$tombo = $val[14];
+		} 
 		$Experimento->adicionarOcorrencia($idexperimento,$fontedados,$latitude,$longitude,$taxon,$coletor,$numcoleta,$imagemservidor,$imagemcaminho,$imagemarquivo,$pais,$estado,$municipio,$herbario,$tombo);
 	} 
 	
