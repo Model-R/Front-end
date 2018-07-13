@@ -7,6 +7,7 @@ class Experimento
 	var $idexperiment;
 	var $name;
 	var $description;
+	var $group;
 	
 	var $idpartitiontype ;//integer,
 	var $num_partition ;//integer,
@@ -15,10 +16,25 @@ class Experimento
 	var $extent_model;
 	var $extent_projection;
 	var $tss;
+	var $resolution;
+	var $repetitions;
+	var $trainpercent;
+
+	var $pngCutPath;
+	var $rasterCutPath;
+	var $pngBinPath;
+	var $pngContPath;
+	var $isImageCut;
+	var $pngPath;
+	var $rasterPath;
+	var $rasterPngPath;
+	var $tiffPath;
 	
 	var $iduser;
 	var $type;
 	var $automaticfilter;
+
+	var $statusExperiment;
 	
 	function incluirRaster($id,$idraster)
 	{
@@ -29,11 +45,52 @@ class Experimento
 		$res2 = pg_exec($this->conn,$sql);
 	}
 	
+	function limparRaster($id)
+	{	
+		$sql = "delete from modelr.experiment_use_raster where idexperiment = '".$id."'; ";
+		
+		$res2 = pg_exec($this->conn,$sql);
+	}
+	
+	function incluirBioOracleRaster($id,$idraster,$params)
+	{	
+		$sql = "select * from modelr.experiment_use_raster where idexperiment=" . $id . " and idraster=" . $idraster .";";
+		$res = pg_exec($this->conn,$sql);
+
+		if (pg_num_rows($res)>0)
+		{
+			$sql = "update modelr.experiment_use_raster set params = '".$params."' where idexperiment=".$id." and idraster=" . $idraster. ";";
+			$res2 = pg_exec($this->conn,$sql);
+		}
+		else {
+			$sql = "insert into modelr.experiment_use_raster (idexperiment,idraster,params)
+			values (".$id.",".$idraster.",'".$params."')";
+			
+			$res2 = pg_exec($this->conn,$sql);
+		}
+	}
+
 	function incluirAlgoritmo($id,$idalgoritmos)
 	{
 		$sql = 'insert into modelr.experiment_use_algorithm (idexperiment,idalgorithm)
 		values ('.$id.','.$idalgoritmos.')';
 		$res2 = pg_exec($this->conn,$sql);
+	}
+	
+	function limparAlgoritmo($id)
+	{
+		$sql = "delete from modelr.experiment_use_algorithm where idexperiment = '".$id."'; ";
+		$res2 = pg_exec($this->conn,$sql);
+	}
+
+	function incluirExtensao($id, $extent)
+	{
+		$sql = "update modelr.experiment set 
+		extent_model = '".$extent."'
+		where idexperiment='".$id."' ";
+		// echo $sql;
+		// exit;
+		$resultado = pg_exec($this->conn,$sql);
 	}
 	
 	function usaAlgoritmo($id,$idalgoritmos)
@@ -82,6 +139,23 @@ class Experimento
 			}
 			else {
 				return false;
+			}
+		}
+		
+	}	
+	
+	function usaBioRaster($id,$idraster,$value)
+	{	
+		$sql = 'select params from modelr.experiment_use_raster where idexperiment = '.$id.' and idraster = '.$idraster.';';
+		$res = pg_exec($this->conn,$sql);
+		if (pg_num_rows($res)>0)
+		{
+			while ($row = pg_fetch_array($res))
+			{				
+				$values = explode(",",$row['params']);
+				$key = array_search($value,$values);
+				if($key === false) return false;
+				else return true;
 			}
 		}
 		
@@ -153,8 +227,11 @@ class Experimento
 //		exit;
 	}
 
-	function adicionarOcorrencia($idexperimento,$idfontedados,$lat,$long,$taxon,$coletor,$numcoleta,$imagemservidor,$imagemcaminho,$imagemarquivo,$p,$e,$m,$herbario,$tombo)
+	function adicionarOcorrencia($idexperimento,$idfontedados,$lat,$long,$taxon,$coletor,$numcoleta,$imagemservidor,$imagemcaminho,$imagemarquivo,$p,$e,$m,$herbario,$tombo,$codtestemunho,$fonte)
 	{	
+		// echo $idexperimento;
+		// exit;
+		
  		$sql = "insert into modelr.occurrence (idexperiment,
 		iddatasource,
 		lat,
@@ -170,7 +247,9 @@ class Experimento
 		idstatusoccurrence,
 		country,
 		majorarea,
-		minorarea
+		minorarea,
+		codtestemunho,
+		fonte
 		) values (
 		'".$idexperimento."',
 		'".$idfontedados."',
@@ -178,7 +257,7 @@ class Experimento
 		".$long.",
 		'".$taxon."',
 		'".$herbario."',
-		".$tombo.",
+		'".$tombo."',
 		'".$coletor."',
 		'".$numcoleta."',
 		'".$imagemservidor."',
@@ -187,20 +266,22 @@ class Experimento
 		8,
 		'".$p."',
 		'".$e."',
-		'".$m."'
+		'".$m."',
+		".$codtestemunho.",
+		'".$fonte."'
 		)";
-		// 8 status occurrence = OK
 
-		// echo $sql;
-		// exit;
+		// 8 status occurrence = OK
 		$resultado = pg_exec($this->conn,$sql);
 		
-//		echo $sql;
-//		exit;
+		//echo $sql;
+		//echo '<br>';
+		//echo '<br>';
+		//exit;
 		
-		if ($resultado){
+		//if ($resultado){
 
-	   	}
+	   	//}
 	}
 	
 	function limparDados($idexperimento)
@@ -224,14 +305,44 @@ class Experimento
 	
 	function incluir()
 	{
- 		$sql = "insert into modelr.experiment (name,description,iduser,idstatusexperiment,type,automatic_filter
+ 		$sql = "insert into modelr.experiment (name,description,group_name,iduser,idstatusexperiment,type,automatic_filter,idpartitiontype,num_partition,num_points,tss,buffer
 		) values (
 		'".$this->name."',
 		'".$this->description."',
+		'".$this->group."',
 		'".$this->iduser."',1,
 		'".$this->type."',
-		'".$this->automaticfilter."'
+		'".$this->automaticfilter."',
+		1,
+		3,
+		1000,
+		0.60,
+		'mean' 
 		)";
+		
+		$resultado = pg_exec($this->conn,$sql);
+		if ($resultado){
+	    	$sql = "select max(idexperiment) from modelr.experiment";
+			$res = pg_exec($this->conn,$sql);
+			$row = pg_fetch_array($res);
+
+			$this->incluirAlgoritmo($row[0],2);
+			$this->incluirAlgoritmo($row[0],5);
+
+			return $row[0];
+	   	}
+	   	else
+	   	{
+	    	return false;
+	   	}
+	}
+
+	function clonar($id, $sp)
+	{
+ 		$sql = "insert into modelr.experiment (idproject,name,description,num_partition,projection,datetime_inicio,datetime_fim,idstatusexperiment,extent_model,extent_projection,idpartitiontype,num_points,tss,iduser,type,automatic_filter,buffer,group_name)
+		 select idproject,name || ' ' || '" . $sp . "',description,num_partition,projection,datetime_inicio,datetime_fim,1,extent_model,extent_projection,idpartitiontype,num_points,tss,iduser,type,automatic_filter,buffer,group_name
+		 from modelr.experiment
+		 where idexperiment=" . $id;
 		
 		$resultado = pg_exec($this->conn,$sql);
 		if ($resultado){
@@ -284,22 +395,37 @@ class Experimento
 	   {
 		   $this->tss = str_replace(',','.',$this->tss);
 	   }
+	   
+	   if (empty($this->resolution))
+	   {
+			$this->resolution = '10';
+	   }
+	   if (empty($this->repetitions))
+	   {
+			$this->repetitions= '1';
+	   }
+	   if (empty($this->trainpercent))
+	   {
+			$this->trainpercent= '20';
+	   }
 			   
 			   
        $sql = "update modelr.experiment set 
 	   name='".$this->name."',
 	   description='".$this->description."',
+	   group_name='".$this->group."',
 	   num_partition = ".$this->num_partition.",
 	   buffer = ".$this->buffer.",
 	   extent_model = '".$this->extent_model."',
        idpartitiontype = ".$this->idpartitiontype.",
 	   num_points = ".$this->num_points.",
 	   tss = ".$this->tss.",
+	   resolution = ".$this->resolution.",
+	   repetitions  = ".$this->repetitions.",
+	   trainpercent  = ".$this->trainpercent.",
 	   extent_projection = '".$this->extent_projection."'
 	   where idexperiment='".$id."' ";
 	   $resultado = pg_exec($this->conn,$sql);
-	//    echo $sql;
-	//    exit;
 	 
 	   if ($resultado){
 	      return true;
@@ -330,17 +456,53 @@ class Experimento
 	
 	function getDados($row)
 	{
-	   	$this->idexperiment = $row['idexperiment'];
-	   	//$this->idproject = $row['idproject'];
-	   	$this->name = $row['name'];
-	   	$this->description = $row['description'];
-	   	$this->idpartitiontype = $row['idpartitiontype'];
-	   	$this->num_partition = $row['num_partition'];
-	   	$this->numpontos = $row['numpontos'];
-	   	$this->buffer = $row['buffer'];
-	   	$this->tss = $row['tss'];
+		$this->idexperiment = $row['idexperiment'];
+		//$this->idproject = $row['idproject'];
+		$this->name = $row['name'];
+		$this->description = $row['description'];
+		$this->group = $row['group_name'];
+		$this->idpartitiontype = $row['idpartitiontype'];
+		$this->num_partition = $row['num_partition'];
+		$this->buffer = $row['buffer'];
+		$this->resolution = $row['resolution'];
+		$this->repetitions= $row['repetitions'];
+		$this->trainpercent= $row['trainpercent'];
+		$this->tss = $row['tss'];
 		$this->num_points = $row['num_points'];
 		$this->iduser = $row['iduser'];
+		$this->extent_model = $row['extent_model'];
+		$this->automaticfilter = $row['automatic_filter'];
+	}
+
+	function getPathDados($row)
+	{	
+		$this->pngCutPath = $row['png_cut_path'];
+		$this->rasterCutPath = $row['raster_cut_path'];
+		$this->pngBinPath = $row['png_bin_path'];
+		$this->pngContPath = $row['png_cont_path'];
+		$this->pngPath = $row['png_path'];
+		$this->rasterPath = $row['raster_path'];
+		$this->tiffPath = $row['tiff_path'];
+		$this->rasterPngPath = $row['raster_png_path'];
+		$this->isImageCut = $row['isImageCut'];
+	}
+	
+	function alterarPathImagemMapa($idexperimento,$pngPath,$tiffPath, $rasterPngPath)
+	{
+		$sql = 'update modelr.experiment_result set png_path = ' . $pngPath . ', tiff_path = ' . $tiffPath . ', raster_png_path = ' . $rasterPngPath . ', "isImageCut" = false where idresulttype=303 and idexperiment = ' . $idexperimento;
+		$res = pg_exec($this->conn,$sql);
+	}
+	
+	function alterarPathPngRaster($idexperimento,$pngPath,$rasterPath)
+	{
+		$sql = 'update modelr.experiment_result set png_cut_path = ' . $pngPath . ', raster_cut_path = ' . $rasterPath . ', "isImageCut" = true where idresulttype=303 and idexperiment = ' . $idexperimento;
+		$res = pg_exec($this->conn,$sql);
+	}
+	
+	function limparCorteRaster($idexperimento)
+	{	
+		$sql = 'update modelr.experiment_result set png_cut_path = null, raster_cut_path = null, "isImageCut" = false where idresulttype=303 and idexperiment = ' . $idexperimento;
+		$res = pg_exec($this->conn,$sql);
 	}
 	
 	function listaCombo($nomecombo,$id,$refresh='N',$classe,$idusuario='')
@@ -379,7 +541,7 @@ class Experimento
 		if (empty($id)){
 	    	$id = 0;
 	   	}
-	   	$sql = 'select * from modelr.experiment where idexperiment = '.$id;
+		   $sql = 'select * from modelr.experiment where idexperiment = '.$id;
 		$result = pg_exec($this->conn,$sql);
 		if (pg_num_rows($result)>0){
 			$row = pg_fetch_array($result);
@@ -390,6 +552,40 @@ class Experimento
 		{
     		return 0;
 		}
+	}
+
+	function getPath($id)
+	{	
+		if (empty($id)){
+	    	$id = 0;
+	   	}
+		   $sql = 'select * from modelr.experiment_result where idexperiment = '.$id . ' and idresulttype=303';
+		$result = pg_exec($this->conn,$sql);
+		if (pg_num_rows($result)>0){
+			$row = pg_fetch_array($result);
+		   	$this->getPathDados($row);
+			return 1;
+		}
+		else
+		{
+    		return 0;
+		}
+	}
+
+	function getStatus($id)
+	{
+		$sql = 'select * from modelr.experiment where idexperiment = '.$id;
+		$result = pg_exec($this->conn,$sql);
+		if (pg_num_rows($result)>0){
+			$row = pg_fetch_array($result);
+			$this->statusExperiment = $row['idstatusexperiment'];
+			return 1;
+		}
+		else
+		{
+    		return 0;
+		}
+		
 	}
 
 	function liberarExperimento($id)
@@ -415,5 +611,6 @@ class Experimento
 		$row=pg_fetch_row($result);
 		return $row[0];
 	}
+
 }
 ?>

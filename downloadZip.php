@@ -1,13 +1,54 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors','1');
+
+$hash = md5($_REQUEST['arquivo']);
+
+$the_folder = './temp/result/' . $hash;
+$zip_file_name = './temp/imagens-' . $_REQUEST['arquivo'] . '.zip';
+unlink($zip_file_name);
+
 
 class FlxZipArchive extends ZipArchive {
-    /** Add a Dir with Files and Subdirs to the archive;;;;; @param string $location Real Location;;;;  @param string $name Name in Archive;;; @author Nicolas Heimann;;;; @access private  **/
+        /** Add a Dir with Files and Subdirs to the archive;;;;; @param string $location Real Location;;;;  @param string $name Name in Archive;;; @author Nicolas Heimann;;;; @access private  **/
+    public function addDir($location, $name) {
+        $this->addEmptyDir($name);
+         $this->addDirDo($location, $name);
+     } // EO addDir;
+
+        /**  Add Files & Dirs to archive;;;; @param string $location Real Location;  @param string $name Name in Archive;;;;;; @author Nicolas Heimann * @access private   **/
+    private function addDirDo($location, $name) {
+        $name .= '/';         $location .= '/';
+      // Read all Files in Dir
+        $dir = opendir ($location);
+        while ($file = readdir($dir))    {
+            if ($file == '.' || $file == '..') continue;
+          // Rekursiv, If dir: FlxZipArchive::addDir(), else ::File();
+            $do = (filetype( $location . $file) == 'dir') ? 'addDir' : 'addFile';
+            $this->$do($location . $file, $name . $file);
+        }
+    } 
+}
+
+$za = new FlxZipArchive;
+$res = $za->open($zip_file_name, ZipArchive::CREATE);
+if($res === TRUE)    {
+    $za->addDir($the_folder, basename('' . $_REQUEST['arquivo'])); $za->close();
+}
+else  { echo 'Could not create a zip archive';}
+
+header('Content-Type: application/zip');
+header("Content-Disposition: attachment; filename=" . $zip_file_name);
+header('Content-Length: ' . filesize($zip_file_name));
+header("Location: " . $zip_file_name);
+/* 
+class FlxZipArchive extends ZipArchive {
     public function addDir($location, $name) {
         $this->addEmptyDir($name);
         $this->addDirDo($location, $name);
     } // EO addDir;
 
-        /**  Add Files & Dirs to archive;;;; @param string $location Real Location;  @param string $name Name in Archive;;;;;; @author Nicolas Heimann * @access private   **/
+
     private function addDirDo($location, $name) {
         $name .= '/';         $location .= '/';
     // Read all Files in Dir
@@ -26,7 +67,7 @@ $hash = $_REQUEST['arquivo'];
 
 //if($type == 'modelosGerados'){
         
-    $the_folder = './result/' . $hash;
+    $the_folder = './temp/result/' . $hash;
     $zip_file_name = 'imagens.zip';
 
     $za = new FlxZipArchive;
@@ -39,7 +80,7 @@ $hash = $_REQUEST['arquivo'];
         header('Content-Length: ' . filesize($zip_file_name));
         header("Location: " . $zip_file_name);
     }
-    else  { echo 'Could not create a zip archive';}
+    else  { echo 'Could not create a zip archive';} */
 
 //}
 

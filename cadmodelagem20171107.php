@@ -701,7 +701,8 @@ function selecionaTodos(isChecked) {
 }
 
 function buscar()
-{
+{   
+    alert('cadmodelagem20171107')
 	if (document.getElementById('edtespecie').value=='')
 	{
 		criarNotificacao('Atenção','Informe o nome da espécie','warning')

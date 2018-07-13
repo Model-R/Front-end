@@ -1,0 +1,2 @@
+"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
+"Prepusa montana Mart. 1 svm2" 0.07578515 0.07578515 0.07578515 0.02064075 0.07578515 0.08107866 1 1 "svm2" 1

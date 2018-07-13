@@ -12,7 +12,11 @@
 
 $op=$_REQUEST['op'];
 $id=$_REQUEST['id'];
-$tab = 1;
+$tab=$_REQUEST['tab'];
+if (empty($tab))
+{
+	$tab = 1;
+}
 ?>
 
 <head>
@@ -178,12 +182,21 @@ $tab = 1;
                                                         <?php require "dadosbioticos.php";?>
                                                     </div> <!-- table panel -->
                                                     <div  class="tab-pane fade <?php if ($tab=='3') echo 'in active';?>" id="tab_content3" aria-labelledby="home-tab">
-                                                        <h2>Teste2</h2>
+                                                    <?php require "expdatacleaning.php";?>
                                                     </div> <!-- table panel -->
 												</div> <!-- myTabContent -->
 											</div> <!-- tabpanel -->
 										</div>
 <?php } //<?php if ($op=='A') ?>
+
+     <!-- footer content -->
+     <footer>
+                <div class="" id="demo" style="display:none">
+                    
+                </div>
+                <div class="clearfix"></div>
+            </footer>
+            <!-- /footer content -->
 
     <div id="custom_notifications" class="custom-notifications dsp_none">
         <ul class="list-unstyled notifications clearfix" data-tabbed_notifications="notif-group">
@@ -192,6 +205,16 @@ $tab = 1;
         <div id="notif-group" class="tabbed_notifications"></div>
     </div>
 
+<script>
+        <?php 
+
+require 'MSGCODIGO.php';
+
+?>
+<?php $MSGCODIGO = $_REQUEST['MSGCODIGO'];
+//$tab = $_REQUEST['tab'];
+?>
+</script>
     <script src="js/bootstrap.min.js"></script>
 
     <!-- chart js -->

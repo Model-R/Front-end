@@ -73,7 +73,7 @@ class TipoParticionamento
 		}
 		$sql.=' order by partitiontype ';
 		$html = "<select name='".$nomecombo."' id = '".$nomecombo."' ".$s."  ".$classe.">";
-		$html .= "<option value=''>Selecione o tipo de particionamento</Option>";
+		//$html .= "<option value=''>Selecione o tipo de particionamento</Option>";
 		while ($row = pg_fetch_array($res))
 		{
 			$s = '';

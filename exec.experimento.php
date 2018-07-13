@@ -12,9 +12,11 @@ $Experimento = new Experimento();
 $Experimento->conn = $conn;
 
 $operacao = $_REQUEST['op'];
+$page = $_REQUEST['page'];
 
-//print_r($_REQUEST);
-//exit;
+if($page == 'dc'){
+	$operacao = $_GET['op'];
+}
 
 if (($operacao=='I') || ($operacao=='A'))
 {
@@ -23,6 +25,7 @@ if (($operacao=='I') || ($operacao=='A'))
 	$idprojeto = $_REQUEST['cmboxprojeto'];
 	$experimento = $_REQUEST['edtexperimento'];
 	$descricao = $_REQUEST['edtdescricao'];
+	$group = $_REQUEST['edtgrupo'];
 	$tipo = $_REQUEST['edttipo'];
 	if($_REQUEST['edtfiltroautomatico'] == 'on') $filtroautomatico = 'true';
 	else $filtroautomatico = 'false';
@@ -32,6 +35,7 @@ if (($operacao=='I') || ($operacao=='A'))
 	$Experimento->idproject= $idprojeto;
 	$Experimento->name = $experimento;
 	$Experimento->description = $descricao;
+	$Experimento->group = $group;
 	$Experimento->iduser = $idusuario;
 	$Experimento->type = $tipo;
 	$Experimento->automaticfilter = $filtroautomatico;
@@ -41,12 +45,16 @@ else
 	$idexperimento = $_REQUEST['id'];
 }
 
+// echo $operacao;
+// echo $idexperimento;
+// exit;
+
 if ($operacao=='I')
 {
    if ($result = $Experimento->incluir())
 	{
 	// MENSAGEM 19 ==> CADASTRAR TECNICO
-	 header("Location: cadexperimento.php?op=A&MSGCODIGO=82&id=$result");
+	 header("Location: cadexperimento.php?op=A&MSGCODIGO=82&tab=2&id=$result");
 	}
 	else
 	{
@@ -86,33 +94,59 @@ if ($operacao=='E')
 {
     $id = $_REQUEST['id'];
     if (!empty($id)){
+		//echo '!empty ' . $id;
  		$result = $Experimento->excluir($id);
 	}
 	else
 	{
 		$box=$_POST['id_experiment'];
-		while (list ($key,$val) = @each($box)) { 
+		while (list ($key,$val) = @each($box)) {
+			//echo ' list ' . $val; 
    			$result = $Experimento->excluir($val);
 		}
 	}
 	header("Location: consexperimento.php?MSGCODIGO=81");	
 }
 
-
-// liberar experimento
 if ($operacao=='LE')
 {
-
-    if ($result = $Experimento->liberarExperimento($idexperimento))
-	{
-		header("Location: cadexperimento.php?op=A&tab=2&MSGCODIGO=84&id=$idexperimento");
-	}
-	else
-	{
-	 header("Location: cadexperimento.php?op=A&tab=2&MSGCODIGO=85&id=$idexperimento");
-	}
-   
+	$ws = file_get_contents("https://model-r.jbrj.gov.br/ws/?id=" . $_REQUEST['id']);
+	$json = json_decode($ws);
+	if(sizeof($json[0]->raster) > 0){
+		$idexperimento = $_REQUEST['id'];
+		if (!empty($idexperimento)){
+			$Experimento->liberarExperimento($idexperimento);
+			//$result = $Experimento->excluir($id);
+		}
+		else
+		{
+			$box=$_POST['id_experiment'];
+			while (list ($key,$idexperimento) = @each($box)) {
+				$Experimento->liberarExperimento($idexperimento);
+				//$result = $Experimento->excluir($val);
+			}
+		}
+		header("Location: consexperimento.php?MSGCODIGO=84");
+	} else {
+		header("Location: cadexperimento.php?op=A&tab=4&MSGCODIGO=78&id=" . $_REQUEST['id']);
+	}	
 }
+
+
+// liberar experimento
+// if ($operacao=='LE')
+// {
+
+//     if ($result = $Experimento->liberarExperimento($idexperimento))
+// 	{
+// 		header("Location: cadexperimento.php?op=A&tab=2&MSGCODIGO=84&id=$idexperimento");
+// 	}
+// 	else
+// 	{
+// 	 header("Location: cadexperimento.php?op=A&tab=2&MSGCODIGO=85&id=$idexperimento");
+// 	}
+   
+// }
 
 ?>
 

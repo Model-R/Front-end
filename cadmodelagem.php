@@ -43,6 +43,8 @@ if (empty($tab))
 {
 	$tab = 3;
 }
+
+$id;
 $op=$_REQUEST['op'];
 
 $id=$_REQUEST['id'];
@@ -722,7 +724,8 @@ function selecionaTodos(isChecked) {
 }
 
 function buscar()
-{
+{   
+    alert('cadmodelagem')
 	if (document.getElementById('edtespecie').value=='')
 	{
 		criarNotificacao('Atenção','Informe o nome da espécie','warning')
@@ -744,12 +747,12 @@ function buscar()
 }
 
 
-function atualizar(tab)
-{
-	//$('.nav-tabs a[href="#tab_content5"]').tab('show')
-	document.getElementById('frm').action="cadmodelagem.php?tab="+tab;
-	document.getElementById('frm').submit();
-}
+// function atualizar(tab)
+// {
+// 	//$('.nav-tabs a[href="#tab_content5"]').tab('show')
+// 	document.getElementById('frm').action="cadmodelagem.php?tab="+tab;
+// 	document.getElementById('frm').submit();
+// }
 
 function initMap() {
 	<?php if (empty($latcenter))
@@ -1097,6 +1100,7 @@ function toggle(isChecked) {
 
 function filtrar(idstatusoccurrence)
 {
+    console.log('entrou filtrar cadmodelagem')
 	exibe('loading');
 	document.getElementById('frm').action='cadmodelagem.php?tab=3&filtro='+idstatusoccurrence;
 	document.getElementById('frm').submit();

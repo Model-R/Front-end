@@ -31,7 +31,7 @@ class Paginacao
 
 	function pegaPaginaInicio($p,$total,$por_pagina)
 	{
-	   if ($total >10){
+	   if ($total >20){
 		  if ($p <= $por_pagina) {
 			  $pag_inicio = 1;
 			  if ($p > ($por_pagina / 2))
@@ -43,9 +43,9 @@ class Paginacao
 		  {
 			  $pag_inicio = ceil($p/$por_pagina);
 			  $pag_inicio = ($pag_inicio-1)*$por_pagina+1;
-			  if ($p>=($pag_inicio+10))
+			  if ($p>=($pag_inicio+20))
 			  {
-				   $pag_inicio = $pag_inicio + 10;
+				   $pag_inicio = $pag_inicio + 20;
 			  }
 		  }
 	   }
@@ -75,7 +75,7 @@ class Paginacao
        	  $row = $this->numero_linhas;
 		  if (empty($row))
 		  {
-		  	$row=10;
+		  	$row=20;
 		  }
 		  $tam = $this->tamanho_imagem;
 		  $sql = $this->sql;
@@ -140,7 +140,7 @@ class Paginacao
 			<a class="btn btn-default btn-sm" onClick="montapaginacao(<?php echo $p-1;?>,document.getElementById('cmboxqtdrowspaginacao').value)"><?php echo "Anterior";?></a>
 			<?php } ?>
 <?php			
-			for ($pag = $pag_inicio ; $pag < $pag_inicio + 10; $pag++)
+			for ($pag = $pag_inicio ; $pag < $pag_inicio + 20; $pag++)
 			{
 			   $classetabela = "btn-default btn-sm";
 			   if ($pag==$p){

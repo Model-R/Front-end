@@ -11,7 +11,11 @@ body.nav-sm .container.body .right_col {
     margin-left: 70px;
     z-index: 2;
 }
-.right_col{min-height: 1000px;}
+
+.right_col_mod{
+    min-height: 1000px;
+    background: white !important;    
+}
 body.nav-sm .navbar.nav_title {
     width: 70px;
 }
@@ -208,7 +212,7 @@ body.nav-md .container.body .col-md-3.left_col {
     display: flex;
 }
 
-body .container.body .right_col {
+body .container.body {
     background: #dad6d6;
 }
 
@@ -6481,4 +6485,19 @@ ul.notifications {
 
 .x_title h2 a {
     color: #74808d;
+}
+
+/*  ---------------- cortarraster.php --------------------*/
+
+.shapebox-content {
+    display: flex;
+    align-items: center;
+    width: 500px;
+    margin: auto;
+    justify-content: space-evenly;
+    margin-bottom: 20px;
+}
+
+#cmboxcortarraster {
+    width: 200px;
 }

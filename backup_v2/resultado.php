@@ -1394,34 +1394,6 @@ function abreModelStatusOcorrencia()
 		criarNotificacao('Atenção','Selecione os registros que deseja alterar o status','warning');
 	}
 }
-
-function abreModal(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquivo,idstatusocorrence,localizacao)
-{
-	/*alert('Taxon '+taxon);
-	alert('lat '+lat);
-	alert('lng '+lng);
-	alert('idocorrencia '+idocorrencia);
-	alert('latinf '+latinf);
-	alert('servidor '+servidor);
-	alert('path '+path);
-	alert('arquivo '+arquivo);
-	alert('idstatusocorrence '+idstatusocorrence);
-	*/
-	document.getElementById('divtaxon').innerHTML=taxon;
-	
-	html_imagem='<a href=templaterb2.php?colbot=rb&codtestemunho=&arquivo='+arquivo+' target=\"Visualizador\"><img src="http://'+servidor+'/fsi/server?type=image&source='+path+'/'+arquivo+'&width=300&height=100&profile=jpeg&quality=20"></a>';
-
-	document.getElementById('edidocorrencia').value=idocorrencia;
-	document.getElementById('divimagem').innerHTML=html_imagem;
-	document.getElementById('dadosoriginais').innerHTML='Latitude: '+lat+' Longitude: '+lng+'<br>'+localizacao;
-	document.getElementById('edtlatitude').value=latinf;
-	document.getElementById('edtlongitude').value=lnginf;
-	//alert(idstatusocorrence);
-	document.getElementById('cmboxstatusoccurrence').value=idstatusocorrence;
-
-	$('#myModal').modal('show');
-}
-
     </script>
 	
     <script>

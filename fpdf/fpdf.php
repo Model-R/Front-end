@@ -6,8 +6,10 @@
 * Date:    2015-12-20                                                          *
 * Author:  Olivier PLATHEY                                                     *
 *******************************************************************************/
-
+error_reporting(E_ALL);
+    ini_set('display_errors','1');
 define('FPDF_VERSION','1.81');
+header("Content-Type: text/html; charset=utf-8",true);
 
 class FPDF
 {
@@ -574,8 +576,12 @@ function AcceptPageBreak()
 }
 
 function Cell($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='')
-{
-	$txt = utf8_decode($txt);
+{	
+	//$txt = $txt;
+	$txt = str_replace('ç',"c",$txt);
+	//$txt = iconv('UTF-8', 'windows-1252//IGNORE', $txt);
+	$txt = iconv('UTF-8', 'windows-1252//IGNORE', $txt);
+	
 	// Output a cell
 	$k = $this->k;
 	if($this->y+$h>$this->PageBreakTrigger && !$this->InHeader && !$this->InFooter && $this->AcceptPageBreak())

@@ -34,7 +34,7 @@ class Usuario
 		}
 		if (empty($this->password))
 		{
-			$this->password = 'trocar';
+			$this->password = md5('trocar');
 		}
 		
  		$sql = "insert into modelr.user (login,password,name,email,idstatususer,idusertype,idinstitution) values 
@@ -75,7 +75,7 @@ class Usuario
 			, idinstitution = ".$this->idinstitution." 
 			 where iduser='".$id."' ";	
 		} else {
-			$sql = "update modelr.user set password = '".$this->password."', name = '".$this->name."', 
+			$sql = "update modelr.user set password = '".md5($this->password)."', name = '".$this->name."', 
 			email = '".$this->email."'
 			, login = '".$this->login."'
 			, idusertype = '".$this->idusertype."'
@@ -137,7 +137,7 @@ class Usuario
 
 	function autentica($login,$senha)
 	{
-	   	$sql = "select * from modelr.user where login = '".$login."' and password='".$senha."'  ";
+	   	$sql = "select * from modelr.user where login = '".$login."' and password='".md5($senha)."'  ";
 		//1 = ativo;
 		//echo $sql;
 		//exit;
@@ -243,7 +243,7 @@ class Usuario
 function enviarSenha($email){
 	//$senha = $this->gerarSenha(6);
 	
-	$senha = 'trocar';
+	$senha = md5('trocar');
 	//$sql = "update usuario set senha='".substr(md5($senha),0,5)."' where email = '".$email."'";
 	
 	$sql = "select * from modelr.user where email = '".$email."'";
@@ -337,7 +337,7 @@ function enviarSenha($email){
 		$result = pg_exec($this->conn,$sql);
 
 		if ((pg_num_rows($result)>0) && ($r = true)  ){
-			$sql = " update modelr.user set password = '".$novasenha."' where iduser = '".$this->iduser."'";
+			$sql = " update modelr.user set password = '".md5($novasenha)."' where iduser = '".$this->iduser."'";
 			if ($resultado = pg_exec($this->conn,$sql))
 			{
 			   $r = true;

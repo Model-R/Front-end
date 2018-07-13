@@ -49,14 +49,16 @@ if($type == 'exp'){
 }
 else if ($type == 'points'){
     //output headers so that the file is downloaded rather than displayed
-    header('Content-Type: text/csv; charset=utf-8');
-    header('Content-Disposition: attachment; filename=dadosambientais.csv');
+    header('Content-Type: text/csv; charset=Windows-1252');
+    header('Content-Disposition: attachment; filename=dadosdeocorrencia.csv');
 
     // create a file pointer connected to the output stream
     $output = fopen('php://output', 'w');
 
     // output the column headings
-    fputs($output, implode(array('idexperimento', 'herbário', 'tombo', 'taxon','coletor','número coleta', 'status','localização', 'latitude', 'longitude'), ';')."\n");
+    $header = implode(array('idexperimento', 'herbário', 'tombo', 'taxon','coletor','número coleta', 'status','localização', 'latitude', 'longitude'), ';');
+    $header = iconv('UTF-8', 'windows-1252//IGNORE', $header);
+    fputs($output, $header."\n");
 
  
     // fetch the data
@@ -72,6 +74,12 @@ else if ($type == 'points'){
 
     // loop over the rows, outputting them
     while ($row = pg_fetch_assoc($res)) {
+		$row = str_replace(";"," -",$row);
+		while (list ($key,$val) = @each($row)) { 
+			//echo 'key: ' . $key;
+			//echo 'val: ' . $val;
+			$row[$key] = iconv('UTF-8', 'windows-1252//IGNORE', $val);
+		}
         fputs($output, implode($row, ';')."\n");
     }
 }

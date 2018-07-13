@@ -1,0 +1,50 @@
+------------------------------------------ 20/04/2018 ------------------------------------------
+- Terminar Processo de Modelagem FEITO
+
+- Ajustar idresulttype (3 por linha do csv) FEITO
+
+- Adicionar variáveis preditoras FEITO
+
+- Ajustar variáveis preditoras no código de modelagem  FEITO
+
+- Adicionar idresulttype 303. FEITO
+
+- Adicionar campo codtestemunho no banco (apenas dados do Jabot). FEITO
+
+- Criar usuário "Jabot" - Vai executar a modelagem no JB
+
+- Tabela Data Cleaning - adicionar campo Origem FEITO
+
+- Ajustar download modelos FEITO
+
+- Usuário Jabot - retirar botão modelar na aba modelagem FEITO
+
+------------------------------------------ 27/04/2018 ------------------------------------------
+- data cleaning csv municipio
+
+- selecionar apenas um tipo de variavel
+
+- selecionar resolução aba dados abioticos
+	- usuário reflora variavel PCA
+	
+- imagem para mais de uma espécie usuário diogo experimento 280
+ 
+- usuário selcionar imagem do mapa
+
+-----------------------------------
+
+- Tela resultados mapa - select biomas cortar 
+
+- API resultados
+
+- Enviar Diogo exemplo JSON do Zimbrão FEITO
+
+- IPT João Lana/Diogo
+
+- Busca por sinonimos nas bases de dados (Jabot e Gbif)
+
+- Incluir entrada de dados via ipt do HV
+
+- Incluir as coleções que utilizam o jabot
+
+***usuário público só terá acesso até Data Cleaning***

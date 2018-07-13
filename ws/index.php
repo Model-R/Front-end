@@ -31,10 +31,10 @@ if (isset($_GET['status']))
 $res = pg_exec($conn,$sql);
 $qtd = pg_num_rows($res);
 
-$json_str = '{"experiment":[';
+$json_str = '[';
 $c = 0;
 while ($row = pg_fetch_array($res))
-{
+{	
 	$c++;
 	$sql2 = 'select * from modelr.occurrence where idexperiment = '.$row['idexperiment'];
 	$res2 = pg_exec($conn,$sql2);
@@ -57,7 +57,7 @@ while ($row = pg_fetch_array($res))
 	$json_str2 .=']';
 	
 	// VARIÁVEIS ABIÓTICAS
-	$sql3 = 'select r.idraster,r.raster,r.path,r.resolution,r.period, s.source from modelr.experiment_use_raster eur,
+	$sql3 = 'select r.idraster,r.raster,r.resolution,r.period, s.source, eur.params from modelr.experiment_use_raster eur,
 modelr.raster r, modelr.source s where
 eur.idraster = r.idraster and
 r.idsource = s.idsource and
@@ -71,11 +71,11 @@ eur.idexperiment = '.$row['idexperiment'];
 		$c3++;
 		if ($c3<$qtd3)
 		{	
-			$json_str3.='{"raster":"'.$row3['raster'].'", "source":"'.$row3['source'].'", "path":"'.$row3['path'].'", "period":"'.$row3['period'].'", "resolution":"'.$row3['resolution'].'", "idraster": "'.$row3['idraster'].'"},';
+			$json_str3.='{"raster":"'.$row3['raster'].'", "source":"'.$row3['source'].'", "period":"'.$row3['period'].'", "resolution":"'.$row3['resolution'].'", "idraster": "'.$row3['idraster'].'","params":"'.$row3['params'].'"},';
 		}
 		else
 		{
-			$json_str3.='{"raster":"'.$row3['raster'].'", "source":"'.$row3['source'].'", "path":"'.$row3['path'].'", "period":"'.$row3['period'].'", "resolution":"'.$row3['resolution'].'", "idraster": "'.$row3['idraster'].'"}';
+			$json_str3.='{"raster":"'.$row3['raster'].'", "source":"'.$row3['source'].'", "period":"'.$row3['period'].'", "resolution":"'.$row3['resolution'].'", "idraster": "'.$row3['idraster'].'","params":"'.$row3['params'].'"}';
 		}
 	}
 	$json_str3 .=']';
@@ -106,13 +106,13 @@ eua.idexperiment = '.$row['idexperiment'];
 			
 	if ($c<$qtd)
 	{	
-		$json_str.='{"idexperiment":"'.md5($row['idexperiment']).'", "id":"'.$row['idexperiment'].'", "name":"'.$row['name'].'", "description": "'.$row['name'].'", "num_partition": "'.$row['num_partition'].'", "extent_model": "'.$row['extent_model'].'", "buffer": "'.$row['buffer'].'", "num_points": "'.$row['num_points'].'",  "tss": "'.$row['tss'].'", "statusexperiment": "'.$row['statusexperiment'].'","partitiontype": "'.$row['partitiontype'].'", "occurrences": '.$json_str2.',"raster": '.$json_str3.',"algorithm": '.$json_str4.'},';
+		$json_str.='{"idexperiment":"'.md5($row['idexperiment']).'", "id":"'.$row['idexperiment'].'", "name":"'.$row['name'].'", "description": "'.$row['name'].'", "num_repetitions": "'.$row['repetitions'].'", "num_partition": "'.$row['num_partition'].'", "trainpercent": "'.$row['trainpercent'].'", "extent_model": "'.$row['extent_model'].'", "buffer": "'.$row['buffer'].'", "num_points": "'.$row['num_points'].'",  "tss": "'.$row['tss'].'", "statusexperiment": "'.$row['statusexperiment'].'","partitiontype": "'.$row['partitiontype'].'","resolution": "'.$row['resolution'].'", "occurrences": '.$json_str2.',"raster": '.$json_str3.',"algorithm": '.$json_str4.'},';
 	}
 	else
 	{
-		$json_str.='{"idexperiment":"'.md5($row['idexperiment']).'", "id":"'.$row['idexperiment'].'", "name":"'.$row['name'].'", "description": "'.$row['name'].'", "num_partition": "'.$row['num_partition'].'", "extent_model": "'.$row['extent_model'].'", "buffer": "'.$row['buffer'].'", "num_points": "'.$row['num_points'].'",  "tss": "'.$row['tss'].'", "statusexperiment": "'.$row['statusexperiment'].'","partitiontype": "'.$row['partitiontype'].'", "occurrences": '.$json_str2.', "raster": '.$json_str3.',"algorithm": '.$json_str4.'}';
+		$json_str.='{"idexperiment":"'.md5($row['idexperiment']).'", "id":"'.$row['idexperiment'].'", "name":"'.$row['name'].'", "description": "'.$row['name'].'", "num_repetitions": "'.$row['repetitions'].'", "num_partition": "'.$row['num_partition'].'", "trainpercent": "'.$row['trainpercent'].'", "extent_model": "'.$row['extent_model'].'", "buffer": "'.$row['buffer'].'", "num_points": "'.$row['num_points'].'",  "tss": "'.$row['tss'].'", "statusexperiment": "'.$row['statusexperiment'].'","partitiontype": "'.$row['partitiontype'].'","resolution": "'.$row['resolution'].'", "occurrences": '.$json_str2.', "raster": '.$json_str3.',"algorithm": '.$json_str4.'}';
 	}
 }
-$json_str .=']}';
+$json_str .=']';
 echo $json_str;
 ?>

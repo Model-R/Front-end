@@ -2518,7 +2518,6 @@ span.section {
 .form-control {
     border-radius: 0;
     line-height: 30px;
-    width: 100%;
 }
 
 .form-horizontal .control-label {
@@ -2535,13 +2534,15 @@ legend {
     font-size: 18px;
     color: inherit;
 }
-
-.checkbox {}
-
+/* 
 .form-horizontal .form-group {
-    margin-right: 0;
-    margin-left: 0;
-}
+    display: flex;
+    width: 30%;
+    align-items: center;
+    margin: auto;
+    margin-bottom: 15px;
+    justify-content: space-between;
+} */
 
 .form-control-feedback {
     margin-top: 8px;
@@ -6472,6 +6473,7 @@ ul.notifications {
     border-color: #26b99a;
     border-radius: 50%;
     margin-left: 0px !important;
+    width: 35px !important;
 }
 
 .files-options{
@@ -6527,10 +6529,13 @@ display: none
     padding: 6px 20px;
     padding-top: 6px !important;
 }
+.radio-group2{
+	width: 250px;
+}
 
 .radio-group{
     display: flex;
-    width: 250px;
+    width: 250px !important;
     justify-content: space-around;
 }
 
@@ -6642,6 +6647,7 @@ display: none
 }
 
 .opacity-slider{
+    display: flex;
     width: 50% !important;
     margin: auto;
     margin-bottom: 20px;
@@ -6652,4 +6658,32 @@ display: none
 .cleanDataFooter{
     display: flex;
     justify-content: center;
+}
+
+@media screen and (min-width: 768px){
+
+    #pointModal .modal-dialog {
+        width: 900px !important;
+    }
+}
+
+/* ----------------------expresultado.php ------------------*/
+
+#metadata-table {
+	layout-table: fixed;
+	width: 100%;
+}
+
+#metadata-table td {
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+}
+
+
+/* ----------------------dadosbioticos.php ----------------*/
+
+.total-busca{
+    text-align: left;
+    font-weight: 1000;
+    font-size: 15px;
 }

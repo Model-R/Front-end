@@ -28,11 +28,11 @@ if ($fontedados==1)
 {
 	$sql = "select numtombo,taxoncompleto,codtestemunho,coletor,numcoleta,latitude,longitude,pais,estado_prov as estado,cidade as municipio
 			from  
-								publicacao.extracao_jabot where latitude is not null and longitude is not null and ";
+								publicacao.extracao_jabot_geral where latitude is not null and longitude is not null and ";
 //								familia || ' ' || taxoncompleto ilike '%".$especie."%' ";
 
 	$box=$_POST['chtestemunho'];
-	$in = 'extracao_jabot.codtestemunho in (';
+	$in = 'extracao_jabot_geral.codtestemunho in (';
 	while (list ($key,$val) = @each($box)) { 
 		//$result = $Cobertura->excluir($val);
 		$in .= $val.','; 
@@ -56,7 +56,7 @@ if ($fontedados==1)
 		$pais = $row['pais'];
 		$estado = $row['estado'];
 		$municipio = $row['municipio'];
-		
+		 
 //		echo $pais.','.$estado.','.$municipio;
 //		exit;
 		
@@ -75,7 +75,7 @@ if ($fontedados==2)
 	$box=$_POST['chtestemunho'];
 	// print_r($box);
 	// exit;
-	$in = 'extracao_jabot.codtestemunho in (';
+	$in = 'extracao_jabot_geral.codtestemunho in (';
 	while (list ($key,$val) = @each($box)) { 
 		//$result = $Cobertura->excluir($val);
 		$val = explode("|", $val);

@@ -1,7 +1,6 @@
 <?php 
 session_start();
 $tokenUsuario = md5('seg'.$_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']);
-
 if ($_SESSION['donoDaSessao'] != $tokenUsuario)
 {   
 	header('Location: index.php');
@@ -9,19 +8,18 @@ if ($_SESSION['donoDaSessao'] != $tokenUsuario)
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
-<?php require_once('classes/conexao.class.php');
+<?php 
+        require_once('classes/conexao.class.php');
 	  require_once('classes/paginacao2.0.class.php');
 //	  require_once('classes/categoira.class.php');
-	  
 	  $FORM_ACTION = 'experimento';
 	  $tipofiltro = $_REQUEST['cmboxtipofiltro'];
 	  $valorfiltro = $_REQUEST['edtvalorfiltro'];
 	  $ordenapor = $_REQUEST['cmboxordenar'];
 	  
 //	  $idproject = $_REQUEST['idproject'];
-      $idusuario = $_REQUEST['idusuario'];
-	  
-	  //print_r($_REQUEST);
+      $idusuario = $_SESSION['s_idusuario'];
+    
 	class MyPag extends Paginacao
 	{
 		function desenhacabeca($row)
@@ -33,6 +31,7 @@ if ($_SESSION['donoDaSessao'] != $tokenUsuario)
                         <input type="checkbox" id="check-all" class="flat">
                     </th>
                     <th class="column-title">Experimento </th>
+                    <th class="column-title">Grupo </th>
                     <th class="column-title">Descrição </th>
                     ';
 			if ($_SESSION['s_idtipousuario']==2)
@@ -70,15 +69,16 @@ if ($_SESSION['donoDaSessao'] != $tokenUsuario)
 //				$disabled = 'disabled';
 				$disabled = ''; // alterado apenas para a apresentação
 			}
-			$html = '<td class="a-center "><input type="checkbox" class="flat" name="id_experiment[]" id="id_experiment" value="'.$row["idexperiment"].'" ></td>
+            $html = '<td class="a-center "><input type="checkbox" class="flat" name="id_experiment[]" id="id_experiment" value="'.$row["idexperiment"].'" ></td>
                                     <td class=" ">'.$row['2'].'</td>
+                                    <td class=" ">'.$row['group_name'].'</td>
                                     <td class=" ">'.$row['description'].'</td>';
 			if ($_SESSION['s_idtipousuario']==2)
 			{
 				$html.='<td class=" ">'.$row['username'].'</td>';
 			}			
 			$html.='				<td class="actions">
-									<a class="btn btn-app" href="cadexperimento.php?op='.'A'.'&tab='.'2'.'&id='.$row['idexperiment'].'" data-toggle="tooltip" data-placement="top" title="Editar">
+									<a class="btn btn-app" href="cadexperimento.php?op='.'A'.'&tab='.'2'.'&id='.$row['idexperiment'].'" data-toggle="tooltip" data-placement="top" title="Visualizar">
                                         <span class="badge bg-blue">'.$qtd.'</span>
                                         <i class="fa fa-edit"></i>
                                     </a>
@@ -87,27 +87,6 @@ if ($_SESSION['donoDaSessao'] != $tokenUsuario)
                                         <i class="fa fa-eraser"></i>
                                     </a>
                                    ';
-                                    if (($qtdok>0 || $_SESSION['s_idtipousuario']==2) && $_SESSION['s_idtipousuario'] != 1)
-                                    //tipo administrador ve tudo, e tipo modelagem não ve modelagem
-									{
-										$html.='
-									<a class="btn btn-app '.$disabled.'" onclick="modelar('.$row['idexperiment'].')" data-toggle="tooltip" data-placement="top" title="Modelar">
-                                        <span class="badge bg-green">'.$qtdok.'</span>
-                                        <i class="fa fa-gear"></i>
-                                    </a>
-                                                    ';
-									}
-									
-									$hash = md5($row['idexperiment']);
-                                    $log_directory = './result/'.$hash.'/';
-									$results_array = array();
-									$conta_arquivos = 0;
-									if (is_dir($log_directory) || $_SESSION['s_idtipousuario']==2)
-									{
-										$html.='<a class="btn btn-app '.$disabled.'" onclick="resultado('.$row['idexperiment'].')" data-toggle="tooltip" data-placement="top" title="Resultado">
-											<i class="fa fa-globe"></i>
-										</a>';
-									}
 									
 									$idstatus = $row['idstatusexperiment'];
 									$classe1='done';
@@ -202,16 +181,24 @@ if ($tipofiltro=='USUARIO')
 {   
    $sql.= " and u.name ilike '%".$valorfiltro."%' ";	
 }
+if ($tipofiltro=='GRUPO')
+{   
+   $sql.= " and e.group_name ilike '%".$valorfiltro."%' ";	
+}
 
 if (($ordenapor=='EXPERIMENTO') || ($ordenapor==''))
 {
    $sql.= " order by e.name";	
 }
-
 if (($ordenapor=='USUARIO'))
 {
    $sql.= " order by u.name";	
 }
+if (($ordenapor=='GRUPO'))
+{
+   $sql.= " order by e.group_name";	
+}
+
 
 //echo $sql;
 
@@ -341,8 +328,8 @@ if (($ordenapor=='USUARIO'))
                                         </div> -->
                                     </h2>
                                     <div class="print-options">
-                                        <a  class="btn btn-default btn-sm" onClick="imprimir('PDF');" data-toggle="tooltip" data-placement="top" title="Exportar tabela em PDF"><?php echo " PDF ";?></a>
-                                        <a  class="btn btn-default btn-sm" onClick="imprimir('CSV');"data-toggle="tooltip" data-placement="top" title="Exportar tabela em CSV"><?php echo " CSV";?></a>
+                                        <a  class="btn btn-default btn-sm" onClick="imprimirExp('PDF');" data-toggle="tooltip" data-placement="top" title="Exportar tabela em PDF"><?php echo " PDF ";?></a>
+                                        <a  class="btn btn-default btn-sm" onClick="imprimirExp('CSV');"data-toggle="tooltip" data-placement="top" title="Exportar tabela em CSV"><?php echo " CSV";?></a>
                                     </div>
 
                                     <?php 
@@ -384,8 +371,8 @@ if (($ordenapor=='USUARIO'))
                                                     include_once 'templates/tipofiltro.php';
                                                 }
                                             ?>
-                                            <div class="form-group">
-                                                <label for="edtvalorfiltro">Nome</label>
+                                            <div class="form-group" style="display: flex;align-items: baseline;">
+                                                <label for="edtvalorfiltro" style="margin-right: 5px;">Nome</label>
                                                 <input id="edtvalorfiltro" name="edtvalorfiltro" class="form-control" placeholder="Nome" value="<?php echo $valorfiltro;?>">
                                             </div>
                                             <?php 
@@ -397,6 +384,7 @@ if (($ordenapor=='USUARIO'))
                                             <button type="button" class="btn btn-success" onClick='filterApply()' data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar experimentos">Filtrar</button>
                                         </div>
                                         <div class="row-action">
+                                            <!-- <button type="button" class="btn btn-success" onClick='liberarExperimento()' data-toggle="tooltip" data-placement="top" title data-original-title="Liberar experimento para Modelagem">Liberar</button> -->
                                             <button type="button" class="btn btn-info" onClick='novo()' data-toggle="tooltip" data-placement="top" title data-original-title="Criar novo experimento">Novo</button>
                                             <button type="button" class="btn btn-danger" onClick='showExcluir()' data-toggle="tooltip" data-placement="top" title data-original-title="Excluir experimento">Excluir</button>
                                         </div>
@@ -500,25 +488,25 @@ require 'MSGCODIGO.php';
     	document.getElementById('frm').submit();
 	}
 
-	function imprimir(tipo)
+	function imprimirExp(tipo)
 	{
 		document.getElementById('frm').target="_blank";//"'cons<?php echo strtolower($FORM_ACTION);?>.php';
 		if (tipo=='PDF')
 		{
             //console.log(document.getElementById('frm').action='export' + tipo + '.php?table=exp')
-			document.getElementById('frm').action='export' + tipo + '.php?table=exp&expid=';
+			document.getElementById('frm').action='export' + tipo + '.php?table=exp&expid=<?php echo $idusuario;?>';
 			document.getElementById('frm').submit();
 		}
 		if (tipo=='CSV')
 		{
 			//console.log(document.getElementById('frm').action='export' + tipo + '.php?table=exp')
-			document.getElementById('frm').action='export' + tipo + '.php?table=exp&expid';
+			document.getElementById('frm').action='export' + tipo + '.php?table=exp&expid=<?php echo $idusuario;?>';
 			document.getElementById('frm').submit();
 		}
 	}
 
 	function novo()
-	{
+	{   
 		window.location.href = 'cad<?php echo strtolower($FORM_ACTION);?>.php?op=I&idusuario=<?php echo $idusuario;?>';
 	}
 	
@@ -543,7 +531,14 @@ require 'MSGCODIGO.php';
 	{
 		$('#myModal').modal('hide');
 		document.getElementById('frm').action='exec.<?php echo strtolower($FORM_ACTION);?>.php?op=E';
-  			document.getElementById('frm').submit();
+        console.log('exec.<?php echo strtolower($FORM_ACTION);?>.php?op=E')
+  		document.getElementById('frm').submit();
+	}	
+
+    function liberarExperimento()
+	{   
+		document.getElementById('frm').action='exec.<?php echo strtolower($FORM_ACTION);?>.php?op=LE';
+  		document.getElementById('frm').submit();
 	}	
 
 	</script>

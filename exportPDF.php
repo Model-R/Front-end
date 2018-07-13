@@ -2,6 +2,7 @@
     session_start();
     error_reporting(E_ALL);
     ini_set('display_errors','1');
+    header("Content-Type: text/html; charset=utf-8",true);
 
     require_once('classes/experimento.class.php');
     require_once('classes/conexao.class.php');
@@ -20,7 +21,7 @@
         $pdf->AddPage('Landscape');
         $pdf->SetFont('Arial','B',12);
     
-        if ($_SESSION['s_idtipousuario']=='1') {
+        if ($_SESSION['s_idusuario']!='4') {
         // fetch the data
             $sql = "select modelr.experiment.name as name, modelr.experiment.description as description, modelr.experiment.idstatusexperiment as idstatusexperiment 
             from modelr.experiment inner join modelr.user on modelr.experiment.iduser=modelr.user.iduser
@@ -69,7 +70,6 @@
                 $w_w_1=$w_w+2;
                 $w_w1=$w_w+$w_w+$w_w+3;
                 $len=strlen($text);// check the length of the cell and splits the text into 7 character each and saves in a array 
-
                 if($len>16){
                     $w_text=str_split($text,16);
                     $this->SetX($x_axis);
@@ -124,7 +124,7 @@
                 }
             }
 
-
+			ob_clean();
             $pdf->Output();
     }
 ?>

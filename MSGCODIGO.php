@@ -3,7 +3,7 @@
 
 $MSGCODIGO = $_REQUEST['MSGCODIGO'];
 if ($MSGCODIGO=='0')
-{
+{		
 		echo "
 		criarNotificacao('Sucesso','O cadastro da configuração foi realizado com sucesso!','success');";
 }
@@ -54,7 +54,7 @@ if ($MSGCODIGO=='9')
 		criarNotificacao('Success','Nova senha enviado para o email informado!','success');";
 }
 if ($MSGCODIGO=='10')
-{
+{	
 		echo "
 		criarNotificacao('Erro','Usuário ou senha inválido!','danger');";
 }
@@ -225,6 +225,24 @@ if ($MSGCODIGO=='75')
 {
 		echo "
 		criarNotificacao('Filtro Automático','Filtro automático executado!','success');";
+}
+
+if ($MSGCODIGO=='76')
+{
+		echo "
+		criarNotificacao('Modelagem','Não foi possível realizar a modelagem ! Número mínimo de ocorrências: 10','erro');";
+}
+
+if ($MSGCODIGO=='77')
+{
+		echo "
+		criarNotificacao('Modelagem','Não foi possível realizar a modelagem !','erro');";
+}
+
+if ($MSGCODIGO=='78')
+{
+		echo "
+		criarNotificacao('Modelagem','Não foi possível realizar a modelagem ! Seleciona uma variável abiótica na aba Modelagem.','erro');";
 }
 ?>
 

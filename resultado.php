@@ -8,30 +8,11 @@ if ($_SESSION['donoDaSessao'] != $tokenUsuario)
 }
 ?><html lang="pt-BR">
 <?php
-require_once('classes/conexao.class.php');
-require_once('classes/projeto.class.php');
 require_once('classes/experimento.class.php');
-require_once('classes/tipoparticionamento.class.php');
-require_once('classes/fonte.class.php');
-require_once('classes/periodo.class.php');
 require_once('classes/statusoccurrence.class.php');
-$clConexao = new Conexao;
-$conn = $clConexao->Conectar();
-
-$Projeto = new Projeto();
-$Projeto->conn = $conn;
 
 $Experimento = new Experimento();
 $Experimento->conn = $conn;
-
-$TipoParticionamento = new TipoParticionamento();
-$TipoParticionamento->conn = $conn;
-
-$Fonte = new Fonte();
-$Fonte->conn = $conn;
-
-$Periodo = new Periodo();
-$Periodo->conn = $conn;
 
 $StatusOccurrence = new StatusOccurrence();
 $StatusOccurrence->conn = $conn;
@@ -268,20 +249,20 @@ $tss = $Experimento->tss;
 										<div class="x_content">
                                         <div class="" role="tabpanel" data-example-id="togglable-tabs">
 												<ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-                                                    <li role="presentation" <?php if ($tab=='2') echo 'class="active"';?>><a href="#tab_content2" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Dados Estatísticos</a>
+                                                    <li role="presentation" <?php if ($tab=='9') echo 'class="active"';?>><a href="#tab_content9" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Dados Estatísticos</a>
 													</li>
-													<li role="presentation" <?php if ($tab=='3') echo 'class="active"';?>><a href="#tab_content3" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Modelos Gerados</a>
+													<li role="presentation" <?php if ($tab=='10') echo 'class="active"';?>><a href="#tab_content10" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Modelos Gerados</a>
 													</li>
-													<li role="presentation" <?php if ($tab=='4') echo 'class="active"';?>><a href="#tab_content4" id="home-tab" role="tab"  data-toggle="tab"  aria-expanded="true">Modelos Finais (Ensemble)</a>
+													<li role="presentation" <?php if ($tab=='11') echo 'class="active"';?>><a href="#tab_content11" id="home-tab" role="tab"  data-toggle="tab"  aria-expanded="true">Modelos Finais (Ensemble)</a>
 													</li>
-                                                    <li role="presentation" <?php if ($tab=='5') echo 'class="active"';?>><a href="#tab_content5" id="home-tab" role="tab"  data-toggle="tab"  aria-expanded="true">Modelos Finais (Presfinal)</a>
+                                                    <li role="presentation" <?php if ($tab=='12') echo 'class="active"';?>><a href="#tab_content12" id="home-tab" role="tab"  data-toggle="tab"  aria-expanded="true">Modelos Finais (Presfinal)</a>
 													</li>
-                                                    <li role="presentation" <?php if ($tab=='6') echo 'class="active"';?>><a href="#tab_content6" id="home-tab" role="tab"  data-toggle="tab"  aria-expanded="true">Mapa</a>
+                                                    <li role="presentation" <?php if ($tab=='13') echo 'class="active"';?>><a href="#tab_content13" id="home-tab" role="tab"  data-toggle="tab"  aria-expanded="true">Mapa</a>
 													</li>
 												</ul>
                         <div id="myTabContent" class="tab-content">
                         
-                        <div class="tab-pane fade<?php if ($tab=='2') echo ' in active';?>" id="tab_content2">
+                        <div class="tab-pane fade<?php if ($tab=='9') echo ' in active';?>" id="tab_content9">
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="x_panel">
                                 <div class="x_title">
@@ -402,7 +383,7 @@ echo '<td>'.$meuArray[$i].'</td>';
             </div>
                 </div>
                         </div>
-                         <div  class="tab-pane fade <?php if ($tab=='3') echo 'in active';?>" id="tab_content3" >
+                         <div  class="tab-pane fade <?php if ($tab=='10') echo 'in active';?>" id="tab_content10" >
 						
 						<div class="row">
 						<div class="col-md-12 col-sm-12 col-xs-12">
@@ -484,7 +465,7 @@ foreach($results_array as $value)
 						
 						</div> <!-- row -->
 
-                        <div class="tab-pane fade<?php if ($tab=='4') echo ' in active';?>" id="tab_content4">
+                        <div class="tab-pane fade<?php if ($tab=='11') echo ' in active';?>" id="tab_content11">
 
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="x_panel">
@@ -564,7 +545,7 @@ foreach($results_array as $value)
                         </div>
                         </div>
 
-                        <div class="tab-pane fade<?php if ($tab=='5') echo ' in active';?>" id="tab_content5">
+                        <div class="tab-pane fade<?php if ($tab=='12') echo ' in active';?>" id="tab_content12">
                         
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="x_panel">
@@ -648,7 +629,7 @@ foreach($results_array as $value)
 								</div>
 
 
-                                <div class="tab-pane fade<?php if ($tab=='6') echo ' in active';?>" id="tab_content6">
+                                <div class="tab-pane fade<?php if ($tab=='13') echo ' in active';?>" id="tab_content13">
                         
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="x_panel">
@@ -773,6 +754,8 @@ function selecionaTodos(isChecked) {
 
 function buscar()
 {
+    alert('resultado2')
+
 	if (document.getElementById('edtespecie').value=='')
 	{
 		criarNotificacao('Atenção','Informe o nome da espécie','warning')
@@ -793,12 +776,12 @@ function buscar()
 	}
 }
 
-function atualizar(tab)
-{
-	//$('.nav-tabs a[href="#tab_content5"]').tab('show')
-	document.getElementById('frm').action="cadmodelagem.php?tab="+tab;
-	document.getElementById('frm').submit();
-}
+// function atualizar(tab)
+// {
+// 	//$('.nav-tabs a[href="#tab_content5"]').tab('show')
+// 	document.getElementById('frm').action="cadmodelagem.php?tab="+tab;
+// 	document.getElementById('frm').submit();
+// }
 
 function HomeControl(controlDiv, map) {
   controlDiv.style.padding = '5px';
@@ -1502,12 +1485,6 @@ function toggle(isChecked) {
 	}
 }
 
-function filtrar(idstatusoccurrence)
-{
-	exibe('loading');
-	document.getElementById('frm').action='cadmodelagem.php?tab=3&filtro='+idstatusoccurrence;
-	document.getElementById('frm').submit();
-}
 		
 function enviar()
 		{

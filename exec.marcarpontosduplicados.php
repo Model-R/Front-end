@@ -15,12 +15,11 @@ $conexao = new Conexao;
 $conn = $conexao->Conectar();
 $Experimento = new Experimento();
 $Experimento->conn = $conn;
-
 $idexperimento = $_REQUEST['id'];
 
 $Experimento->marcarPontosDuplicados($idexperimento);
 
- header("Location: cadexperimento.php?op=A&tab=2&MSGCODIGO=72&id=$idexperimento");
+ header("Location: cadexperimento.php?op=A&tab=3&MSGCODIGO=72&id=$idexperimento");
 ?>
 
 

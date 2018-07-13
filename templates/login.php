@@ -1,3 +1,18 @@
+<script src="js/jquery.min.js"></script>
+
+<!-- PNotify -->
+<script type="text/javascript" src="js/notify/pnotify.core.js"></script>
+<script type="text/javascript" src="js/notify/pnotify.buttons.js"></script>
+<script type="text/javascript" src="js/notify/pnotify.nonblock.js"></script>	
+<script src="js/cover.js"></script>
+
+<div id="custom_notifications" class="custom-notifications dsp_none">
+    <ul class="list-unstyled notifications clearfix" data-tabbed_notifications="notif-group">
+    </ul>
+    <div class="clearfix"></div>
+    <div id="notif-group" class="tabbed_notifications"></div>
+</div>
+
 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -26,5 +41,23 @@
         </div>
     </div>
 </div>
+
+<script>
+							
+	<?php require 'MSGCODIGO.php';?>
+	<?php $MSGCODIGO = $_REQUEST['MSGCODIGO'];?>
+
+</script>
+	
+
+<script>
+document.onkeydown=function(evt){
+	var keyCode = evt ? (evt.which ? evt.which : evt.keyCode) : event.keyCode;
+	if(keyCode == 13)
+	{
+		form_submit('loginForm')
+	}
+}
+</script>
        
  

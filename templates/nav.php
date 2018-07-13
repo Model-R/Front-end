@@ -29,7 +29,7 @@
     <div id="container">
 
     <nav>
-        <div>
+        <div class="title">
             <img src="img/jardim botanico.jpg" alt="jardim botanico">
             <a href="index.php">Model R</a>
         </div>
@@ -40,5 +40,15 @@
             <li onclick="changeUrl('projectsLink')"><a id="projectsLink" href="projects.php">PROJETOS</a></li>
             <li data-toggle="modal" data-target="#loginModal"><a href="#" data-toggle="modal" data-target="#loginModal">LOGIN</a></li>
             <!-- <li><a href="login.php">LOGIN</a></li>
- -->        </ul>
+ -->    </ul>
+ <!-- <form name="loginForm" id="loginForm" method="post" action="testalogin.php">
+        <div class="form-group">
+            <label for="recipient-name" class="form-control-label label-user">Usuário:</label>
+            <input type="text" class="form-control input-user" name="edtlogin" id="edtlogin">
+        </div>
+        <div class="form-group">
+            <label for="message-text" class="form-control-label">Senha:</label>
+            <input type="password" class="form-control" name="edtsenha" id="edtsenha">
+        </div>
+    </form> -->
     </nav>

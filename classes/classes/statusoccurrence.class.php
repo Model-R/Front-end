@@ -89,7 +89,7 @@ class StatusOccurrence
 			}
 		}
 		
-		//echo $sql;
+		echo $sql;
 		$html = "<select name='".$nomecombo."' id = '".$nomecombo."' ".$s."  ".$classe.">";
 		$html .= "<option value=''>Todos os registros</Option>";
 		while ($row = pg_fetch_array($res))

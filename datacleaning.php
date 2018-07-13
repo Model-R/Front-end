@@ -475,6 +475,7 @@ function selecionaTodos(isChecked) {
 function filtrar(idstatusoccurrence)
 {
 	alert('');
+	console.log('entrou filtrar dataclaning')
 	initMap();
 	//exibe('loading');
 //	document.getElementById('frm').action='cadexperimento.php?tab=2&filtro='+idstatusoccurrence;/
@@ -482,7 +483,8 @@ function filtrar(idstatusoccurrence)
 }
 
 function buscar()
-{
+{	
+	alert('datacleaning')
 	if (document.getElementById('edtespecie').value=='')
 	{
 		criarNotificacao('Atenção','Informe o nome da espécie','warning')

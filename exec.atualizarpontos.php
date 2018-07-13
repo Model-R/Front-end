@@ -11,32 +11,70 @@ $Experimento = new Experimento();
 $Experimento->conn = $conn;
 $idexperimento = $_REQUEST['id'];
 
-$idponto = $_REQUEST['idponto'];
+$idponto = explode(",",$_REQUEST['idponto']);
 $idstatus = $_REQUEST['idstatus'];
 $latinf = $_REQUEST['latinf'];
 $longinf = $_REQUEST['longinf'];
 
+print_r($_REQUEST);
+if(empty($_REQUEST['mult'])){ 
+	$mult = false;
+}
+else {
+	if($_REQUEST['mult'] == 'false'){
+		$mult = false;
+	} else {
+		$mult = true;
+	}
+}
+
+if(empty($_REQUEST['statusOnly'])){ 
+	$statusOnly = false;
+}
+else {
+	if($_REQUEST['statusOnly'] == 'false'){
+		$statusOnly = false;
+	} else {
+		$statusOnly = true;
+	}
+}
+
+$lista = $idponto;
+
+// if(count($idponto) == 1){
+// 	$lista = $idponto[0];
+// } else {
+// 	$lista = $idponto;
+// }
+
 $MSGCODIGO = 19;
 
-if (($idponto != 'undefined') && (!empty($idponto)))
+if (($latinf != 'undefined') && (!empty($latinf)))
 {
-	
-	$Experimento->excluirPonto($idexperimento,$idponto,$idstatus,$latinf,$longinf);
+	//$Experimento->excluirPonto($idexperimento,$idponto,$idstatus,$latinf,$longinf);
+	foreach($lista as $idponto){
+		echo $idponto;
+		$sql = "update modelr.occurrence set idstatusoccurrence=$idstatus,lat=$latinf, long=$longinf ";
 		
+		$sql.="	where
+		idoccurrence = $idponto";
+		$res = pg_exec($conn,$sql);
+
+	}
+}
+else if($mult == true || $statusOnly == true){
+	foreach($lista as $idponto){
+		$sql = "update modelr.occurrence set idstatusoccurrence=$idstatus ";
+		
+		$sql.="	where
+		idoccurrence = $idponto";
+		$res = pg_exec($conn,$sql);
+
+	}
 }
 else
 {
-	$lista = $_REQUEST['table_records'];
-	
-	foreach($lista as $idponto){
-		
-			$sql = "update modelr.occurrence set idstatusoccurrence=$idstatus ";
-			
-			$sql.="	where
-			idoccurrence = $idponto";
-			$res = pg_exec($conn,$sql);
-
-	}
+	//$lista = $_REQUEST['table_records'];
 	// FORA DO LIMITE DO BRASIL
 	
 	// // libera o experimento para a modelagem
@@ -47,6 +85,7 @@ else
 	// }
 
 	// coodenada zerada
+	
 	if (($idstatus=='13') || ($idstatus=='99'))
 	{
 		$sql = "update modelr.occurrence set idstatusoccurrence=13 where
@@ -205,7 +244,7 @@ or shape.nm_mun <> minorarea)
 	}
 
 }
-header("Location: cadexperimento.php?op=A&MSGCODIGO=$MSGCODIGO&tab=2&pag=2&id=$idexperimento");
+header("Location: cadexperimento.php?op=A&MSGCODIGO=$MSGCODIGO&tab=3&pag=2&id=$idexperimento");
 ?>
 
 

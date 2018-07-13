@@ -16,12 +16,12 @@ if ($op=='A')
 {
 	$Experimento->getById($id);
 	$idexperiment = $Experimento->idexperiment;
-	$name = $Experimento->name ;
-	$description = $Experimento->description ;
+	$name = $Experimento->name;
+    $description = $Experimento->description;
+    $grupo = $Experimento->group;
 }
 
 ?>
-
 <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
@@ -36,7 +36,7 @@ if ($op=='A')
                     <input id="id" value="<?php echo $id;?>" name="id" type="hidden">
                     <div class="">
                         <div>
-                            <div class="item form-group">
+                            <div class="item form-group info-field">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="edtexperimento">Experimento <span class="required">*</span>
                             </label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
@@ -45,11 +45,20 @@ if ($op=='A')
                             </div>
                         </div>
                         <div class="">
-                            <div class="item form-group">
+                            <div class="item form-group info-field">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="edtdescricao">Descrição
                             </label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                 <input id="edtdescricao" value="<?php echo $description;?>"  name="edtdescricao" class="form-control col-md-7 col-xs-12">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="">
+                            <div class="item form-group info-field">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="edtgrupo">Grupo
+                            </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input id="edtgrupo" value="<?php echo $grupo;?>"  name="edtgrupo" class="form-control col-md-7 col-xs-12">
                                 </div>
                             </div>
                         </div>
@@ -71,12 +80,6 @@ if ($op=='A')
 
                             $res = pg_exec($conn,$sql);
                             $total = pg_num_rows($res);
-
-                            if($total > 0){
-                                echo '<button id="send2" type="button" onclick="liberarExperimento()" class="btn btn-success" data-toggle="tooltip" data-placement="top" title data-original-title="Liberar experimento para modelagem">Liberar</button>';
-                            } else {
-                                echo '<button id="send2" type="button" onclick="liberarExperimento()" class="btn btn-success hide" data-toggle="tooltip" data-placement="top" title data-original-title="Liberar experimentos para modelagem" >Liberar</button>';
-                            }
                             ?>
                         </div>
                         <?php } ?>
@@ -93,30 +96,18 @@ if ($op=='A')
         <div class="clearfix"></div>
         <div id="notif-group" class="tabbed_notifications"></div>
     </div>
+
+    <script src="js/custom.js"></script>
+    <!-- form validation -->
+    <script src="js/validator/validator.js"></script>
+	
+	<script src="js/loading.js"></script>	
+
+    <!-- PNotify -->
+    <script type="text/javascript" src="js/notify/pnotify.core.js"></script>
+    <script type="text/javascript" src="js/notify/pnotify.buttons.js"></script>
+    <script type="text/javascript" src="js/notify/pnotify.nonblock.js"></script>	
     
-<script src="js/bootstrap.min.js"></script>
-
-<!-- chart js -->
-<script src="js/chartjs/chart.min.js"></script>
-<!-- bootstrap progress js -->
-<script src="js/progressbar/bootstrap-progressbar.min.js"></script>
-<script src="js/nicescroll/jquery.nicescroll.min.js"></script>
-<!-- icheck -->
-<script src="js/icheck/icheck.min.js"></script>
-<!-- select2 -->
-<script src="js/select/select2.full.js"></script>
-
-<script src="js/custom.js"></script>
-<!-- form validation -->
-<script src="js/validator/validator.js"></script>
-
-<script src="js/loading.js"></script>	
-
-<!-- PNotify -->
-<script type="text/javascript" src="js/notify/pnotify.core.js"></script>
-<script type="text/javascript" src="js/notify/pnotify.buttons.js"></script>
-<script type="text/javascript" src="js/notify/pnotify.nonblock.js"></script>		
-
 <script>
     function enviarExp(){
         exibe('loading');
@@ -130,23 +121,4 @@ if ($op=='A')
             document.getElementById('frm').submit();
         }
     }
-
-    function liberarExperimento()
-    {
-        if (
-            (document.getElementById('edtexperimento').value=='')  ||
-            (document.getElementById('edtdescricao').value=='') 
-            )
-            {
-                criarNotificacao('Atenção','Verifique o preenchimento','warning');
-            }
-            else
-            {
-                exibe('loading');
-                document.getElementById('op').value='LE';
-                document.getElementById('frm').action='exec.experimento.php';
-                document.getElementById('frm').submit();
-            }
-    }
-
 </script>
