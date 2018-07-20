@@ -1,0 +1,2 @@
+"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "run" "partition"
+"Euterpe edulis Mart. 1 1 rf" 0.02693333 0.02693333 -1e-04 0.01446667 0.0049 3e-04 0.575375375375375 0.288888888888889 "rf" 1 1

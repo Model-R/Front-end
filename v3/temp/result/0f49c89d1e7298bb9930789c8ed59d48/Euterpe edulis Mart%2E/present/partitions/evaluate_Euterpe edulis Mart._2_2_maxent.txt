@@ -1,0 +1,2 @@
+"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "run" "partition"
+"Euterpe edulis Mart. 2 2 maxent" 0.71402879 0.4986185 0.4986185 0.23489177 0.55774369 0.49914031 0.437125748502994 0.233532934131736 "maxent" 2 2

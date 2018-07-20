@@ -1,0 +1,2 @@
+"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
+"Prepusa hookeriana Gardner 6 maxent" 0.72838868 0.72838868 0.72848868 0.0867987 0.72838868 0.72858868 0.944444444444444 0.888888888888889 "maxent" 6

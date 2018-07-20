@@ -1,0 +1,2 @@
+"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
+"Leandra carassana (DC.) Cogn. 1 rf" 0.50613333 0.33956667 -1e-04 0.1431 0.1935 0.06 0.82350251486054 0.518518518518519 "rf" 1

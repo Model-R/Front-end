@@ -1,0 +1,2 @@
+"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
+"Abarema langsdorffii (Benth.) Barneby & J.W.Grimes 1 glm" 0.33622128 0.20682847 0.01818474 0.17312837 0.21334353 0.13733492 0.837810094097519 0.607014542343884 "glm" 1

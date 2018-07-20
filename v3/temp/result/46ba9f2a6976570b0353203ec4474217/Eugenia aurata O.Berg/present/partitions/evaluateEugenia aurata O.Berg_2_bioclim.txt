@@ -1,0 +1,2 @@
+"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
+"Eugenia aurata O.Berg 2 BioClim" 0.28561429 0.28561429 -1e-04 -1e-04 0.14275714 0.14275714 0.772080838323353 0.606287425149701 "BioClim" 2

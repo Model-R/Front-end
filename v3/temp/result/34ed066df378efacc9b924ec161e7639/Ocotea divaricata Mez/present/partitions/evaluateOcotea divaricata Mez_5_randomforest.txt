@@ -1,0 +1,2 @@
+"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
+"Ocotea divaricata Mez 5 rf" -1e-04 -1e-04 -1e-04 0.0027 0.00042589 0.00042589 0.5625 0 "rf" 5

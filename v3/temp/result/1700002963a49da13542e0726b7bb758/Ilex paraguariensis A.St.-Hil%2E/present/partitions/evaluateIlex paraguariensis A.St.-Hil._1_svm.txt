@@ -1,0 +1,2 @@
+"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
+"Ilex paraguariensis A.St.-Hil. 1 svm" 0.01354257 0.00560569 0.00560569 0.01354257 0.0062599 0.00566845 0.598882681564246 0.315642458100559 "svm" 1

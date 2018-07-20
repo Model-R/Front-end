@@ -1,0 +1,2 @@
+"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
+"Ocotea divaricata Mez 5 maxent" 0.67204221 0.67204221 0.67212738 0.53862126 0.67204221 0.67266567 0.705 0.7025 "maxent" 5

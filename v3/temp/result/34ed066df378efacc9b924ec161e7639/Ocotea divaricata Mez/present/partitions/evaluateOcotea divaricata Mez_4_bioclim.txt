@@ -1,0 +1,2 @@
+"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
+"Ocotea divaricata Mez 4 BioClim" -1e-04 -1e-04 -1e-04 -1e-04 0.4999 0.4999 0.48875 0 "BioClim" 4

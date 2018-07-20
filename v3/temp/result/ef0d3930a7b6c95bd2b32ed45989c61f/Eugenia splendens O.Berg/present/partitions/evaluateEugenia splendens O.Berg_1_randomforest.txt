@@ -1,0 +1,2 @@
+"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
+"Eugenia splendens O.Berg 1 rf" 0.1508 0.01636667 0.01636667 0.0196 0.01913333 0.01653333 0.94734693877551 0.84 "rf" 1

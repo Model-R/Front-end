@@ -1,0 +1,2 @@
+"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
+"Eugenia splendens O.Berg 2 glm" 0.21699012 0.0183105 0.0183105 0.01972343 0.01857067 0.01857067 0.941666666666667 0.84 "glm" 2

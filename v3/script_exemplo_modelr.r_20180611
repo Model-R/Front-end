@@ -1,0 +1,123 @@
+#############################
+####    Script modelR   ####
+############################
+
+# Carregando pacotes
+require(modelr)
+require(raster)
+require(vegan)
+require(psych)
+
+args <- commandArgs(TRUE)     
+id <- args[1]  
+hashId <- args[2]
+partitions <- args[3]
+bufferValue <- args[4]  
+num_points <- args[5]
+tss <- args[6]
+rasterCSVPath <- args[7]  
+ocorrenciasCSVPath <- args[8]
+algorithms <- args[9]
+
+coordenadas <- read.table(ocorrenciasCSVPath, sep = ';', h = T);
+rasters <- read.table(rasterCSVPath, sep = ';', h = F, as.is = T);
+rasters
+#rasters <- read.file(rasterCSVPath, sep = ';', h = F)
+#setwd('../../../../../')
+#getwd()algorithmsArray[[1]] == TRUE
+algorithmsArray = as.list(strsplit(algorithms, ';')[[1]])
+rasters <- paste0('../../../../../',rasters)
+stack_rasters <- stack(rasters)
+
+especies <- unique(coordenadas$taxon);
+##-----------------------------------------------##
+# vamos receber v�rias variaveis: ocorrencias.csv, raster.csv, partitions, buffer, num_points, tss, hash id
+# criar variaveis_preditoras a partir de raster.csv
+##-----------------------------------------------##
+
+resultFolder <- 'temp/result/'
+#Cria diret�rio onde ser�o salvos os resultados
+#dir.create(paste0(resultFolder, hashId));
+
+clean = function(coord, abio) {
+    if (dim(coord)[2] == 2) {
+        if (exists("abio")) {
+            # selecionar os pontos únicos e sem NA
+            mask = abio[[1]]
+            # Selecionar pontos espacialmente únicos #
+            cell <- cellFromXY(mask, coord)  # get the cell number for each point
+            dup <- duplicated(cell)
+            pts1 <- coord[!dup, ]  # select the records that are not duplicated
+            pts1 <- pts1[!is.na(extract(mask, pts1)), ]  #selecionando apenas pontos que tem valor de raster
+
+            cat(dim(coord)[1] - dim(pts1)[1], "points removed\n")
+            cat(dim(pts1)[1], "spatially unique points\n")
+            names(pts1) = c("lon", "lat")#
+            return(pts1)
+        } else (cat("Indicate the object with the predictive variables"))
+    } else (stop("Coordinate table has more than two columns.\nThis table should only have longitude and latitude in this order."))
+}
+
+reg.clean=c()
+for(especie in especies) {
+  sp.clean = clean(coordenadas[coordenadas[, "taxon"] == especie, c("lon","lat")], stack_rasters[[1]])
+  sp.clean$sp=especie
+  reg.clean = rbind(reg.clean,sp.clean)
+}
+#----#
+
+coordenadas = reg.clean
+especies <- unique(coordenadas$sp)
+#----#
+
+#foreach(especie = especies,
+#        .packages = c("raster", "modelr")) %dopar% {
+# algorithmsArray = Mahalanobis;Maxent;GLM;Bioclim;Random Forest;Domain;SVM
+coordenadas
+
+variaveis_cortadas = mask(crop(stack_rasters, mascara),mascara)
+for (especie in especies) {
+	# especies
+	ocorrencias <- coordenadas[coordenadas$taxon == especie, c("lon", "lat")]
+	 do_enm(
+	 sp = especie,
+	 coordinates = coordenadas,
+	 partitions = as.numeric(partitions),
+	 buffer = bufferValue,
+	 seed = 512,
+	 predictors = stack_rasters,
+	 predictors1 = variaveis_cortadas,
+	 models.dir = paste0("./",resultFolder, hashId),
+	 project.model = F,
+	 mask = mascara,
+	 n.back = as.numeric(num_points),
+	 write_png = T,
+	 bioclim = algorithmsArray[[4]] == TRUE,
+	 maxent = algorithmsArray[[2]] == TRUE,
+	 glm = algorithmsArray[[3]] == TRUE,
+	 rf = algorithmsArray[[5]] == TRUE,
+	 svm = algorithmsArray[[7]] == TRUE,
+	 svm2 = F,
+	 domain = algorithmsArray[[6]] == TRUE,
+	 mahal = algorithmsArray[[1]] == TRUE
+	 )
+	
+	#gerando os ensembles por algoritmo
+	final_model(especie, algorithms=c("maxent", "svm", "bioclim", "glm", "rf"), TSS.value = tss, models.dir=paste0("./",resultFolder, hashId), write_png = T)
+
+	#gerando o modelo final
+	ensemble(especie, models.dir=paste0("./",resultFolder, hashId), occs=coordenadas)
+
+	#Criando a tabela com os valores de desempenho do modelo. 
+
+	lista = list.files(paste0('./',resultFolder, hashId ,'/',especie, '/present/partitions'), pattern = ".txt", full.names = T)
+	aval = c()
+	for(i in 1:(length(lista)-1)){
+	a = read.table(lista[i])
+	aval = rbind(aval,a)
+	row.names(aval) = NULL
+	print(head(aval,10))
+	write.table(aval, paste0("./",resultFolder, hashId, '/', especie, ".csv"), row.names = F, sep = ";")
+	}
+
+}

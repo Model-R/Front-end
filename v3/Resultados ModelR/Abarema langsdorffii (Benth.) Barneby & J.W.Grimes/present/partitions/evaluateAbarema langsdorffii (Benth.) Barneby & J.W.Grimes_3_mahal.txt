@@ -1,0 +1,2 @@
+"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
+"Abarema langsdorffii (Benth.) Barneby & J.W.Grimes 3 Mahal" -4.51104304 -4.87625011 -13.80790853 0.05077547 -4.56594455 -4.49573171 0.972284003421728 0.865012831479897 "Mahal" 3

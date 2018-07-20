@@ -1,0 +1,2 @@
+"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
+"Ocotea divaricata (Nees) Mez 1 glm" 0.01371781 0.00705744 0.00706091 0.01044996 0.00949003 0.00709054 0.765748031496063 0.587926509186352 "glm" 1
