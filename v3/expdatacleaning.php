@@ -194,10 +194,11 @@ if ($op=='A')
     <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
             <button id="send3" type="button" onclick="atualizarPontos('',13,'','',false)" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos com ambas as coordenadas 0">Coordenada com zero</button>
-            <button id="send4" type="button" onclick="marcarPontosDuplicados()" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar duplicatas">Duplicatas</button>
-            <button id="send3" type="button" onclick="atualizarPontos('',99,'','',false)" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Executar todos os filtros">Executar Todos</button>
 			<button id="send1" type="button" onclick="atualizarPontos('',10,'','',false)" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos fora do Brasil">Fora limite Brasil</button>
-            <button id="send2" type="button" onclick="atualizarPontos('',2,'','',false)" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos fora do município coletado">Fora Município coleta</button>
+            <button id="send4" type="button" onclick="marcarDuplicatas()" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar duplicatas">Duplicatas</button>
+            <button id="send4" type="button" onclick="marcarPontosDuplicados()" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar duplicatas">Duplicadas</button>
+			<button id="send2" type="button" onclick="atualizarPontos('',2,'','',false)" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos fora do município coletado">Fora Município coleta</button>
+			<button id="send3" type="button" onclick="atualizarPontos('',99,'','',false)" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Executar todos os filtros">Executar Todos</button>
             <!--<button id="send3" type="button" onclick="atualizarPontos('',11,'','',false)" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos no mar">Coordenada no mar</button>
             <button id="send3" type="button" onclick="atualizarPontos('',12,'','',false)" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos com coordenada invertida">Coordenada invertida</button>
             -->
@@ -224,12 +225,14 @@ if ($op=='A')
         <div class="col-md-6 col-sm-6 col-xs-12 points-table-options">
             <div>
                 <button id="send" type="button" onclick="filtrar(document.getElementById('cmboxstatusoccurrencefiltro').value)" class="btn btn btn-success" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos">Filtrar</button>
+				
                 <?php
                     if ($liberado == true && ($_SESSION['s_idtipousuario'] == '5')) {?>
                         <button type="button" class="btn btn-success" onClick='liberarExperimentoReflora()' data-toggle="tooltip" data-placement="top" title data-original-title="Liberar experimento para Modelagem">Modelar</button>
                     <?php
                     }
                     ?>
+					<button style="height: 32px; id="cleanPoints" type="button" onclick="confirmarLimparDados()" class="btn btn btn-danger" data-toggle="tooltip" data-placement="top" title data-original-title="Limpar Pontos"><i class="fa fa-eraser"></i></button>
                         </div>
             <div class="print-options">
                 <a  class="btn btn-default btn-sm" onClick="imprimirDC('PDF');" data-toggle="tooltip" data-placement="top" title="Exportar tabela em PDF"><?php echo " PDF ";?></a>
@@ -330,6 +333,28 @@ while ($row = pg_fetch_array($res))
         <div class="clearfix"></div>
         <div id="notif-group" class="tabbed_notifications"></div>
     </div>
+	
+	<!-- Modal -->
+	<div class="modal fade" id="ConfirmCleanModalDataCleaning" tabindex="-1" role="dialog" aria-labelledby="ConfirmCleanLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="ConfirmCleanLabel">Limpar Dados</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p>Deseja Limpar todos os dados desse Experimento ?</p>
+					<div class="modal-footer cleanDataFooter">
+						<button type="button" data-dismiss="modal" id="cleanButtonDataCleaning" class="btn btn-primary">Sim</button>
+						<button class="btn" data-dismiss="modal" aria-hidden="true">Não</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 
     <script src="js/custom.js"></script>
     <!-- form validation -->
@@ -653,7 +678,7 @@ function atualizarPontos(idponto,idstatus,latinf,longinf,statusOnly)
 	//alert('?idstatus='+idstatus+'&idponto='+idponto+'&latinf='+latinf+'&longinf='+longinf);
 
 	exibe('loading','Atualizando Status');
-	document.getElementById('frm').action='exec.atualizarpontos.php?idstatus='+idstatus+'&idponto='+idponto+'&latinf='+latinf+'&longinf='+longinf + '&statusOnly='+statusOnly;
+	document.getElementById('frm').action='exec.atualizarpontos.php?id='+ <?php echo $id;?> +'&idstatus='+idstatus+'&idponto='+idponto+'&latinf='+latinf+'&longinf='+longinf + '&statusOnly='+statusOnly;
     document.getElementById('frm').submit();
 }
 
@@ -662,7 +687,7 @@ function atualizarMultiplosPontos(idponto,idstatus,latinf,longinf)
 	//alert('exec.atualizarpontos.php?idstatus='+idstatus+'&idponto='+ids.join(',')+'&latinf='+latinf+'&longinf='+longinf);
 	
 	exibe('loading','Atualizando Status');
-	document.getElementById('frm').action='exec.atualizarpontos.php?idstatus='+idstatus+'&idponto='+ids.join(',')+'&mult=true';
+	document.getElementById('frm').action='exec.atualizarpontos.php?id='+ <?php echo $id;?> +'&idstatus='+idstatus+'&idponto='+ids.join(',')+'&mult=true';
 	document.getElementById('frm').submit();
 }
 
@@ -731,10 +756,17 @@ function excluirPontosDuplicados()
 	document.getElementById('frm').submit();
 }
 
+function marcarDuplicatas()
+{
+	exibe('loading','');
+	document.getElementById('frm').action='exec.marcarpontosduplicados.php?id=' + <?php echo $id;?> + '&type=duplicatas';
+	document.getElementById('frm').submit();
+}
+
 function marcarPontosDuplicados()
 {
 	exibe('loading','');
-	document.getElementById('frm').action='exec.marcarpontosduplicados.php';
+	document.getElementById('frm').action='exec.marcarpontosduplicados.php?id=' + <?php echo $id;?> + '&type=duplicados';
 	document.getElementById('frm').submit();
 }
 
@@ -775,5 +807,17 @@ function liberarExperimentoReflora(){
 	// xmlhttp.send();
 		
 }
+
+$('#ConfirmCleanModalDataCleaning').modal({ show: false});
+
+function confirmarLimparDados()
+{   
+	$('#ConfirmCleanModalDataCleaning').modal('show');
+}
+$("#cleanButtonDataCleaning").click(function() {
+	document.getElementById('frm').action='exec.experimento.php?id='+<?php echo $id; ?>+'&op=LDDC';
+	document.getElementById('frm').submit();
+});
+	
 
 </script>

@@ -239,7 +239,14 @@ or shape.nm_mun <> minorarea)
 	if ($idstatus=='99')
 	{
 		// pontos duplicados 
-		$Experimento->marcarPontosDuplicados($idexperimento);
+		$Experimento->marcarduplicados($idexperimento);
+		$MSGCODIGO = 75;
+	}
+	
+	if ($idstatus=='99')
+	{
+		// pontos duplicados 
+		$Experimento->marcarduplicatas($idexperimento);
 		$MSGCODIGO = 75;
 	}
 

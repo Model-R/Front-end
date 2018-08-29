@@ -22,7 +22,6 @@ $TipoParticionamento = new TipoParticionamento();
 $TipoParticionamento->conn = $conn;
 
 $id = $_REQUEST['id'];
-$tab = $_REQUEST['tab'];
 
 $Experimento->getById($id);
 $idexperiment = $Experimento->idexperiment;//= $row['nomepropriedade'];
@@ -214,7 +213,7 @@ if (empty($resolution))
 									<div class="radio-group-buffer">
 										<div><input onchange="document.getElementById('lblresolution').value=this.value" type="radio" name="edtresolution[]" id="checkbuffer2_5" value="2.5" <?php if ($_REQUEST['edtresolution'][0]=='2.5') echo "checked";?> />2.5</div>
 										<div><input onchange="document.getElementById('lblresolution').value=this.value" type="radio" name="edtresolution[]" id="checkbuffer5" value="5" <?php if ($_REQUEST['edtresolution'][0]=='5') echo "checked";?>/>5</div>
-										<div><input checked onchange="document.getElementById('lblresolution').value=this.value" type="radio" name="edtresolution[]" id="checkbuffer10" value="10" <?php if ($_REQUEST['edtresolution'][0]=='10') echo "checked";?>/>10</div>
+										<div><input onchange="document.getElementById('lblresolution').value=this.value" type="radio" name="edtresolution[]" id="checkbuffer10" value="10" <?php if ($_REQUEST['edtresolution'][0]=='10') echo "checked";?>/>10</div>
 									</div>
 								</div>
 								<div class="col-md-2 col-sm-2 col-xs-2">

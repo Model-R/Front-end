@@ -182,10 +182,8 @@ $ExtentModelPath = $baseUrl . "temp/" . $id . "/extent_model.json";
 $file = fopen($ExtentModelPath, 'w');
 
 $extent_model = $json[0]->extent_model;
-
 if($extent_model == ""){
 	$ExtentModelPath = $baseUrl . 'temp/dados/polygon-brazil.json';
-	echo $ExtentModelPath;
 } else {
 	$extent_model = explode(";",$extent_model);
 	$west = $extent_model[0];
@@ -200,6 +198,7 @@ if($extent_model == ""){
 	$result[] = [$west,$north];
 	$coordinates[] = [$result];
 	
+	$myObj = new stdClass();
 	$myObj->type = "MultiPolygon";
 	$myObj->coordinates = $coordinates;
 	$myJSON = json_encode($myObj, JSON_PRETTY_PRINT|JSON_NUMERIC_CHECK);
@@ -208,15 +207,17 @@ if($extent_model == ""){
 	fclose($file);
 	print_r($myJSON);
 }
-
 #start time
 $time = $_SESSION['s_nome'] . " - experimento " . $id . " - Inicio: " . date("h:i:sa");
 
 $algString = implode(";",$arrayAlg);
 exec("Rscript script_number_valid_points.r " . $id . ' ' . $rasterCSVPath . ' '. $ocorrenciasCSVPath, $a, $b);
 $returnData = explode(" ",$a[1]);
-echo "Rscript script_exemplo_modelr.r $id $hashId $repetitions $partitions $partitiontype $trainpercent '$buffer' $num_points $tss '$rasterCSVPath' '$ocorrenciasCSVPath' '$algString' '$ExtentModelPath'";
-//exit;
+#print_r($returnData);
+
+#echo "\n\n";
+#echo "Rscript script_exemplo_modelr.r $id $hashId $repetitions $partitions $partitiontype $trainpercent '$buffer' $num_points $tss '$rasterCSVPath' '$ocorrenciasCSVPath' '$algString' '$ExtentModelPath'";
+#exit;
 if($returnData[1] < 10){
 	header("Location: cadexperimento.php?op=A&tab=3&MSGCODIGO=76&id=" . $id);
 } else {
@@ -321,9 +322,9 @@ function addMapImageToExperimentResult ($conn, $expid, $speciesName,$hashId) {
 	$baseUrl = '/var/www/html/rafael/modelr/temp/result/'.$hashId.'/'.$speciesName.'/present/ensemble/';
 		$partition = '';
 		$algorithm = '';
-		$raster_png_path = $baseUrl.$speciesName . '_Final.mean4_ensemble_without_margins.png';
-		$png_path = $baseUrl.$speciesName . '_Final.mean4_ensemble.png';
-		$tiff_path = $baseUrl.$speciesName . '_Final.mean4_ensemble.tif';
+		$raster_png_path = $baseUrl.$speciesName . '_cut_mean_th_ensemble_without_margins.png';
+		$png_path = $baseUrl.$speciesName . '_cut_mean_th_ensemble_mean.png';
+		$tiff_path = $baseUrl.$speciesName . '_cut_mean_th_ensemble_mean.tif';
 		$unhashedid = $expid;
 		$idresulttype = 303;
 		$tss = '';

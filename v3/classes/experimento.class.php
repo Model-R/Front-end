@@ -161,7 +161,7 @@ class Experimento
 		
 	}	
 	
-	function marcarpontosduplicados($idexperimento)
+	function marcarduplicatas($idexperimento)
 	{
 		$sql = "select * from modelr.occurrence where idexperiment = $idexperimento order by idoccurrence";
 		$res = pg_exec($this->conn,$sql);
@@ -173,6 +173,24 @@ class Experimento
 			taxon = '".$row['taxon']."' and
 			collector = '".$row['collector']."' and
 			collectnumber = '".$row['collectnumber']."' and
+			idoccurrence > ".$row['idoccurrence'];
+//			echo $sql2;
+//			echo ';<br>';
+			$res2 = pg_exec($this->conn,$sql2);
+		}
+//		exit;
+	}
+	
+	function marcarduplicados($idexperimento)
+	{
+		$sql = "select * from modelr.occurrence where idexperiment = $idexperimento order by idoccurrence";
+		$res = pg_exec($this->conn,$sql);
+		while ($row = pg_fetch_array($res))
+		{				
+			$sql2 = "update modelr.occurrence set idstatusoccurrence=20 where idexperiment = $idexperimento and
+			lat = ".$row['lat']." and
+			long = ".$row['long']." and
+			taxon = '".$row['taxon']."' and
 			idoccurrence > ".$row['idoccurrence'];
 //			echo $sql2;
 //			echo ';<br>';
@@ -305,7 +323,7 @@ class Experimento
 	
 	function incluir()
 	{
- 		$sql = "insert into modelr.experiment (name,description,group_name,iduser,idstatusexperiment,type,automatic_filter,idpartitiontype,num_partition,num_points,tss,buffer
+ 		$sql = "insert into modelr.experiment (name,description,group_name,iduser,idstatusexperiment,type,automatic_filter,idpartitiontype,num_partition,num_points,tss,buffer,resolution,repetitions,trainpercent
 		) values (
 		'".$this->name."',
 		'".$this->description."',
@@ -317,7 +335,10 @@ class Experimento
 		3,
 		1000,
 		0.60,
-		'mean' 
+		'mean',
+		10,
+		3,
+		50
 		)";
 		
 		$resultado = pg_exec($this->conn,$sql);

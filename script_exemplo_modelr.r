@@ -23,8 +23,11 @@ ocorrenciasCSVPath <- args[11]
 algorithms <- args[12]
 extensionPath <- args[13]
 
+cat('teste')
+args
 algorithms
 #extensionPath <- paste0('../../../../../../','mnt/dados/modelr/json/polygon-317.json')
+extensionPath
 
 if(getwd() == "/var/www/html/rafael/modelr/v2"){
 	cat('v2')
@@ -76,7 +79,8 @@ clean <- function(coord, abio) {
     } else (stop("Coordinate table has more than two columns.\nThis table should only have longitude and latitude in this order."))
 }
 
-
+cat('antes clean')
+coordenadas
 reg.clean <- c()
 for (especie in especies) {
     sp.clean <- clean(coordenadas[coordenadas[, "taxon"] == especie, c("lon","lat")], stack_rasters[[1]])

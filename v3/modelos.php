@@ -16,8 +16,6 @@ $conn = $conexao->Conectar();
 $Experimento = new Experimento();
 $Experimento->conn = $conn;
 
-$tab = $_REQUEST['tab'];
-
 $op=$_REQUEST['op'];
 $id=$_REQUEST['id'];
 $hash = md5($id);

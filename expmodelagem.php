@@ -534,7 +534,7 @@ $rowsource = pg_fetch_array($ressource);
                                                 <div class="radio-group-buffer">
                                                     <div><input onchange="document.getElementById('lblresolution').value=this.value" type="radio" name="edtresolution[]" id="checkbuffer2_5" value="2.5" <?php if ($_REQUEST['edtresolution'][0]=='2.5') echo "checked";?> />2.5</div>
                                                     <div><input onchange="document.getElementById('lblresolution').value=this.value" type="radio" name="edtresolution[]" id="checkbuffer5" value="5" <?php if ($_REQUEST['edtresolution'][0]=='5') echo "checked";?>/>5</div>
-                                                    <div><input checked onchange="document.getElementById('lblresolution').value=this.value" type="radio" name="edtresolution[]" id="checkbuffer10" value="10" <?php if ($_REQUEST['edtresolution'][0]=='10') echo "checked";?>/>10</div>
+                                                    <div><input onchange="document.getElementById('lblresolution').value=this.value" type="radio" name="edtresolution[]" id="checkbuffer10" value="10" <?php if ($_REQUEST['edtresolution'][0]=='10') echo "checked";?>/>10</div>
                                                 </div>
                                             </div>
                                             <div class="col-md-2 col-sm-2 col-xs-2">
@@ -574,6 +574,12 @@ $rowsource = pg_fetch_array($ressource);
                                         <?php
                                             if ($liberado && $_SESSION['s_idtipousuario'] != '5') {?>
                                                 <button type="button" class="btn btn-success" onClick='liberarExperimento(7)'>Liberar Experimeto para Modelagem</button>
+                                            <?php
+                                            }
+                                        ?>
+										<?php
+                                            if ($_SESSION['s_idtipousuario'] == '2') {?>
+                                                <button type="button" class="btn btn-success" onClick='modelagemJB(7)'>Liberar Experimeto para Modelagem JB</button>
                                             <?php
                                             }
                                         ?>
@@ -1150,6 +1156,14 @@ function liberarExperimento(tab){
 		document.getElementById('frm').action='exec.experimento.php?page=dc&op=LE&id=' + <?php echo $id;?>;
 		document.getElementById('frm').submit();
 	} 
+}
+
+function modelagemJB(tab){
+	if(<?php echo $_SESSION['s_idtipousuario'];?> == 2 ){
+		exibe('loading', 'Processando ...')
+		document.getElementById('frm').action='setupmodelagem.php?expid=' + <?php echo $id;?>;
+		document.getElementById('frm').submit();
+	}
 }
 
 var tipopartionamento

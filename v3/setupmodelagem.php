@@ -21,7 +21,7 @@ if(dirname(__FILE__) == '/var/www/html/rafael/modelr/v2' || dirname(__FILE__) ==
 	$baseUrl = '';
 }
 if($_SESSION['s_idtipousuario']==6 && sizeof($json[0]->raster) == 0){
-	header("Location: cadexperimento.php?op=A&tab=4&MSGCODIGO=78&id=" . $id);
+	header("Location: cadexperimento.php?op=A&tab=6&MSGCODIGO=78&id=" . $id);
 	exit;
 }
 
@@ -242,7 +242,7 @@ if($returnData[1] < 10){
 		
 		$res = pg_exec($conn,$sql);
 		calculateTime($time);
-		header("Location: cadexperimento.php?op=A&tab=3&id=" . $id);
+		header("Location: cadexperimento.php?op=A&tab=14&id=" . $id);
 	}
 }   
 

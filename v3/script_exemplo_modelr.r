@@ -23,6 +23,7 @@ ocorrenciasCSVPath <- args[11]
 algorithms <- args[12]
 extensionPath <- args[13]
 
+cat('antes')
 algorithms
 #extensionPath <- paste0('../../../../../../','mnt/dados/modelr/json/polygon-317.json')
 

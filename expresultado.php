@@ -337,7 +337,7 @@ while ($row = pg_fetch_array($res))
 {
     //echo $row['taxon'];
     $log_directory = $imageModelFolder.'/'.$row['taxon'].'/present/partitions';
-    echo $log_directory;
+    //echo $log_directory;
 
 	if (is_dir($log_directory))
 	{   

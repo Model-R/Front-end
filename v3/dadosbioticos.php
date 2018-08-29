@@ -32,7 +32,9 @@ if ($op=='A')
 }
 
 ?>
-	
+
+<link href="css/dadosbioticos.css" rel="stylesheet" type="text/css" media="all">
+
 <div class="modal fade" id="instructionModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog"> 
         <div class="modal-content"> 
@@ -44,7 +46,7 @@ if ($op=='A')
             <p>
                 O CSV deve seguir o seguinte modelo:
                 <br><br>
-                [espécie],[estado],[município],[longitude],[latitude]
+                [espécie],[estado],[município],[coletor],[número de coleta],[longitude],[latitude]
                 <br><br>
                 Todos os dados podem ser separados por vírgula(,), dois pontos(:) ou ponto e vírgula(;).
                 Não é necessário marcar o final da linha. 
@@ -591,19 +593,23 @@ function printCSV(lines){
 
 		var values = lines[i].split(separator);
 		//alert(i);
-		//[espécie],[estado],[município],[longitude],[latitude]
+		//[espécie],[estado],[município],[coletor],[número de coleta],[longitude],[latitude]
 		taxon = values[0];
 		estado = values[1];
 		municipio = values[2];
-		longitude = values[3] || 0;
-		latitude = values[4] || 0;
+		coletor = values[3];
+		numcoleta = values[4];
+		longitude = values[5] || 0;
+		latitude = values[6] || 0;
 		
 		var idexperimento = document.getElementById('id').value;
 		//split * 
-		var Jval = idexperimento + '*2*'+latitude+'*'+longitude+'*'+taxon+'*******'+estado+'*'+municipio+'**'; 
-
+		var Jval = idexperimento + '*2*'+latitude+'*'+longitude+'*'+taxon+'*'+ coletor+'*'+numcoleta+'*****'+estado+'*'+municipio+'**'; 
+		 
 		body += '<tr class="even pointer"><td class="a-center "><input name="chtestemunho[]" id="chtestemunho[]" value="'+Jval+'" type="checkbox" ></td>';
 		body +='<td class=" ">'+taxon+'</td>';
+		body +='<td class=" ">'+coletor+'</td>';
+		body +='<td class=" ">'+numcoleta+'</td>';
 		body +='<td class=" ">'+estado+'</td>';
 		body +='<td class=" ">'+municipio+'</td>';
 		body +='<td class=" ">'+latitude+', '+longitude+'</td>';
@@ -612,7 +618,7 @@ function printCSV(lines){
 	
 	var table = '';
 	table += '<table class="table table-csv table-striped responsive-utilities jambo_table bulk_action"><thead><tr class="headings"><th><input type="checkbox" id="chkboxtodos2" name="chkboxtodos2" onclick="selecionaTodos2(true);">';
-	table += '</th><th class="column-title">Taxon </th><th>Estado</th><th>Município</th><th class="column-title">Coordenadas</th>';
+	table += '</th><th class="column-title">Taxon </th><th>Coletor</th><th>Número de Coleta</th><th>Estado</th><th>Município</th><th class="column-title">Coordenadas</th>';
 	table += '<a class="antoo" style="color:#fff; font-weight:500;">Total de Registros selecionados: ( <span class="action-cnt"> </span> ) </a>';
 	table += '</th></tr></thead>';
 	table += '<tbody>'+body+'</tbody></table>';
@@ -665,6 +671,7 @@ $(document).ready(function(){
 
 function buscar()
 {
+	//exibe('loading','Buscando Ocorrências');
 	 if (document.getElementById('edtespecie').value=='' && document.getElementById('checkfontecsv').checked==false)// && document.getElementById('checkfontecsv').checked==false)
 	 {
 	 	criarNotificacao('Atenção','Informe o nome da espécie','warning')

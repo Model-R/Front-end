@@ -242,7 +242,7 @@ if ($MSGCODIGO=='77')
 if ($MSGCODIGO=='78')
 {
 		echo "
-		criarNotificacao('Modelagem','Não foi possível realizar a modelagem ! Seleciona uma variável abiótica na aba Modelagem.','erro');";
+		criarNotificacao('Modelagem','Não foi possível realizar a modelagem ! Seleciona uma variável abiótica na aba Pré-tratamento > Dados Abióticos.','erro');";
 }
 ?>
 
