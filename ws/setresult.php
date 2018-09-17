@@ -1,12 +1,14 @@
-<?php //error_reporting(E_ALL);
-//ini_set("display_errors", 1);
+<?php 
+
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
 
 header('Access-Control-Allow-Origin: *'); 
 header('Access-Control-Allow-Origin: https://modelr.jbrj.gov.br');
 require_once('../classes/conexao.class.php');
 $clConexao = new Conexao;
 $conn = $clConexao->Conectar();
-
+//print_r($_REQUEST);
 if (isset($_REQUEST['op']))
 {
 	$op=$_REQUEST['op'];
@@ -20,8 +22,15 @@ if (isset($_REQUEST['op']))
 	4;"Outros"
 */	
 
-	$file_tiff=$_REQUEST['file_tiff'];
-	$file_png=$_REQUEST['file_png'];
+	$ws = file_get_contents("https://model-r.jbrj.gov.br/ws/?idexperiment=" . $id);
+	$json = json_decode($ws);
+	print_r($json);
+	//echo 'entrou';
+	//exit;
+	$unhashedid = $json[0]->id;
+
+	$kappa=$_REQUEST['kappa'];
+	
 	$partition=$_REQUEST['partition'];
 	$algorithm=$_REQUEST['algorithm'];
 	$tss=$_REQUEST['tss'];
@@ -64,15 +73,31 @@ if (isset($_REQUEST['op']))
 	{
 		$spec_sens = 'null';
 	}	
+	
+	if (empty($kappa))
+	{
+		$kappa = 'null';
+	}
+	
+	
 	if ($op=='I')
 	{
-		$sql = "insert into modelr.experiment_result (
-			idexperiment ,  idresulttype ,  file_tiff ,  file_png ,
+	//$kappa=$_REQUEST['kappa'];
+	$tiff_path = $_REQUEST['tiff_path'];
+    $png_path = $_REQUEST['png_path'];
+  	$raster_png_path = $_REQUEST['raster_png_path'];
+
+$sql = "insert into modelr.experiment_result (
+			idexperiment ,  idresulttype ,  
 		partition ,  algorithm ,  tss,  auc ,  sensitivity ,  equal_sens_spec ,
-  prevalence ,  no_omission ,  spec_sens  ) values
-  (".$id.",".$idresulttype.",'".$file_tiff."','".$file_png."',".$partition.",
+  prevalence ,  no_omission ,  spec_sens, raster_bin_path, raster_cont_path, raster_cut_path,
+  png_bin_path, png_cont_path, png_cut_path , kappa, raster_path, raster_png_path, png_path, tiff_path
+  ) values
+  (".$unhashedid.",".$idresulttype.",".$partition.",
   '".$algorithm."',".$tss.",".$auc.",".$sensitivity.",".$equal_sens_spec.",".$prevalence.",
-  ".$no_omission.",".$spec_sens.");";
+  ".$no_omission.",".$spec_sens.",
+  '','','','','','',".$kappa.",'','".$raster_png_path."','".$png_path."','".$tiff_path."'
+  );";
 //		echo $sql;
 	}
 	
@@ -105,7 +130,8 @@ if (isset($_REQUEST['op']))
 			$msg='Não foi possível excluir';
 		}
 	}
-	$json_str = utf8_decode('{"experiment":[{"id":"'.$id.'","op": "'.$op.'","msg": "'.$msg.'"}]}');
+	//$json_str = utf8_decode('{"experiment":[{"id":"'.$id.'","op": "'.$op.'","msg": "'.$msg.'"}]}');
+	$json_str = iconv('UTF-8', 'windows-1252', '{"experiment":[{"id":"'.$id.'","op": "'.$op.'","msg": "'.$msg.'"}]}');
 }
 	echo $json_str;
 ?>

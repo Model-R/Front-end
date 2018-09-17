@@ -1,4 +1,9 @@
 <?php session_start();
+$tokenUsuario = md5('seg'.$_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']);
+if ($_SESSION['donoDaSessao'] != $tokenUsuario)
+{
+	header('Location: index.php');
+}
 //error_reporting(E_ALL);
 //ini_set('display_errors','1');
 ?><html lang="pt-BR">
@@ -34,11 +39,12 @@ $StatusOccurrence->conn = $conn;
 $tab = $_REQUEST['tab'];
 
 $filtro = $_REQUEST['filtro']; 
-
 if (empty($tab))
 {
 	$tab = 3;
 }
+
+$id;
 $op=$_REQUEST['op'];
 
 $id=$_REQUEST['id'];
@@ -46,10 +52,10 @@ $idsource = $_REQUEST['cmboxfonte'];
 
 $especie = $_REQUEST['edtespecie'];
 
-$extensao1_norte = '6.41';
-$extensao1_sul = '-32.490';
-$extensao1_leste = '-34.443';
-$extensao1_oeste = '-62.649';
+$extensao1_norte = '-2.60';
+$extensao1_sul = '-34.03';
+$extensao1_leste = '-34.70';
+$extensao1_oeste = '-57.19';
 
 $extensao2_norte = '6.41';
 $extensao2_sul = '-32.490';
@@ -64,11 +70,28 @@ $idproject = $Experimento->idproject ;//= $row['nomepropriedade'];
 $name = $Experimento->name ;//= $row['inscricaoestadual'];
 $description = $Experimento->description ;//= $row['inscricaoestadual'];
 $idtipoparticionamento = $Experimento->idpartitiontype;
-$num_partition = $Experimento->num_partition;
+$num_partition = $Experimento->num_partition; //definindo 3 como padrão
 $buffer = $Experimento->buffer;
 $numpontos = $Experimento->num_points;
 $tss = $Experimento->tss;
 
+if (empty($num_partition))
+{
+    $num_partition = 3;
+}
+if (empty($numpontos))
+{
+    $numpontos = 1000;
+}
+if (empty($tss))
+{
+    $tss = 0.6;
+}
+if (empty($buffer))
+{
+    $buffer = 'mean';
+    $_REQUEST['edtbuffer'][0] = 'mean';
+} else $_REQUEST['edtbuffer'][0] = $buffer;
 
 ?>
 <head>
@@ -286,7 +309,7 @@ $tss = $Experimento->tss;
                                 </div>
 								</div>
 								<div class="col-md-6 col-sm-6 col-xs-12">
-								<div class="x_content">
+								<div class="x_content coordinates">
 										<div class="item form-group">
                                             <label class="control-label col-md-4 col-sm-4 col-xs-4" for="email">Longitude esquerda: 
                                             </label>
@@ -317,8 +340,12 @@ $tss = $Experimento->tss;
                                         </div>										
 								</div>
 								</div>
-								
                             </div>
+                            <div class="form-group">
+                                    <div class="send-button">
+                                        <button id="send" type="button" onclick="enviar()" class="btn btn-success">Salvar</button>
+                                    </div>
+                                </div>
                         </div>
 						<!--
 						<div class="col-md-6 col-sm-6 col-xs-12">
@@ -431,6 +458,11 @@ $rowsource = pg_fetch_array($ressource);
                                     <!-- end pop-over -->
                                 </div>
                             </div>
+                            <div class="form-group">
+                                    <div class="send-button">
+                                        <button id="send" type="button" onclick="enviar()" class="btn btn-success">Salvar</button>
+                                    </div>
+                                </div>
                         </div>
 						
 						</div> <!-- row -->
@@ -467,7 +499,7 @@ $rowsource = pg_fetch_array($ressource);
 												<input onchange="document.getElementById('lblnumparticoes').value=this.value" id="edtnumparticoes" value="<?php echo $num_partition;?>" type="range" min='3' max='50' name="edtnumparticoes" class="form-control col-md-7 col-xs-12" required="required"><span id="lbl3"></span>
                                             </div>
 											<div class="col-md-2 col-sm-2 col-xs-2">
-                                                <input id="lblnumparticoes" onchange="document.getElementById('edtnumparticoes').value= this.value " value="<?php echo $num_partition;?>"  name="lblnumparticoes" class="form-control col-md-2 col-xs-12">
+                                                <input id="lblnumparticoes" onchange="document.getElementById('edtnumparticoes').value= this.value " value="<?php echo $num_partition;?>"  name="lblnumparticoes" class="form-control col-md-2 col-xs-12" data-toggle="tooltip" data-placement="top" title="Valor inteiro entre 3 e 50">
                                             </div>
                                         </div>
 										<div class="item form-group">
@@ -477,28 +509,33 @@ $rowsource = pg_fetch_array($ressource);
                                                 <input onchange="document.getElementById('lblnumpontos').value=this.value" id="edtnumpontos" value="<?php echo $numpontos;?>" type="range" min='100' max='2000' name="edtnumpontos" class="form-control col-md-7 col-xs-12" required="required"><span id="lbl2"></span>
                                             </div>
 											<div class="col-md-2 col-sm-2 col-xs-2">
-                                                <input id="lblnumpontos" onchange="document.getElementById('edtnumpontos').value= this.value " value="<?php echo $numpontos;?>"  name="edtnumpontos" class="form-control col-md-2 col-xs-12">
+                                                <input id="lblnumpontos" onchange="document.getElementById('edtnumpontos').value= this.value " value="<?php echo $numpontos;?>"  name="edtnumpontos" class="form-control col-md-2 col-xs-12" data-toggle="tooltip" data-placement="top" title="Valor inteiro entre 100 e 2000">
                                             </div>
 
                                         </div>
-										<div class="item form-group">
-                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">Buffer<span class="required">*</span>
-                                            </label>
-                                            <div class="col-md-6 col-sm-6 col-xs-6">
-                                                <input onchange="document.getElementById('lblbuffer').value=this.value" id="edtbuffer" value="<?php echo $buffer;?>" type="range" min='1' max='2' step='0.1' name="edtbuffer" class="form-control col-md-3 col-xs-5" required="required">
-                                            </div>
-                                            <div class="col-md-2 col-sm-2 col-xs-2">
-                                                <input id="lblbuffer" onchange="document.getElementById('edtbuffer').value= this.value " value="<?php echo $buffer;?>"  name="lblbuffer" class="form-control col-md-2 col-xs-12">
-                                            </div>
-                                        </div>
-										<div class="item form-group">
+                                        <div class="item form-group">
                                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">TSS<span class="required">*</span>
                                             </label>
                                             <div class="col-md-6 col-sm-6 col-xs-6">
                                                 <input onchange="document.getElementById('lbltss').value=this.value" id="edttss" value="<?php echo $tss;?>" type="range" min='0' max='1' step='0.1' name="edttss" class="form-control col-md-3 col-xs-5" required="required">
                                             </div>
                                             <div class="col-md-2 col-sm-2 col-xs-2">
-                                                <input id="lbltss" onchange="document.getElementById('edttss').value= this.value " value="<?php echo $tss;?>"  name="lbltss" class="form-control col-md-2 col-xs-12">
+                                                <input id="lbltss" onchange="document.getElementById('edttss').value= this.value " value="<?php echo $tss;?>"  name="lbltss" class="form-control col-md-2 col-xs-12" data-toggle="tooltip" data-placement="top" title="Valor decimal entre 0 e 1 (exemplo: 0.3)">
+                                            </div>
+                                        </div>
+										<div class="item form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">Buffer<span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-6 col-sm-6 col-xs-6">
+                                                <div class="radio-group-buffer">
+                                                    <div><input onchange="document.getElementById('lblbuffer').value=this.value" type="radio" name="edtbuffer[]" id="checkbuffermin" value="min" <?php if ($_REQUEST['edtbuffer'][0]=='min') echo "checked";?> />Mínima</div>
+                                                    <div><input onchange="document.getElementById('lblbuffer').value=this.value" type="radio" name="edtbuffer[]" id="checkbuffermedim" value="mean" <?php if ($_REQUEST['edtbuffer'][0]=='mean') echo "checked";?>/>Média</div>
+                                                    <div><input onchange="document.getElementById('lblbuffer').value=this.value" type="radio" name="edtbuffer[]" id="checkbuffermedian" value="median" <?php if ($_REQUEST['edtbuffer'][0]=='median') echo "checked";?>/>Mediana</div>
+                                                    <div><input onchange="document.getElementById('lblbuffer').value=this.value" type="radio" name="edtbuffer[]" id="checkbuffermax" value="max" <?php if ($_REQUEST['edtbuffer'][0]=='max') echo "checked";?>/>Máxima</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-sm-2 col-xs-2">
+                                                <input id="lblbuffer" onchange="parseEdtBuffer()" value="<?php echo $buffer;?>"  name="lblbuffer" class="form-control col-md-2 col-xs-12" data-toggle="tooltip" data-placement="top" title="Valor entre mínima,média,mediana e máxima">
                                             </div>
                                         </div>
 										</div>
@@ -522,15 +559,20 @@ $rowsource = pg_fetch_array($ressource);
                                     <!-- end pop-over -->
 
                                 </div>
+                            
                             </div>
 										
 									</div>
-								
                                 </div>
                             </div>
+                            <div class="form-group">
+                                    <div class="send-button">
+                                        <button id="send" type="button" onclick="enviar()" class="btn btn-success">Salvar</button>
+                                    </div>
+                                </div>
                         </div>
 
-						</div> <!-- row -->
+                        </div> <!-- row -->
 						</div> <!-- table panel -->
 						
 						
@@ -551,12 +593,12 @@ $rowsource = pg_fetch_array($ressource);
 						</form>
 						</div>
 										
-                                        <div class="ln_solid"></div>
+                                        <!-- <div class="ln_solid"></div>
 										<div class="form-group">
                                             <div class="col-md-6 col-md-offset-5">
                                                 <button id="send" type="button" onclick="enviar()" class="btn btn-success">Salvar</button>
                                             </div>
-                                        </div>
+                                        </div> -->
 										
                                 </div>
                             </div>
@@ -610,6 +652,50 @@ $rowsource = pg_fetch_array($ressource);
 <script>
 
 
+$('#lblbuffer').keydown(function (e) {
+
+    if (e.shiftKey || e.ctrlKey || e.altKey) {
+        e.preventDefault();   
+    } else {
+        var key = e.keyCode; 
+        if (!((key == 8) || (key == 32) || (key == 46) || (key >= 35 && key <= 40) || (key >= 65 && key <= 90))) {
+            e.preventDefault();
+        }
+
+    }
+
+});
+
+function parseLblBuffer(){
+    if(document.getElementById('edtbuffer').value == 1){
+        document.getElementById('lblbuffer').value = 'mínima';
+    } 
+    else if(document.getElementById('edtbuffer').value == 2){
+        document.getElementById('lblbuffer').value = 'média';
+    }
+    else if(document.getElementById('edtbuffer').value == 3){
+        document.getElementById('lblbuffer').value = 'mediana';
+    }
+    else if(document.getElementById('edtbuffer').value == 4){
+        document.getElementById('lblbuffer').value = 'máxima';
+    }
+}
+
+function parseEdtBuffer(){
+    if(document.getElementById('lblbuffer').value == 'mínima'){
+        document.getElementById('edtbuffer').value = 1;
+    } 
+    else if(document.getElementById('lblbuffer').value == 'média'){
+        document.getElementById('edtbuffer').value = 2;
+    }
+    else if(document.getElementById('lblbuffer').value == 'mediana'){
+        document.getElementById('edtbuffer').value = 3;
+    }
+    else if(document.getElementById('lblbuffer').value == 'máxima'){
+        document.getElementById('edtbuffer').value = 4;
+    }
+}
+
 // This example adds a user-editable rectangle to the map.
 function selecionaTodos2(isChecked) {
 	//alert('');
@@ -638,7 +724,8 @@ function selecionaTodos(isChecked) {
 }
 
 function buscar()
-{
+{   
+    alert('cadmodelagem')
 	if (document.getElementById('edtespecie').value=='')
 	{
 		criarNotificacao('Atenção','Informe o nome da espécie','warning')
@@ -660,12 +747,12 @@ function buscar()
 }
 
 
-function atualizar(tab)
-{
-	//$('.nav-tabs a[href="#tab_content5"]').tab('show')
-	document.getElementById('frm').action="cadmodelagem.php?tab="+tab;
-	document.getElementById('frm').submit();
-}
+// function atualizar(tab)
+// {
+// 	//$('.nav-tabs a[href="#tab_content5"]').tab('show')
+// 	document.getElementById('frm').action="cadmodelagem.php?tab="+tab;
+// 	document.getElementById('frm').submit();
+// }
 
 function initMap() {
 	<?php if (empty($latcenter))
@@ -677,6 +764,68 @@ function initMap() {
 	
   var map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: -24.5452, lng: -42.5389},
+    mapTypeId: 'terrain',
+    gestureHandling: 'greedy',
+        mapTypeControl: true,
+        mapTypeControlOptions: {
+            mapTypeIds: ['terrain','roadmap', 'satellite']
+        },
+        styles: [
+            {
+                "featureType": "landscape",
+                "stylers": [
+                    {"hue": "#FFA800"},
+                    {"saturation": 0},
+                    {"lightness": 0},
+                    {"gamma": 1}
+                ]
+            },
+            {
+                "featureType": "road.highway",
+                "stylers": [
+                    {"hue": "#53FF00"},
+                    {"saturation": -73},
+                    {"lightness": 40},
+                    {"gamma": 1}
+                ]
+            },
+            {
+                "featureType": "road.arterial",
+                "stylers": [
+                    {"hue": "#FBFF00"},
+                    {"saturation": 0},
+                    {"lightness": 0},
+                    {"gamma": 1}
+                ]
+            },
+            {
+                "featureType": "road.local",
+                "stylers": [
+                    {"hue": "#00FFFD"},
+                    {"saturation": 0},
+                    {"lightness": 30},
+                    {"gamma": 1}
+                ]
+            },
+            {
+                "featureType": "water",
+                "stylers": [
+                    {"hue": "#00BFFF"},
+                    {"saturation": 6},
+                    {"lightness": 8},
+                    {"gamma": 1}
+                ]
+            },
+            {
+                "featureType": "poi",
+                "stylers": [
+                    {"hue": "#679714"},
+                    {"saturation": 33.4},
+                    {"lightness": -25.4},
+                    {"gamma": 1}
+                ]
+            }
+        ],
    // center: {lat: <?php echo $latcenter;?>, lng: <?php echo $longcenter;?>},
     zoom: 2
   });
@@ -727,10 +876,10 @@ function initMap() {
         var ne = rectangle.getBounds().getNorthEast();
         var sw = rectangle.getBounds().getSouthWest();
 
-        document.getElementById('edtextensao1_oeste').value=ne.lat();
+        document.getElementById('edtextensao1_norte').value=ne.lat();
         document.getElementById('edtextensao1_sul').value=sw.lat();
-        document.getElementById('edtextensao1_leste').value=sw.lng();
-        document.getElementById('edtextensao1_norte').value=ne.lng();
+        document.getElementById('edtextensao1_oeste').value=sw.lng();
+        document.getElementById('edtextensao1_leste').value=ne.lng();
 		
       }
  
@@ -896,6 +1045,13 @@ function abreModal(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquiv
 	$('#myModal').modal('show');
 }
 
+function enviar()
+		{
+			exibe('loading');
+			document.getElementById('frm').action='exec.modelagem.php';
+			document.getElementById('frm').submit();
+		}	
+
     </script>
 	 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhi_DlmaFvRu7eP357bOzl29fyZXKIJE0&callback=initMap" async defer>
     </script>	
@@ -922,10 +1078,15 @@ $(document ).ready(function() {
 });
 		
 $('.nav-tabs a[href="#tab_content3"]').click(function(){
-	//alert('3');
+	// alert('3');
     $(this).tab('show');
-	initMap();
 })	
+
+$('.nav-tabs').on('shown.bs.tab', function () {
+    google.maps.event.trigger(window, 'resize', {});
+    initMap();
+  });
+});
 
 function toggle(isChecked) {
 	var chks = document.getElementsByName('chtestemunho[]');
@@ -939,17 +1100,11 @@ function toggle(isChecked) {
 
 function filtrar(idstatusoccurrence)
 {
+    console.log('entrou filtrar cadmodelagem')
 	exibe('loading');
 	document.getElementById('frm').action='cadmodelagem.php?tab=3&filtro='+idstatusoccurrence;
 	document.getElementById('frm').submit();
-}
-		
-function enviar()
-		{
-			exibe('loading');
-			document.getElementById('frm').action='exec.modelagem.php';
-			document.getElementById('frm').submit();
-		}			
+}		
 	
         // initialize the validator function
         validator.message['date'] = 'not a real date';

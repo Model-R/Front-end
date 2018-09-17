@@ -73,13 +73,18 @@ class TipoParticionamento
 		}
 		$sql.=' order by partitiontype ';
 		$html = "<select name='".$nomecombo."' id = '".$nomecombo."' ".$s."  ".$classe.">";
-		$html .= "<option value=''>Selecione o tipo de particionamento</Option>";
+		//$html .= "<option value=''>Selecione o tipo de particionamento</Option>";
 		while ($row = pg_fetch_array($res))
 		{
 			$s = '';
 			if ($id == $row['idpartitiontype'])
 			{
 			   $s = "selected";
+			}
+
+			//marcar kfold como padrão
+			if($id == '' && $row['idpartitiontype'] == 1){
+				$s = "selected";
 			}
 	      $html.="<option value='".$row['idpartitiontype']."' ".$s." >".$row['partitiontype']."</option> ";
 	    }

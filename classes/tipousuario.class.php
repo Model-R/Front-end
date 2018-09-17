@@ -5,15 +5,16 @@ class TipoUsuario
 	var $idtipousuario;
 	var $tipousuario;
 
+	
 	function incluir()
 	{
- 		$sql = "insert into modelr.tipousuario (tipousuario
+ 		$sql = "insert into modelr.usertype (usertype
 		) values (
 		'".$this->tipousuario."'
 		)";
 		$resultado = pg_exec($this->conn,$sql);
 		if ($resultado){
-	    	$sql = "select max(idtipousuario) from modelr.tipousuario ";
+	    	$sql = "select max(idusertype) from modelr.usertype ";
 			$res = pg_exec($this->conn,$sql);
 			$row = pg_fetch_array($res);
 			return $row[0];
@@ -27,9 +28,9 @@ class TipoUsuario
 	function alterar($id)
 	{
 		
-       $sql = "update modelr.tipousuario set 
-	   tipousuario  = '".$this->tipousuario."' 
-	   where idtipousuario='".$id."' ";
+       $sql = "update modelr.usertype set 
+	   usertype  = '".$this->tipousuario."' 
+	   where idusertype='".$id."' ";
 	   $resultado = @pg_exec($this->conn,$sql);
        if ($resultado){
 	      return true;
@@ -42,7 +43,7 @@ class TipoUsuario
 
 	function excluir($id)
 	{
-		$sql = "delete from modelr.tipousuario where idtipousuario = '".$id."' ";
+		$sql = "delete from modelr.usertype where idusertype = '".$id."' ";
 	   	$resultado = @pg_exec($this->conn,$sql);
        	if ($resultado){
 	     	return true;
@@ -56,13 +57,13 @@ class TipoUsuario
 	
 	function getDados($row)
 	{
-	   	$this->idtipousuario = $row['idtipousuario'];
-	   	$this->tipousuario = $row['tipousuario'];
+	   	$this->idtipousuario = $row['idusertype'];
+	   	$this->tipousuario = $row['usertype'];
 	}
 	
 	function listaCombo($nomecombo,$id,$refresh='N',$classe)
 	{
-	   	$sql = "select * from modelr.tipousuario  ";
+	   	$sql = "select * from modelr.usertype  ";
 		
 		$res = pg_exec($this->conn,$sql);
 		
@@ -78,17 +79,17 @@ class TipoUsuario
 				$s = $refresh;
 			}
 		}
-		$sql.=' order by tipousuario ';
+		$sql.=' order by usertype ';
 		$html = "<select name='".$nomecombo."' id = '".$nomecombo."' ".$s."  ".$classe.">";
 		$html .= "<option value=''>Selecione o tipo de usuário</Option>";
 		while ($row = pg_fetch_array($res))
 		{
 			$s = '';
-			if ($id == $row['idtipousuario'])
+			if ($id == $row['idusertype'])
 			{
 			   $s = "selected";
 			}
-	      $html.="<option value='".$row['idtipousuario']."' ".$s." >".$row['tipousuario']."</option> ";
+	      $html.="<option value='".$row['idusertype']."' ".$s." >".$row['usertype']."</option> ";
 	    }
 		$html .= '</select>';
 		return $html;	
@@ -99,7 +100,7 @@ class TipoUsuario
 		if (empty($id)){
 	    	$id = 0;
 	   	}
-	   	$sql = 'select * from modelr.tipousuario where idtipousuario = '.$id;
+	   	$sql = 'select * from modelr.usertype where idusertype = '.$id;
 		
 		$result = pg_exec($this->conn,$sql);
 		if (pg_num_rows($result)>0){
@@ -116,7 +117,7 @@ class TipoUsuario
 
 	function conta()
 	{
-		$sql = "select count(*) from modelr.tipousuario" ;
+		$sql = "select count(*) from modelr.usertype" ;
 		$result = pg_query($this->conn,$sql);
 		$row=pg_fetch_row($result);
 		return $row[0];

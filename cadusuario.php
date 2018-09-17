@@ -1,4 +1,10 @@
 <?php session_start();
+
+$tokenUsuario = md5('seg'.$_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']);
+if ($_SESSION['donoDaSessao'] != $tokenUsuario)
+{
+	header('Location: index.php');
+}
 ?><!DOCTYPE html>
 <html lang="pt-BR">
 <?php	  
@@ -6,6 +12,7 @@ require_once('classes/conexao.class.php');
 require_once('classes/usuario.class.php');
 require_once('classes/situacaousuario.class.php');
 require_once('classes/tipousuario.class.php');
+require_once('classes/instituicao.class.php');
 $clConexao = new Conexao;
 $conn = $clConexao->Conectar();
 
@@ -17,6 +24,9 @@ $SituacaoUsuario->conn = $conn;
 
 $TipoUsuario = new TipoUsuario();
 $TipoUsuario->conn = $conn;
+
+$Instituicao = new Instituicao();
+$Instituicao->conn = $conn;
 
 $op=$_REQUEST['op'];
 $id=$_REQUEST['id'];
@@ -30,6 +40,7 @@ if ($op=='A')
 	$email = $Usuario->email;
 	$idtipousuario = $Usuario->idusertype;
 	$idsituacaousuario = $Usuario->idstatususer;
+	$idinstituicaousuario = $Usuario->idinstitution;
 	
 }
 
@@ -46,6 +57,8 @@ if ($op=='A')
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Cad. Usuário</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
 
     <!-- Bootstrap core CSS -->
 
@@ -150,7 +163,7 @@ if ($op=='A')
                             <div class="x_panel">
                                 <div class="x_title">
                                     <h2><a href='consusuario.php'>Cad. Usuário <small>Cadastro de usuários</small></a></h2>
-                                    <ul class="nav navbar-right panel_toolbox">
+                                    <!-- <ul class="nav navbar-right panel_toolbox">
                                                                             <li role="presentation" class="dropdown">
                                         <a id="drop4" href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
                                 Ação
@@ -166,7 +179,7 @@ if ($op=='A')
                                             </li>
                                         </ul>
                                     </li>
-                                    </ul>
+                                    </ul> -->
                                     <div class="clearfix"></div>
                                 </div>
                                 <div class="x_content">
@@ -212,12 +225,20 @@ if ($op=='A')
                                                 <?php echo $TipoUsuario->listaCombo('cmboxtipousuario',$idtipousuario,'N','class="form-control"');?>
                                             </div>
                                         </div>
+
+                                        <div class="item form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">Instituição do Usuário<span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                <?php echo $Instituicao->listaCombo('cmboxinstituicaousuario',$idinstituicaousuario,'N','class="form-control"');?>
+                                            </div>
+                                        </div>
                                         
                                        
 										<div class="ln_solid"></div>
 										
                                         <div class="form-group">
-                                            <div class="col-md-6 col-md-offset-3">
+                                            <div class="form-group-buttons">
                                                 <button type="submit" class="btn btn-primary">Cancelar</button>
                                                 <button id="send" type="submit" class="btn btn-success">Enviar</button>
                                             </div>

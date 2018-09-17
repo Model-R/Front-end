@@ -1,348 +1,188 @@
-<?php header('Location: login.php');
-exit;
-?>
 <!DOCTYPE html>
-<html lang="en">
+<!--
+Template Name: Dwindle
+Author: <a href="http://www.os-templates.com/">OS Templates</a>
+Author URI: http://www.os-templates.com/
+Licence: Free to use under our free template licence terms
+Licence URI: http://www.os-templates.com/template-terms
+-->
+<html>
+<head>
+<title>Model-R</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link href="layout/styles/layout.css" rel="stylesheet" type="text/css" media="all">
+</head>
+<body id="top">
+<?php
+    include_once 'templates/login.php';
+    include_once 'templates/pass.php';	
+?>
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<div class="wrapper row0">
+  <div id="topbar" class="clear"> 
+    <!-- ################################################################################################ -->
+    <div class="fl_left">
+      <ul class="nospace inline">
+        <li><i class="fa fa-phone"></i>(21) 3204-2124</li>
+        <li><i class="fa fa-envelope-o"></i>modelr.jbrj@gmail.com</li>
+      </ul>
+    </div>
+    <div class="fl_right">
+      <ul class="faico clear">
+        <!--<li><a class="faicon-facebook" href="#"><i class="fa fa-facebook"></i></a></li>
+        <li><a class="faicon-pinterest" href="#"><i class="fa fa-pinterest"></i></a></li>
+        <li><a class="faicon-twitter" href="#"><i class="fa fa-twitter"></i></a></li>
+        <li><a class="faicon-dribble" href="#"><i class="fa fa-dribbble"></i></a></li>
+        <li><a class="faicon-linkedin" href="#"><i class="fa fa-linkedin"></i></a></li>-->
+        <li><a class="faicon-google-plus" href="https://github.com/Model-R"><i class="fa fa-github"></i></a></li>
+        <!--<li><a class="faicon-rss" href="#"><i class="fa fa-rss"></i></a></li>-->
+      </ul>
+    </div>
+    <!-- ################################################################################################ -->
+  </div>
+</div>
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<?php
+    include_once 'layout/templates/nav.php';
+?>
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<div class="wrapper row3 bgded" style="background-image:url('images/demo/backgrounds/rsz_1fundo-jb.jpg');">
+  <div class="overlay">
+    <div id="intro" class="clear"> 
+      <!-- ################################################################################################ -->
+      <article class="one_third first"><i class="fa fa-pencil-square-o"></i>
+        <h3 class="heading">Pré-tratamento</h3>
+        <p class="topic-description">
+			Etapa de aquisição, verificação e limpeza de dados, utilizando filtros geográficos para reduzir 
+			a autocorrelação dos dados e ferramentas para verificação e remoção de multicoinearidade na seleção 
+			das variáveis preditoras.
+		</p>
+        <!--<p class="nospace"><a class="btn" href="#">Saiba Mais &raquo;</a></p>-->
+      </article>
+      <article class="one_third"><i class="fa fa-gears"></i>
+        <h3 class="heading">Modelagem</h3>
+        <p class="topic-description">
+			Etapa de criação dos modelos utilizando algoritmos, os dados limpos na etapa de pré-processamento e as variáveis preditoras selecionadas.
+		</p>
+        <!--<p class="nospace"><a class="btn" href="#">Saiba Mais &raquo;</a></p>-->
+      </article>
+      <article class="one_third"><i class="fa fa-globe"></i>
+        <h3 class="heading">Pós-processamento</h3>
+        <p class="topic-description">
+			Etapa de recorte dos modelos de nicho para aproximação do modelo de distribuição de espécie.
+		</p>
+        <!--<p class="nospace"><a class="btn" href="#">Saiba Mais &raquo;</a></p>-->
+      </article>
+      <!-- ################################################################################################ -->
+    </div>
+  </div>
+</div>
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<div class="wrapper row5 bgded" style="background-image:url('images/demo/backgrounds/1.png');">
+  <!--<div class="overlay">
+    <footer id="footer" class="clear"> 
+      <div class="one_quarter first">
+        <h6 class="title">Lorem ipsum dolor</h6>
+        <address class="btmspace-15">
+        Company Name<br>
+        Street Name &amp; Number<br>
+        Town<br>
+        Postcode/Zip
+        </address>
+        <ul class="nospace">
+          <li class="btmspace-10"><span class="fa fa-phone"></span> +00 (123) 456 7890</li>
+          <li><span class="fa fa-envelope-o"></span> info@domain.com</li>
+        </ul>
+      </div>
+      <div class="one_quarter">
+        <h6 class="title">Quick Links</h6>
+        <ul class="nospace linklist">
+          <li><a href="#">Home Page</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Gallery</a></li>
+          <li><a href="#">Portfolio</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+      <div class="one_quarter">
+        <h6 class="title">From The Blog</h6>
+        <article>
+          <h2 class="nospace"><a href="#">Lorem ipsum dolor</a></h2>
+          <time class="smallfont" datetime="2045-04-06">Friday, 6<sup>th</sup> April 2045</time>
+          <p>Vestibulumaccumsan egestibulum eu justo convallis augue estas aenean elit intesque sed.</p>
+        </article>
+      </div>
+      <div class="one_quarter">
+        <h6 class="title">Grab Our Newsletter</h6>
+        <form method="post" action="#">
+          <fieldset>
+            <legend>Newsletter:</legend>
+            <input class="btmspace-15" type="text" value="" placeholder="Name">
+            <input class="btmspace-15" type="text" value="" placeholder="Email">
+            <button type="submit" value="submit">Submit</button>
+          </fieldset>
+        </form>
+      </div>
+    </footer>
+  </div> -->
+</div>
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<div class="wrapper row6">
+  <div id="copyright" class="clear"> 
+    <!-- ################################################################################################ -->
+    <p class="fl_left">Copyright &copy; 2015 - All Rights Reserved - <a href="#">Domain Name</a></p>
+    <p class="fl_right">Template by <a target="_blank" href="http://www.os-templates.com/" title="Free Website Templates">OS Templates</a></p>
+    <!-- ################################################################################################ -->
+  </div>
+</div>
+<!-- JAVASCRIPTS -->
+<script src="layout/scripts/jquery.min.js"></script> 
+<script src="layout/scripts/jquery.mobilemenu.js"></script>
 
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <!-- Meta, title, CSS, favicons, etc. -->
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+function includeHTML() {
+  var z, i, elmnt, file, xhttp;
+  /*loop through a collection of all HTML elements:*/
+  z = document.getElementsByTagName("*");
+  for (i = 0; i < z.length; i++) {
+    elmnt = z[i];
+    /*search for elements with a certain atrribute:*/
+    file = elmnt.getAttribute("w3-include-html");
+    if (file) {
+      /*make an HTTP request using the attribute value as the file name:*/
+      xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4) {
+          if (this.status == 200) {elmnt.innerHTML = this.responseText;}
+          if (this.status == 404) {elmnt.innerHTML = "Page not found.";}
+          /*remove the attribute, and call this function once more:*/
+          elmnt.removeAttribute("w3-include-html");
+          includeHTML();
+        }
+      } 
+      xhttp.open("GET", file, true);
+      xhttp.send();
+      /*exit the function:*/
+      return;
+    }
+  }
+}
+</script>
 
-        <title>Model-R</title>
+<script>
+includeHTML();
+</script>
 
-        <!-- Bootstrap core CSS -->
-
-        <link href="css/bootstrap.min.css" rel="stylesheet">
-
-        <link href="fonts/css/font-awesome.min.css" rel="stylesheet">
-        <link href="css/animate.min.css" rel="stylesheet">
-
-		
-<!-- Custom styling plus plugins -->
-    <link href="css/custom.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="css/maps/jquery-jvectormap-2.0.1.css" />
-    <link href="css/icheck/flat/green.css" rel="stylesheet" />
-    <link href="css/floatexamples.css" rel="stylesheet" type="text/css" />
-
-    <link href="css/calendar/fullcalendar.css" rel="stylesheet">
-    <link href="css/calendar/fullcalendar.print.css" rel="stylesheet" media="print">
-		
-    <script src="js/jquery.min.js"></script>
-    <script src="js/nprogress.js"></script>		
-		
-        <!-- Custom styling plus plugins -->
-        <link href="css/custom.css" rel="stylesheet">
-        <link href="css/icheck/flat/green.css" rel="stylesheet">
-
-        <link href="css/calendar/fullcalendar.css" rel="stylesheet">
-        <link href="css/calendar/fullcalendar.print.css" rel="stylesheet" media="print">
-
-        <script src="js/jquery.min.js"></script>
-
-        <!--[if lt IE 9]>
-            <script src="../assets/js/ie8-responsive-file-warning.js"></script>
-            <![endif]-->
-
-        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-              <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-              <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-            <![endif]-->
-
-    </head>
-
-
-    <body class="nav-md">
-
-        <div class="container body">
-
-
-        <div class="main_container">
-
-            <div class="col-md-3 left_col">
-                <div class="left_col scroll-view">
-
-                    
-					<?php require "menu.php";?>
-                </div>
-            </div>
-
-            <!-- top navigation -->
-			<?php require "menutop.php";?>
-
-
-                <!-- page content -->
-                <div class="right_col" role="main">
-                    <div class="">
-
-                        <div class="page-title">
-                            <div class="title_left">
-                                <h3>
-                                    Agenda
-                                </h3>
-                            </div>
-
-                            <div class="title_right">
-                                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="Procurar por...">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-default" type="button">Buscar!</button>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="x_panel">
-                                    <div class="x_title">
-                                        <h2>Agenda eventos </h2>
-                                        <ul class="nav navbar-right panel_toolbox">
-                                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                                            </li>
-                                            <li>
-                                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                                                
-                                            </li>
-                                            <li><a class="close-link"><i class="fa fa-close"></i></a>
-                                            </li>
-                                        </ul>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                    <div class="x_content">
-
-                                        <div id='calendar'></div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- footer content -->
-                    <footer>
-                        <div class="">
-                            <p class="pull-right">Gentelella Alela! a Bootstrap 3 template by <a>Kimlabs</a>. |
-                                <span class="lead"> <i class="fa fa-paw"></i> Gentelella Alela!</span>
-                            </p>
-                        </div>
-                        <div class="clearfix"></div>
-                    </footer>
-                    <!-- /footer content -->
-
-                </div>
-
-
-                <!-- Start Calender modal -->
-                <div id="CalenderModalNew" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                <h4 class="modal-title" id="myModalLabel">New Calender Entry</h4>
-                            </div>
-                            <div class="modal-body">
-                                <div id="testmodal" style="padding: 5px 20px;">
-                                    <form id="antoform" class="form-horizontal calender" role="form">
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label">Title</label>
-                                            <div class="col-sm-9">
-                                                <input type="text" class="form-control" id="title" name="title">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label">Description</label>
-                                            <div class="col-sm-9">
-                                                <textarea class="form-control" style="height:55px;" id="descr" name="descr"></textarea>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default antoclose" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary antosubmit">Save changes</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="CalenderModalEdit" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                <h4 class="modal-title" id="myModalLabel2">Edit Calender Entry</h4>
-                            </div>
-                            <div class="modal-body">
-
-                                <div id="testmodal2" style="padding: 5px 20px;">
-                                    <form id="antoform2" class="form-horizontal calender" role="form">
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label">Title</label>
-                                            <div class="col-sm-9">
-                                                <input type="text" class="form-control" id="title2" name="title2">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label">Description</label>
-                                            <div class="col-sm-9">
-                                                <textarea class="form-control" style="height:55px;" id="descr2" name="descr"></textarea>
-                                            </div>
-                                        </div>
-
-                                    </form>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default antoclose2" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary antosubmit2">Save changes</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="fc_create" data-toggle="modal" data-target="#CalenderModalNew"></div>
-                <div id="fc_edit" data-toggle="modal" data-target="#CalenderModalEdit"></div>
-
-                <!-- End Calender modal -->
-                <!-- /page content -->
-            </div>
-
-        </div>
-
-        <div id="custom_notifications" class="custom-notifications dsp_none">
-            <ul class="list-unstyled notifications clearfix" data-tabbed_notifications="notif-group">
-            </ul>
-            <div class="clearfix"></div>
-            <div id="notif-group" class="tabbed_notifications"></div>
-        </div>
-
-        <script src="js/bootstrap.min.js"></script>
-
-        <script src="js/nprogress.js"></script>
-        <!-- chart js -->
-        <script src="js/chartjs/chart.min.js"></script>
-        <!-- bootstrap progress js -->
-        <script src="js/progressbar/bootstrap-progressbar.min.js"></script>
-        <script src="js/nicescroll/jquery.nicescroll.min.js"></script>
-        <!-- icheck -->
-        <script src="js/icheck/icheck.min.js"></script>
-
-        <script src="js/custom.js"></script>
-
-        <script src="js/moment.min.js"></script>
-        <script src="js/calendar/fullcalendar.min.js"></script>
-
-        <script>
-            $(window).load(function () {
-
-                var date = new Date();
-                var d = date.getDate();
-                var m = date.getMonth();
-                var y = date.getFullYear();
-                var started;
-                var categoryClass;
-
-                var calendar = $('#calendar').fullCalendar({
-                    header: {
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'month,agendaWeek,agendaDay'
-                    },
-                    selectable: true,
-                    selectHelper: true,
-                    select: function (start, end, allDay) {
-                        $('#fc_create').click();
-
-                        started = start;
-                        ended = end
-
-                        $(".antosubmit").on("click", function () {
-                            var title = $("#title").val();
-                            if (end) {
-                                ended = end
-                            }
-                            categoryClass = $("#event_type").val();
-
-                            if (title) {
-                                calendar.fullCalendar('renderEvent', {
-                                        title: title,
-                                        start: started,
-                                        end: end,
-                                        allDay: allDay
-                                    },
-                                    true // make the event "stick"
-                                );
-                            }
-                            $('#title').val('');
-                            calendar.fullCalendar('unselect');
-
-                            $('.antoclose').click();
-
-                            return false;
-                        });
-                    },
-                    eventClick: function (calEvent, jsEvent, view) {
-                        //alert(calEvent.title, jsEvent, view);
-
-                        $('#fc_edit').click();
-                        $('#title2').val(calEvent.title);
-                        categoryClass = $("#event_type").val();
-
-                        $(".antosubmit2").on("click", function () {
-                            calEvent.title = $("#title2").val();
-
-                            calendar.fullCalendar('updateEvent', calEvent);
-                            $('.antoclose2').click();
-                        });
-                        calendar.fullCalendar('unselect');
-                    },
-                    editable: true,
-                    events: [
-                        {
-                            title: 'All Day Event',
-                            start: new Date(y, m, 1)
-                    },
-                        {
-                            title: 'Long Event',
-                            start: new Date(y, m, d - 5),
-                            end: new Date(y, m, d - 2)
-                    },
-                        {
-                            title: 'Meeting',
-                            start: new Date(y, m, d, 10, 30),
-                            allDay: false
-                    },
-                        {
-                            title: 'Lunch',
-                            start: new Date(y, m, d + 14, 12, 0),
-                            end: new Date(y, m, d, 14, 0),
-                            allDay: false
-                    },
-                        {
-                            title: 'Birthday Party',
-                            start: new Date(y, m, d + 1, 19, 0),
-                            end: new Date(y, m, d + 1, 22, 30),
-                            allDay: false
-                    },
-                        {
-                            title: 'Click for Google',
-                            start: new Date(y, m, 28),
-                            end: new Date(y, m, 29),
-                            url: 'http://google.com/'
-                    }
-                ]
-                });
-            });
-        </script>
-    </body>
-
+</body>
 </html>

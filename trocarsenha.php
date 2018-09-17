@@ -1,4 +1,11 @@
-<?php session_start();?>
+<?php session_start();
+
+$tokenUsuario = md5('seg'.$_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']);
+if ($_SESSION['donoDaSessao'] != $tokenUsuario)
+{
+	header('Location: login.php');
+}
+?>
 <html lang="pt-BR">
 <?php
 require_once('classes/conexao.class.php');
@@ -21,6 +28,7 @@ $Usuario->conn = $conn;
     <title>Model-R </title>
 
     <!-- Bootstrap core CSS -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
@@ -102,8 +110,8 @@ $Usuario->conn = $conn;
 										
                                         <div class="ln_solid"></div>
                                         <div class="form-group">
-                                            <div class="col-md-6 col-md-offset-3">
-                                                <button id="send" type="button" onclick="enviar()" class="btn btn-success">Enviar</button>
+                                            <div class="form-group-buttons">
+                                                <button id="send" type="button" onclick="enviar()" class="btn btn-success" data-toggle="tooltip" data-placement="top" title data-original-title="Salvar usuário">Enviar</button>
                                             </div>
                                         </div>
                                     </form>

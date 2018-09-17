@@ -1,5 +1,10 @@
 <?php session_start();//error_reporting(E_ALL);
 //ini_set('display_errors','1');
+$tokenUsuario = md5('seg'.$_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']);
+if ($_SESSION['donoDaSessao'] != $tokenUsuario)
+{
+	header('Location: index.php');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,6 +33,7 @@ require_once('classes/conexao.class.php');
                                                     <input type="checkbox" id="check-all" class="flat">
                                                 </th>
                                                 <th class="column-title">Nome </th>
+                                                <th class="column-title">Instituição </th>
                                                 <th class="column-title">Login </th>
                                                 <th class="column-title">Email </th>
                                                 <th class="column-title">Situação </th>
@@ -48,6 +54,7 @@ require_once('classes/conexao.class.php');
 			
 			$html = '<td class="a-center "><input type="checkbox" class="flat" name="id_usuario[]" id="id_usuario" value="'.$row["iduser"].'" ></td>
                                     <td class=" ">'.$row['name'].'</td>
+                                    <td class=" ">'.$row['institution'].'</td>
                                     <td class=" ">'.$row['login'].'</td>
                                     <td class=" ">'.$row['email'].'</td>
                                     <td class=" ">'.$row['statususer'].'</td>
@@ -72,9 +79,10 @@ $conn = $clConexao->Conectar();
 
 $Paginacao = new MyPag();
 $Paginacao->conn = $conn;
-$sql = 'select * from modelr.user  u, modelr.statususer su, modelr.usertype tu where 
+$sql = 'select * from modelr.user  u, modelr.statususer su, modelr.usertype tu, modelr.institution inst where 
 u.idusertype = tu.idusertype and
-u.idstatususer = su.idstatususer 
+u.idstatususer = su.idstatususer and
+u.idinstitution = inst.idinstitution
  ';
 if ($ativo=='S')
 {
@@ -89,6 +97,10 @@ if ($tipofiltro=='LOGIN')
 {
    $sql.= " and u.login ilike '%".$valorfiltro."%'";	
 }
+if ($tipofiltro=='INSTITUIÇÃO')
+{
+   $sql.= " and inst.institution ilike '%".$valorfiltro."%'";	
+}
 
 if (($ordenapor=='NOME') || ($ordenapor==''))
 {
@@ -100,8 +112,13 @@ if ($ordenapor=='LOGIN')
    $sql.= " order by upper(u.login)";	
 }
 
+if ($ordenapor=='INSTITUIÇÃO')
+{
+   $sql.= " order by upper(inst.institution)";	
+}
 
-echo $sql;
+
+//echo $sql;
 
     $Paginacao->sql = $sql; // a  sem o filtro
 	$Paginacao->filtro = ''; // o filtro a ser aplicado ao sql/
@@ -123,6 +140,7 @@ echo $sql;
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Model-R</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
 
     <!-- Bootstrap core CSS -->
 
@@ -201,7 +219,7 @@ echo $sql;
                                     <h2>Consulta Usuário <small>Usuários cadastrados no sistema</small></h2>
                                     <ul class="nav navbar-right panel_toolbox">
                                                                             <li role="presentation" class="dropdown">
-                                        <a id="drop4" href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
+                                        <!-- <a id="drop4" href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
                                 Ação
                                 <span class="caret"></span>
                             </a>
@@ -210,36 +228,51 @@ echo $sql;
                                             </li>
                                             <li role="presentation"><a role="menuitem" tabindex="-1" onClick='showExcluir()'>Excluir</a>
                                             </li>
-                                        </ul>
+                                        </ul> -->
                                     </li>
                                     </ul>
-                                    <div class="clearfix"></div>
                                 </div>
 								<form class="form-inline" name="frm" id="frm" method="post">
 								<input type="hidden" name="sql" id="sql" value="<?php echo $Paginacao->sql;?>">
                                 <div class="x_content">
                                    
                                 <p>
-								<div class="form-group">
-                                    <label for="cmboxtipofiltro">Filtro</label>
-                                    <select id="cmboxtipofiltro" name="cmboxtipofiltro" class="form-control">
-                                                    <option value="NOME" <?php if ($tipofiltro=='NOME') echo "selected";?>>Nome</option>
-                                                    <option value="LOGIN" <?php if ($tipofiltro=='LOGIN') echo "selected";?>>Login</option>
-                                                </select>
+                                <div>
+                                    <div class="form-group">
+                                        <label for="cmboxtipofiltro">Tipo</label>
+                                        <select id="cmboxtipofiltro" name="cmboxtipofiltro" class="form-control">
+                                            <option value="NOME" <?php if ($tipofiltro=='NOME') echo "selected";?>>Nome</option>
+                                            <option value="INSTITUIÇÃO" <?php if ($tipofiltro=='INSTITUIÇÃO') echo "selected";?>>Instituição</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="edtvalorfiltro">Filtro</label>
+                                        <input id="edtvalorfiltro" name="edtvalorfiltro" class="form-control" placeholder="Filtro" value="<?php echo $valorfiltro;?>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cmboxordenar">Ordenar por</label>
+                                        <select id="cmboxordenar" name="cmboxordenar" class="form-control">
+                                            <option value="NOME" <?php if ($ordenapor=='NOME') echo "selected";?>>Nome</option>
+                                            <option value="INSTITUIÇÃO" <?php if ($ordenapor=='INSTITUIÇÃO') echo "selected";?>>Instituição</option>
+                                        </select>
+                                    </div>
+                                    <input type="checkbox" class="flat" name="chkboxativo" id="chkboxativo" value="S" <?php if ($ativo=='S') {echo 'checked';}?>> Ativos
+                                    <button type="button" class="btn btn-success" onClick='filterApply()' data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar usuários" style="margin-top: 5px;">Filtrar</button>
+                                    <div class="row-action">
+                                        <button type="button" class="btn btn-info" data-toggle="tooltip" data-placement="top" title data-original-title="Criar usuário"><a role="menuitem" class="menu-item" tabindex="-1" href="cadusuario.php?op=I">Novo</a></button>
+                                        <button type="button" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title data-original-title="Excluir usuário"><a role="menuitem" class="menu-item" tabindex="-1" onClick='showExcluir()'>Excluir</a></button>
+                                    </div>
+                                    <!-- <a id="drop4" href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
+                                    Ação
+                                    <span class="caret"></span>
+                                </a>
+                                            <ul id="menu6" class="dropdown-menu animated fadeInDown" role="menu">
+                                                <li role="presentation"><a role="menuitem" tabindex="-1" href="cadusuario.php?op=I">Novo</a>
+                                                </li>
+                                                <li role="presentation"><a role="menuitem" tabindex="-1" onClick='showExcluir()'>Excluir</a>
+                                                </li>
+                                        </ul> -->
                                 </div>
-                                <div class="form-group">
-                                    <label for="edtvalorfiltro">Filtro</label>
-                                    <input id="edtvalorfiltro" name="edtvalorfiltro" class="form-control" placeholder="Filtro" value="<?php echo $valorfiltro;?>">
-                                </div>
-                                <div class="form-group">
-                                    <label for="cmboxordenar">Ordenar por</label>
-                                    <select id="cmboxordenar" name="cmboxordenar" class="form-control">
-                                                    <option value="NOME" <?php if ($ordenapor=='NOME') echo "selected";?>>Nome</option>
-                                                    <option value="LOGIN" <?php if ($ordenapor=='LOGIN') echo "selected";?>>Login</option>
-												</select>
-                                </div>
-								<input type="checkbox" class="flat" name="chkboxativo" id="chkboxativo" value="S" <?php if ($ativo=='S') {echo 'checked';}?>> Ativos
-								<button type="button" class="btn btn-success" onClick='filterApply()'>Filtrar</button>
 								
                             </p>
 							    

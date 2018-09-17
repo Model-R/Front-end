@@ -62,7 +62,7 @@ class SituacaoUsuario
 	
 	function listaCombo($nomecombo,$id,$refresh='N',$classe)
 	{
-	   	$sql = "select * from modelr.situacaousuario  ";
+	   	$sql = "select * from modelr.statususer  ";
 		
 		$res = pg_exec($this->conn,$sql);
 		
@@ -78,17 +78,17 @@ class SituacaoUsuario
 				$s = $refresh;
 			}
 		}
-		$sql.=' order by situacaousuario ';
+		$sql.=' order by statususer ';
 		$html = "<select name='".$nomecombo."' id = '".$nomecombo."' ".$s."  ".$classe.">";
 		$html .= "<option value=''>Selecione a situação do usuário</Option>";
 		while ($row = pg_fetch_array($res))
 		{
 			$s = '';
-			if ($id == $row['idsituacaousuario'])
+			if ($id == $row['idstatususer'])
 			{
 			   $s = "selected";
 			}
-	      $html.="<option value='".$row['idsituacaousuario']."' ".$s." >".$row['situacaousuario']."</option> ";
+	      $html.="<option value='".$row['idstatususer']."' ".$s." >".$row['statususer']."</option> ";
 	    }
 		$html .= '</select>';
 		return $html;	

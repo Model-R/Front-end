@@ -1,4 +1,9 @@
 <?php @session_start();
+$tokenUsuario = md5('seg'.$_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']);
+if ($_SESSION['donoDaSessao'] != $tokenUsuario)
+{
+//	header('Location: index.php');
+}
 	  require_once('classes/conexao.class.php');
 	  $Conexao = new Conexao;
 	  $conn = $Conexao->Conectar();
@@ -11,7 +16,7 @@
                         
                            <ul class="nav navbar-nav navbar-left">
                             <li class="">
-							<a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+							<a href="consexperimento.php" class="user-profile dropdown-toggle">
                                     <img src="imagens/R.sh-600x600.png" alt="">Model-R
                                 </a>
 							</li>
@@ -20,7 +25,7 @@
 
                         <ul class="nav navbar-nav navbar-right">
                             <li class="">
-                                <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                <a href="javascript:;" class="user-profile nav-user dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                     <img src="images/user.png" alt=""><?php echo $_SESSION['s_nome'];?>
                                     <span class=" fa fa-angle-down"></span>
                                 </a>
@@ -44,7 +49,7 @@
                                     </li>
                                     <li><a href="manual_modelr.pdf"><i class="fa fa-file-pdf-o pull-right"></i> Manual</a>
                                     </li>
-                                    <li><a href="login.php"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
+                                    <li><a href="index.php"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
                                     </li>
                                 </ul>
                             </li>
@@ -92,8 +97,8 @@
                                    
                                     <li>
                                         <div class="text-center">
-                                            <a>
-                                                <strong><a href="consexperimento.php">Visualizar todos</strong>
+                                            <a href="consexperimento.php">
+                                                <strong>Visualizar todos</strong>
                                                 <i class="fa fa-angle-right"></i>
                                             </a>
                                         </div>

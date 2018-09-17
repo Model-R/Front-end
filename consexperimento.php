@@ -1,41 +1,54 @@
-<?php session_start();?><!DOCTYPE html>
+<?php 
+session_start();
+$tokenUsuario = md5('seg'.$_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']);
+if ($_SESSION['donoDaSessao'] != $tokenUsuario)
+{   
+	header('Location: index.php');
+}
+?><!DOCTYPE html>
 <html lang="en">
 <head>
-<?php require_once('classes/conexao.class.php');
+<?php 
+        require_once('classes/conexao.class.php');
 	  require_once('classes/paginacao2.0.class.php');
 //	  require_once('classes/categoira.class.php');
-	  
 	  $FORM_ACTION = 'experimento';
 	  $tipofiltro = $_REQUEST['cmboxtipofiltro'];
 	  $valorfiltro = $_REQUEST['edtvalorfiltro'];
 	  $ordenapor = $_REQUEST['cmboxordenar'];
 	  
 //	  $idproject = $_REQUEST['idproject'];
-	  $idusuario = $_REQUEST['idusuario'];
-	  
-	  //print_r($_REQUEST);
+      $idusuario = $_SESSION['s_idusuario'];
+    
 	class MyPag extends Paginacao
 	{
 		function desenhacabeca($row)
 		{
-		 	 $html = '
+              $html = '
 			 <thead>
-                                            <tr class="headings">
-                                                <th>
-                                                    <input type="checkbox" id="check-all" class="flat">
-                                                </th>
-                                                <th class="column-title">Experimento </th>
-                                                <th class="column-title">Descrição </th>
-                                                <th class="column-title">Ação </th>
-                                                <th class="column-title no-link last"><span class="nobr">status</span>
-                                                </th>
-                                                <th class="bulk-actions" colspan="7">
-                                                    <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
-                                            </th>
-                                </tr>
-                            </thead>
-                      ';
-		 		echo $html;
+                <tr class="headings">
+                    <th>
+                        <input type="checkbox" id="check-all" class="flat">
+                    </th>
+                    <th class="column-title">Experimento </th>
+                    <th class="column-title">Grupo </th>
+                    <th class="column-title">Descrição </th>
+                    ';
+			if ($_SESSION['s_idtipousuario']==2)
+			{
+				$html.='<th class="column-title">Usuário </th>';
+			}
+			$html.='						
+                    <th class="column-title" style="width: 300px;">Ação </th>
+                    <th class="column-title no-link last" style="width: 400px;"><span class="nobr">status</span>
+                    </th>
+                    <th class="bulk-actions" colspan="7">
+                        <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+                    </th>
+                </tr>
+            </thead>
+            ';
+        echo $html;
 		}
 
 		function desenha($row){
@@ -48,43 +61,40 @@
 			$resoccurrenceok = pg_exec($this->conn,$sqloccurrenceok);
 			$rowoccurrenceok = pg_fetch_array($resoccurrenceok);
 			$qtdok = $rowoccurrenceok[0];
-			
+            
 			$disabled = '';
-			if (($_SESSION['s_idtipousuario'])==1)
+			if (($_SESSION['s_idtipousuario'])!=2)
 			{
 				
-				$disabled = 'disabled';
+//				$disabled = 'disabled';
+				$disabled = ''; // alterado apenas para a apresentação
 			}
-			
-			$html = '<td class="a-center "><input type="checkbox" class="flat" name="id_experiment[]" id="id_experiment" value="'.$row["idexperiment"].'" ></td>
-                                    <td class=" ">'.$row['name'].'</td>
-                                    <td class=" ">'.$row['description'].'</td>
-                                    <td class=" ">
-									<a class="btn btn-app" href="cadexperimento.php?op='.'A'.'&tab='.'2'.'&id='.$row['idexperiment'].'">
-                                        <span class="badge bg-blue">'.$qtd.'</span>
-                                        <i class="fa fa-edit"></i> Editar
-                                    </a>
-									<a class="btn btn-app" onclick="limparDadosExperimento('.$row['idexperiment'].')">
+            $html = '<td class="a-center "><input type="checkbox" class="flat" name="id_experiment[]" id="id_experiment" value="'.$row["idexperiment"].'" ></td>
+                                    <td class=" ">'.$row['2'].'</td>
+                                    <td class=" ">'.$row['group_name'].'</td>
+                                    <td class=" ">'.$row['description'].'</td>';
+			if ($_SESSION['s_idtipousuario']==2)
+			{
+				$html.='<td class=" ">'.$row['username'].'</td>';
+			}			
+			$html.='				<td class="actions" style="display: flex;justify-content: center;">
+									<div>
+										<a class="btn btn-app" href="cadexperimento.php?op='.'A'.'&tab='.'9'.'&id='.$row['idexperiment'].'" data-toggle="tooltip" data-placement="top" title="Pré-tratamento">
+											<i class="fa fa-pencil-square-o"></i>
+											<span class="badge bg-blue">'.$qtd.'</span>
+										</a>
+										<a class="btn btn-app" href="cadexperimento.php?op='.'A'.'&tab='.'6'.'&id='.$row['idexperiment'].'" data-toggle="tooltip" data-placement="top" title="Modelagem">
+											<i class="fa fa-gears"></i>
+										</a>
+										<a class="btn btn-app" href="cadexperimento.php?op='.'A'.'&tab='.'8'.'&id='.$row['idexperiment'].'" data-toggle="tooltip" data-placement="top" title="Pós-processamento">
+											<i class="fa fa-globe"></i>
+										</a>
+									</div>
+									<a class="btn btn-app" onclick="confirmarLimparDados('.$row['idexperiment'].')" data-toggle="tooltip" data-placement="top" title="Limpar">
                                         <span class="badge bg-red">'.$qtd.'</span>
-                                        <i class="fa fa-eraser"></i> Limpar
+                                        <i class="fa fa-eraser"></i>
                                     </a>
                                    ';
-									if ($qtdok>0)
-									{
-										$html.='
-									<a class="btn btn-app '.$disabled.'" onclick="modelar('.$row['idexperiment'].')">
-                                        <span class="badge bg-green">'.$qtdok.'</span>
-                                        <i class="fa fa-gear"></i> Modelar
-                                    </a>
-                                                    ';
-									}
-									if ($row['idstatusexperiment']==4)
-									{
-										$html.='<a class="btn btn-app '.$disabled.'" onclick="resultado('.$row['idexperiment'].')">
-											<i class="fa fa-globe"></i> Resultado
-										</a>';
-									}
-
 									
 									$idstatus = $row['idstatusexperiment'];
 									$classe1='done';
@@ -150,13 +160,6 @@
                                         </ul>
 									</div>
 									</td>';			
-			// $date = new DateTime($row['datacadastro']);
-			/*$html = ' 
-                      <td align="center"><input type="checkbox" name="id_[]" id="id_" value="'.$row["iddescricao"].'" /></td>
-					  <td nowrap><a href="caddescricao.php?op=A&id='.$row['iddescricao'].'">'.$row["descricao"].'</a></td>
-					  ';
-*/		 	
-
 	echo $html;
 				echo "";
 		}// function
@@ -167,27 +170,43 @@ $conn = $clConexao->Conectar();
 
 $Paginacao = new MyPag();
 $Paginacao->conn = $conn;
-$sql = 'select * from modelr.experiment e, modelr.statusexperiment se where 
-e.idstatusexperiment = se.idstatusexperiment
-
+$sql = 'select *, u.name as username from modelr.experiment e, modelr.statusexperiment se, modelr.user u where 
+e.idstatusexperiment = se.idstatusexperiment and
+e.iduser = u.iduser
  ';
+// echo $sql;
 
-if ($_SESSION['s_idtipousuario']=='1')
+if ($_SESSION['s_idtipousuario']!='2')
 {
    $sql.= " and e.iduser = ".$_SESSION['s_idusuario'];	
 }
- 
-if ($tipofiltro=='EXPERIMENTO')
+
+if ($tipofiltro=='EXPERIMENTO' || $tipofiltro==NULL)
 {
    $sql.= " and e.name ilike '%".$valorfiltro."%'";	
 }
-
-
+if ($tipofiltro=='USUARIO')
+{   
+   $sql.= " and u.name ilike '%".$valorfiltro."%' ";	
+}
+if ($tipofiltro=='GRUPO')
+{   
+   $sql.= " and e.group_name ilike '%".$valorfiltro."%' ";	
+}
 
 if (($ordenapor=='EXPERIMENTO') || ($ordenapor==''))
 {
    $sql.= " order by e.name";	
 }
+if (($ordenapor=='USUARIO'))
+{
+   $sql.= " order by u.name";	
+}
+if (($ordenapor=='GRUPO'))
+{
+   $sql.= " order by e.group_name";	
+}
+
 
 //echo $sql;
 
@@ -202,7 +221,6 @@ if (($ordenapor=='EXPERIMENTO') || ($ordenapor==''))
 	$Paginacao->mostra_informe = 'T';//
 	$Paginacao->pagina = $_REQUEST['p'];//$_REQUEST['p']; // p⨩na que est኉$paginacao->tamanho_imagem = '60';
 	$Paginacao->separador = '' ; // sepador linha que separa as rows
-	  
 ?>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <!-- Meta, title, CSS, favicons, etc. -->
@@ -211,6 +229,9 @@ if (($ordenapor=='EXPERIMENTO') || ($ordenapor==''))
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Model-R</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
 
     <!-- Bootstrap core CSS -->
 
@@ -221,6 +242,7 @@ if (($ordenapor=='EXPERIMENTO') || ($ordenapor==''))
 
     <!-- Custom styling plus plugins -->
     <link href="css/custom.css" rel="stylesheet">
+	<link href="css/consexperimento.css" rel="stylesheet">
     <link href="css/icheck/flat/green.css" rel="stylesheet">
 
 
@@ -247,7 +269,7 @@ if (($ordenapor=='EXPERIMENTO') || ($ordenapor==''))
       <!-- dialog body -->
       <div class="modal-body"> 
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        Excluir todos o(s) registros(s)? </div>
+        Excluir todos o(s) registros(s) 2? </div>
       <!-- dialog buttons -->
       <div class="modal-footer"> 
         <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
@@ -257,6 +279,26 @@ if (($ordenapor=='EXPERIMENTO') || ($ordenapor==''))
   </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="ConfirmCleanModal" tabindex="-1" role="dialog" aria-labelledby="ConfirmCleanLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ConfirmCleanLabel">Limpar Dados</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Deseja Limpar todos os dados desse Experimento ?</p>
+                <div class="modal-footer cleanDataFooter">
+                    <button type="button" data-dismiss="modal" id="cleanButton" class="btn btn-primary">Sim</button>
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">Não</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
     <div class="container body">
 
@@ -281,13 +323,27 @@ if (($ordenapor=='EXPERIMENTO') || ($ordenapor==''))
                 <div class="">
                     <div class="clearfix"></div>
 
+                    <?php ?>
 
                     <div class="row">
 
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="x_panel">
-                                <div class="x_title">
-                                    <h2>Consulta Experimento <small>Experimentos cadastrados no sistema</small></h2>
+                                <div class="x_title_consexperimentos">
+                                    <h2> Experimentos 
+                                        <!-- <div data-toggle="tooltip" data-placement="right" title data-original-title="Instruções">
+                                             <span class="glyphicon glyphicon-modal-window" data-toggle="modal" data-target="#instructionModal"></span>
+                                            <span class="glyphicon glyphicon-modal-window instruction-icon"></span>
+                                        </div> -->
+                                    </h2>
+                                    <div class="print-options">
+                                        <a  class="btn btn-default btn-sm" onClick="imprimirExp('PDF');" data-toggle="tooltip" data-placement="top" title="Exportar tabela em PDF"><?php echo " PDF ";?></a>
+                                        <a  class="btn btn-default btn-sm" onClick="imprimirExp('CSV');"data-toggle="tooltip" data-placement="top" title="Exportar tabela em CSV"><?php echo " CSV";?></a>
+                                    </div>
+
+                                    <?php 
+                                        include_once 'templates/consexperimento.instrucao.php';
+                                    ?>
                                     <!--<ul class="nav navbar-right panel_toolbox">
                                                                             <li role="presentation" class="dropdown">
                                         <a id="drop4" href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
@@ -309,34 +365,39 @@ if (($ordenapor=='EXPERIMENTO') || ($ordenapor==''))
                                     </li>
                                     </ul>
 									-->
-                                    <div class="clearfix"></div>
+                                    <!-- <div class="clearfix"></div> -->
                                 </div>
 								<form class="form-inline" name="frm" id="frm" method="post">
 								<input type="hidden" name="sql" id="sql" value="<?php echo $Paginacao->sql;?>">
                                 <div class="x_content">
                                    
                                 <p>
-								<div class="form-group">
-                                    <label for="cmboxtipofiltro">Filtro</label>
-                                    <select id="cmboxtipofiltro" name="cmboxtipofiltro" class="form-control">
-                                                    <option value="EXPERIMENTO" <?php if ($tipofiltro=='EXPERIMENTO') echo "selected";?>>Experimento</option>
-                                                    <option value="PROJETO" <?php if ($tipofiltro=='PROJETO') echo "selected";?>>Projeto</option>
-                                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="edtvalorfiltro">Filtro</label>
-                                    <input id="edtvalorfiltro" name="edtvalorfiltro" class="form-control" placeholder="Filtro" value="<?php echo $valorfiltro;?>">
-                                </div>
-                                <div class="form-group">
-                                    <label for="cmboxordenar">Ordenar por</label>
-                                    <select id="cmboxordenar" name="cmboxordenar" class="form-control">
-                                                    <option value="EXPERIMENTO" <?php if ($ordenapor=='EXPERIMENTO') echo "selected";?>>Experimento</option>
-                                                    <option value="PROJETO" <?php if ($ordenapor=='PROJETO') echo "selected";?>>Projeto</option>
-                                                    </select>
-                                </div>
-								<button type="button" class="btn btn-success" onClick='filterApply()'>Filtrar</button>
-								<button type="button" class="btn btn-info" onClick='novo()'>Novo</button>
-								<button type="button" class="btn btn-danger" onClick='showExcluir()'>Excluir</button>
+                                    <div class="filters">
+                                        <div class="filter-group">
+                                            <?php 
+                                                if ($_SESSION['s_idtipousuario']=='2')
+                                                {
+                                                    include_once 'templates/tipofiltro.php';
+                                                }
+                                            ?>
+                                            <div class="form-group" style="display: flex;align-items: baseline;">
+                                                <label for="edtvalorfiltro" style="margin-right: 5px;">Nome</label>
+                                                <input id="edtvalorfiltro" name="edtvalorfiltro" class="form-control" placeholder="Nome" value="<?php echo $valorfiltro;?>">
+                                            </div>
+                                            <?php 
+                                                if ($_SESSION['s_idtipousuario']=='2')
+                                                {
+                                                    include_once 'templates/ordenarfiltro.php';
+                                                }
+                                            ?>
+                                            <button type="button" class="btn btn-success" onClick='filterApply()' data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar experimentos">Filtrar</button>
+                                        </div>
+                                        <div class="row-action">
+                                            <!-- <button type="button" class="btn btn-success" onClick='liberarExperimento()' data-toggle="tooltip" data-placement="top" title data-original-title="Liberar experimento para Modelagem">Liberar</button> -->
+                                            <button type="button" class="btn btn-info" onClick='novo()' data-toggle="tooltip" data-placement="top" title data-original-title="Criar novo experimento">Novo</button>
+                                            <button type="button" class="btn btn-danger" onClick='showExcluir()' data-toggle="tooltip" data-placement="top" title data-original-title="Excluir experimento">Excluir</button>
+                                        </div>
+                                    </div>
                             </p>
 							    <div style="overflow:auto;"> 
                 <div class="table-responsive"> 
@@ -389,7 +450,10 @@ if (($ordenapor=='EXPERIMENTO') || ($ordenapor==''))
 	<!-- PNotify -->
     <script type="text/javascript" src="js/notify/pnotify.core.js"></script>
     <script type="text/javascript" src="js/notify/pnotify.buttons.js"></script>
-    <script type="text/javascript" src="js/notify/pnotify.nonblock.js"></script>		
+    <script type="text/javascript" src="js/notify/pnotify.nonblock.js"></script>	
+
+    <!-- print pdf -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.debug.js"></script>	
 	
 	<script>
 	
@@ -401,12 +465,19 @@ require 'MSGCODIGO.php';
 <?php $MSGCODIGO = $_REQUEST['MSGCODIGO'];
 ?>
 		
-	
-	function limparDadosExperimento(idexperimento)
-	{
-		document.getElementById('frm').action='exec.<?php echo strtolower($FORM_ACTION);?>.php?id='+idexperimento+'&op=LD';
-		document.getElementById('frm').submit();
+	var limparExperimento;
+    $('#ConfirmCleanModal').modal({ show: false});
+
+    function confirmarLimparDados(idexperimento)
+	{   
+        limparExperimento = idexperimento;
+        $('#ConfirmCleanModal').modal('show');
 	}
+    $("#cleanButton").click(function() {
+        document.getElementById('frm').action='exec.<?php echo strtolower($FORM_ACTION);?>.php?id='+limparExperimento+'&op=LD';
+		document.getElementById('frm').submit();
+    });
+ 
 	function modelar(idexperimento)
 	{
 		document.getElementById('frm').action='cadmodelagem.php?id='+idexperimento;
@@ -426,27 +497,32 @@ require 'MSGCODIGO.php';
     	document.getElementById('frm').submit();
 	}
 
-	function imprimir(tipo)
+	function imprimirExp(tipo)
 	{
-		alert(tipo);
 		document.getElementById('frm').target="_blank";//"'cons<?php echo strtolower($FORM_ACTION);?>.php';
-		if (tipo=='pdf')
+		if (tipo=='PDF')
 		{
-			document.getElementById('frm').action='rel<?php echo strtolower($FORM_ACTION);?>.php';
+            //console.log(document.getElementById('frm').action='export' + tipo + '.php?table=exp')
+			document.getElementById('frm').action='export' + tipo + '.php?table=exp&expid=<?php echo $idusuario;?>';
 			document.getElementById('frm').submit();
 		}
-		if (tipo=='xls')
+		if (tipo=='CSV')
 		{
-			document.getElementById('frm').action='rel<?php echo strtolower($FORM_ACTION);?>Excel.php';
+			//console.log(document.getElementById('frm').action='export' + tipo + '.php?table=exp')
+			document.getElementById('frm').action='export' + tipo + '.php?table=exp&expid=<?php echo $idusuario;?>';
 			document.getElementById('frm').submit();
 		}
 	}
 
 	function novo()
-	{
+	{   
 		window.location.href = 'cad<?php echo strtolower($FORM_ACTION);?>.php?op=I&idusuario=<?php echo $idusuario;?>';
 	}
-
+	
+	function resultado(id)
+	{
+		window.location.href = 'resultado.php?&id='+id;
+	}
 	
 	function removeFilter()
 	{
@@ -461,12 +537,19 @@ require 'MSGCODIGO.php';
 	}
 	
 	function excluir()
-	{
+	{	
 		$('#myModal').modal('hide');
 		document.getElementById('frm').action='exec.<?php echo strtolower($FORM_ACTION);?>.php?op=E';
-  			document.getElementById('frm').submit();
+        console.log('exec.<?php echo strtolower($FORM_ACTION);?>.php?op=E')
+  		document.getElementById('frm').submit();
 	}	
-	
+
+    function liberarExperimento()
+	{   
+		document.getElementById('frm').action='exec.<?php echo strtolower($FORM_ACTION);?>.php?op=LE';
+  		document.getElementById('frm').submit();
+	}	
+
 	</script>
 
 </body>

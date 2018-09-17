@@ -3,7 +3,7 @@
 
 $MSGCODIGO = $_REQUEST['MSGCODIGO'];
 if ($MSGCODIGO=='0')
-{
+{		
 		echo "
 		criarNotificacao('Sucesso','O cadastro da configuração foi realizado com sucesso!','success');";
 }
@@ -46,7 +46,7 @@ if ($MSGCODIGO=='7')
 if ($MSGCODIGO=='8')
 {
 		echo "
-		criarNotificacao('Erro','Não foi possível enviar nova nova!','erro');";
+		criarNotificacao('Erro','Não foi possível enviar nova senha!','erro');";
 }
 if ($MSGCODIGO=='9')
 {
@@ -54,7 +54,7 @@ if ($MSGCODIGO=='9')
 		criarNotificacao('Success','Nova senha enviado para o email informado!','success');";
 }
 if ($MSGCODIGO=='10')
-{
+{	
 		echo "
 		criarNotificacao('Erro','Usuário ou senha inválido!','danger');";
 }
@@ -214,17 +214,38 @@ if ($MSGCODIGO=='72')
 if ($MSGCODIGO=='73')
 {
 		echo "
-		criarNotificacao('Filtro automático','Pontos fora do município de origem verificado!','success');";
+		criarNotificacao('Filtro Fora do Município','Pontos fora do município de origem verificado!','success');";
 }
 if ($MSGCODIGO=='74')
 {
 		echo "
-		criarNotificacao('Filtro automático','Pontos fora do limit do Brasil verificado!','success');";
+		criarNotificacao('Filtro Fora Limite Brasil','Pontos fora do limit do Brasil verificado!','success');";
+}
+if ($MSGCODIGO=='75')
+{
+		echo "
+		criarNotificacao('Filtro Automático','Filtro automático executado!','success');";
 }
 
+if ($MSGCODIGO=='76')
+{
+		echo "
+		criarNotificacao('Modelagem','Não foi possível realizar a modelagem ! Número mínimo de ocorrências: 10','erro');";
+}
 
+if ($MSGCODIGO=='77')
+{
+		echo "
+		criarNotificacao('Modelagem','Não foi possível realizar a modelagem !','erro');";
+}
 
+if ($MSGCODIGO=='78')
+{
+		echo "
+		criarNotificacao('Modelagem','Não foi possível realizar a modelagem ! Seleciona uma variável abiótica na aba Pré-tratamento > Dados Abióticos.','erro');";
+}
 ?>
+
 var permanotice, tooltip, _alert;
 	
 	function criarNotificacao(titulo,texto,tipo)

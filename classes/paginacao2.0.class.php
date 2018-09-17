@@ -1,17 +1,17 @@
 <?php
 class Paginacao
 {
-	var $conn; // a conexão
+	var $conn; // a conexï¿½o
     var $ID;
-    var $sql; // a seleção sem o filtro
+    var $sql; // a seleï¿½ï¿½o sem o filtro
 	var $filtro; // o filtro a ser aplicado ao sql/
-	var $order; // como será ordenado o resultado
-	var $numero_colunas = 1; // quantidade de colunas por linha // se for = 1 é sinal que é listagem por linha
-	var $numero_linhas = 5; // quantidade de linhas por páginas
-	var $quadro; // conteúdo em a ser exibido
+	var $order; // como serï¿½ ordenado o resultado
+	var $numero_colunas = 1; // quantidade de colunas por linha // se for = 1 ï¿½ sinal que ï¿½ listagem por linha
+	var $numero_linhas = 5; // quantidade de linhas por pï¿½ginas
+	var $quadro; // conteï¿½do em a ser exibido
 	var $altura_linha = '20px'; // altura do quadro em pixel
 	var $largura_coluna = '10px';
-	var $tamanho_imagem = 0; // tamanho da imagem = 0 se não existir imagem;
+	var $tamanho_imagem = 0; // tamanho da imagem = 0 se nï¿½o existir imagem;
 	var $mostra_informe = 'T';//
 	var $pagina ;
 	var $separador;
@@ -31,7 +31,7 @@ class Paginacao
 
 	function pegaPaginaInicio($p,$total,$por_pagina)
 	{
-	   if ($total >10){
+	   if ($total >20){
 		  if ($p <= $por_pagina) {
 			  $pag_inicio = 1;
 			  if ($p > ($por_pagina / 2))
@@ -43,9 +43,9 @@ class Paginacao
 		  {
 			  $pag_inicio = ceil($p/$por_pagina);
 			  $pag_inicio = ($pag_inicio-1)*$por_pagina+1;
-			  if ($p>=($pag_inicio+10))
+			  if ($p>=($pag_inicio+20))
 			  {
-				   $pag_inicio = $pag_inicio + 10;
+				   $pag_inicio = $pag_inicio + 20;
 			  }
 		  }
 	   }
@@ -75,7 +75,7 @@ class Paginacao
        	  $row = $this->numero_linhas;
 		  if (empty($row))
 		  {
-		  	$row=10;
+		  	$row=20;
 		  }
 		  $tam = $this->tamanho_imagem;
 		  $sql = $this->sql;
@@ -84,6 +84,7 @@ class Paginacao
 		  $o = $this->order;
 		  $mostra_informe = $this->mostra_informe;
 		  $res = pg_query($this->conn,$sql);
+		  //print_r($res);
    		  $num_registros = pg_num_rows($res);
 		  $numero_por_paginas=$row*$col;
 		  $total_paginas = ceil($num_registros/$numero_por_paginas);
@@ -93,7 +94,7 @@ class Paginacao
    		  $informe = $this->pegaInforme($p,$numero_por_paginas,$num_registros,$total_paginas);
 		?>  
 
-		<table class="table table-striped responsive-utilities jambo_table bulk_action" >
+		<table class="table table-striped responsive-utilities jambo_table bulk_action" id="experiments_table">
 		<tbody>
 			<?php
 				$d = 0;
@@ -133,17 +134,17 @@ class Paginacao
             <td align="right">
 			<?php
 			?>
-			<a class="btn btn-default btn-xs" onClick="montapaginacao(<?php echo '1';?>,document.getElementById('cmboxqtdrowspaginacao').value)"><?php echo "Primeria";?></a>
+			<a class="btn btn-default btn-sm" onClick="montapaginacao(<?php echo '1';?>,document.getElementById('cmboxqtdrowspaginacao').value)"><?php echo "Primeria";?></a>
 			<?php if ($p!=1){
 			?>
-			<a class="btn btn-default btn-xs" onClick="montapaginacao(<?php echo $p-1;?>,document.getElementById('cmboxqtdrowspaginacao').value)"><?php echo "Anterior";?></a>
+			<a class="btn btn-default btn-sm" onClick="montapaginacao(<?php echo $p-1;?>,document.getElementById('cmboxqtdrowspaginacao').value)"><?php echo "Anterior";?></a>
 			<?php } ?>
 <?php			
-			for ($pag = $pag_inicio ; $pag < $pag_inicio + 10; $pag++)
+			for ($pag = $pag_inicio ; $pag < $pag_inicio + 20; $pag++)
 			{
-			   $classetabela = "btn-default btn-xs";
+			   $classetabela = "btn-default btn-sm";
 			   if ($pag==$p){
-			   	 $classetabela = 'btn btn-primary btn-xs'; 
+			   	 $classetabela = 'btn btn-primary btn-sm'; 
 			   }
 			   if ($pag <= $total_paginas){
 			    ?><a class="btn <?php echo $classetabela;?>" onClick="montapaginacao(<?php echo $pag;?>,document.getElementById('cmboxqtdrowspaginacao').value)"><?php echo $pag;?></a>
@@ -152,11 +153,9 @@ class Paginacao
 			} ?>   
 			<?php if ($p!=$total_paginas){
 			?>
-			<a class="btn btn-default btn-xs" onClick="montapaginacao(<?php echo $p+1;?>,document.getElementById('cmboxqtdrowspaginacao').value)"><?php echo "Proxima";?></a>
+			<a class="btn btn-default btn-sm" onClick="montapaginacao(<?php echo $p+1;?>,document.getElementById('cmboxqtdrowspaginacao').value)"><?php echo "Proxima";?></a>
 			<?php } ?>
-			<a  class="btn btn-default btn-xs" onClick="montapaginacao(<?php echo $total_paginas;?>,document.getElementById('cmboxqtdrowspaginacao').value)"><?php echo " Ultima";?></a>
-			<a  class="btn btn-default btn-xs" onClick="imprimir('pdf')"><?php echo " PDF ";?></a>
-			<a  class="btn btn-default btn-xs" onClick="imprimir('xls')"><?php echo " XLS";?></a>
+			<a  class="btn btn-default btn-sm" onClick="montapaginacao(<?php echo $total_paginas;?>,document.getElementById('cmboxqtdrowspaginacao').value)"><?php echo " Ultima";?></a>
 			</td>
           </tr>
 		</table>	
