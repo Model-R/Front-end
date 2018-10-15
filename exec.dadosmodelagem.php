@@ -32,6 +32,7 @@ $Experimento->resolution = "'" . $resolution[0] . "'";
 $Experimento->repetitions = $repetitions;
 $Experimento->trainpercent = $trainpercent;
 
+
 if(!empty($_REQUEST['algoritmo'])){
 	$result = $Experimento->limparAlgoritmo($id);
 }

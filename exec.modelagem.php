@@ -5,6 +5,8 @@
 require_once('classes/experimento.class.php');
 require_once('classes/conexao.class.php');
 
+print_r($_REQUEST);
+exit;
 $conexao = new Conexao;
 $conn = $conexao->Conectar();
 
@@ -13,7 +15,7 @@ $Experimento->conn = $conn;
 
 $operacao = $_REQUEST['op'];
 $id = $_REQUEST['id'];
-$tab = $_REQUEST['secundarytab'];
+$tab = $_REQUEST['tab'];
 
 $extensao1 = $_REQUEST['edtextensao1_oeste'].';'.$_REQUEST['edtextensao1_leste'].';'.$_REQUEST['edtextensao1_norte'].';'.$_REQUEST['edtextensao1_sul'];
 //$extensao2 = $_REQUEST['edtextensao2_oeste'].';'.$_REQUEST['edtextensao2_leste'].';'.$_REQUEST['edtextensao2_norte'].';'.$_REQUEST['edtextensao2_sul'];
@@ -83,11 +85,11 @@ if($noRedirect == false || empty($noRedirect))
 {
 	if ($result = $Experimento->alterar($id))
 	{
-		header("Location: cadexperimento.php?op=A&MSGCODIGO=84&id=$id&op=$operacao&tab=4&secundarytab=$tab");
+		header("Location: cadexperimento.php?op=A&MSGCODIGO=84&id=$id&op=$operacao&tab=$tab");
 	}
 	else
 	{
-		header("Location: cadexperimento.php?op=A&MSGCODIGO=85&id=$id&op=$operacao&tab=4&secundarytab=$tab");
+		header("Location: cadexperimento.php?op=A&MSGCODIGO=85&id=$id&op=$operacao&tab=$tab");
 	}
 }
 ?>

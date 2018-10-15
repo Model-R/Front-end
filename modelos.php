@@ -16,8 +16,6 @@ $conn = $conexao->Conectar();
 $Experimento = new Experimento();
 $Experimento->conn = $conn;
 
-$tab = $_REQUEST['tab'];
-
 $op=$_REQUEST['op'];
 $id=$_REQUEST['id'];
 $hash = md5($id);
@@ -123,6 +121,8 @@ while ($row = pg_fetch_array($res))
 					//Notice the parentheses I added:
 					while(($file = readdir($handle)) !== FALSE)
 					{
+						echo $file;
+						echo '<br>';
 						$tamanho = strlen($file);
 						list ($arquivo, $ext) = preg_split ('[.]', $file);
 						

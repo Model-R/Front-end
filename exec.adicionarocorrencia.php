@@ -36,7 +36,7 @@ $bool_automaticfilter = $automaticfilter === 't'? true: false;
         familia || ' ' || taxoncompleto ilike '%".$especie."%' and ";
 
 	$box=$jabotData;
-	$in = 'extracao_jabot_geral.codtestemunho in (';
+	$in = 'extracao_jabot.codtestemunho in (';
 	while (list ($key,$val) = @each($box)) { 
 		//$result = $Cobertura->excluir($val);
 		$in .= $val.','; 
@@ -44,23 +44,25 @@ $bool_automaticfilter = $automaticfilter === 't'? true: false;
 	$in.='0)';
 	
 	$sql.= $in;
-
+	
+	//echo $sql;
+	//exit;
 	$res = pg_exec($conn,$sql);
 
 	while ($row = pg_fetch_array($res))
 	{
-		$codigobarras= str_pad($row['codtestemunho'], 8, "0", STR_PAD_LEFT);	
-		$lat = $row['latitude'];
-		$long = $row['longitude'];
-		$taxon = $row['taxoncompleto'];
-		$herbario = $row['herbario'];
-		$coletor = $row['coletor'];
-		$numcoleta = $row['numcoleta'];
-		$pais = $row['pais'];
-		$estado = $row['estado'];
-		$municipio = $row['municipio'];
-		$tombo = $row['numtombo'];
-		$codtestemunho = $row['codtestemunho'];
+		$codigobarras= str_pad($row['codtestemunho'], 8, "0", STR_PAD_LEFT);		
+		$lat = str_replace("'","`",$row['latitude']);
+		$long = str_replace("'","`",$row['longitude']);
+		$taxon = str_replace("'","`",$row['taxoncompleto']);
+		$herbario = str_replace("'","`",$row['herbario']);
+		$coletor = str_replace("'","`",$row['coletor']);
+		$numcoleta = str_replace("'","`",$row['numcoleta']);
+		$pais = str_replace("'","`",$row['pais']);
+		$estado = str_replace("'","`",$row['estado']);
+		$municipio = str_replace("'","`",$row['municipio']);
+		$tombo = str_replace("'","`",$row['numtombo']);
+		$codtestemunho = str_replace("'","`",$row['codtestemunho']);
 //		echo $pais.','.$estado.','.$municipio;
 //		exit;
 		
@@ -84,31 +86,37 @@ $bool_automaticfilter = $automaticfilter === 't'? true: false;
 		//$result = $Cobertura->excluir($val);
 		$val = explode("*", $val);
 		//echo $val.'<br>';
+		//print_r($val);
+		//echo '<br>';
 		$idexperimento = $val[0];
 		$latitude = $val[2];
 		$longitude = $val[3];
-		$taxon = $val[4];
+		$taxon = str_replace("'","`",$val[4]);
 		$coletor = str_replace("'","",$val[5]);
 		if($val[6] != 'undefined'){
-			$numcoleta = $val[6];
+			$numcoleta = str_replace("'","`",$val[6]);
 		} else {
 			$numcoleta = null;
 		}
 		$imagemservidor=$val[7];
 		$imagemcaminho=$val[8];
 		$imagemarquivo=$val[9];
-		$pais=$val[10];
-		$estado = $val[11];
-		$municipio=str_replace("'","",$val[12]); 
-		$herbario=$val[13];
+		$pais= str_replace("'","`",$val[10]);
+		$estado = str_replace("'","`",$val[11]);
+		$municipio=str_replace("'","",$val[12]);
+		$herbario= str_replace("'","`",$val[13]);
 		//var_dump($val[14]);
 		//echo '<br>';
-		if ($val[14] == 'undefined' || $val[14] == ''){
-			$tombo = 'null';
+		if(isset($val[14])){
+			if ($val[14] == 'undefined' || $val[14] == ''){
+				$tombo = 'null';
+			} else {
+				$tombo = str_replace("'","`",$val[14]);
+			} 
 		} else {
-			$tombo = $val[14];
-		} 
-		if(empty($coletor)){
+			$tombo = 'null';
+		}
+		if(empty($herbario)){
 			$fonte = 'CSV';
 		} else {
 			$fonte = 'GBIF';
@@ -121,7 +129,7 @@ $bool_automaticfilter = $automaticfilter === 't'? true: false;
 if($bool_automaticfilter === true){
 	header("Location: exec.atualizarpontos.php?idstatus=99&idponto=&latinf=&longinf=&id=$idexperimento");
 } else {
-	header("Location: cadexperimento.php?op=A&pag=2&MSGCODIGO=71&id=$idexperimento");
+	header("Location: cadexperimento.php?op=A&tab=10&MSGCODIGO=71&id=$idexperimento");
 }
 ?>
 

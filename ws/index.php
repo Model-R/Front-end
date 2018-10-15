@@ -29,12 +29,14 @@ if (isset($_GET['status']))
 
 
 $res = pg_exec($conn,$sql);
+
 $qtd = pg_num_rows($res);
 
 $json_str = '[';
 $c = 0;
 while ($row = pg_fetch_array($res))
 {	
+
 	$c++;
 	$sql2 = 'select * from modelr.occurrence where idexperiment = '.$row['idexperiment'];
 	$res2 = pg_exec($conn,$sql2);

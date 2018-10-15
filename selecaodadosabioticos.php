@@ -22,6 +22,21 @@ $Fonte = new Fonte();
 $Fonte->conn = $conn;
 
 $idsource = $_REQUEST['cmboxfonte'];
+
+$Experimento->getById($id);
+$idexperiment = $Experimento->idexperiment;//= $row['nomepropriedade'];
+$idproject = $Experimento->idproject ;//= $row['nomepropriedade'];
+$name = $Experimento->name ;//= $row['inscricaoestadual'];
+$description = $Experimento->description ;//= $row['inscricaoestadual'];
+$idtipoparticionamento = $Experimento->idpartitiontype;
+$num_partition = $Experimento->num_partition; //definindo 3 como padrão
+$buffer = $Experimento->buffer;
+$resolution = $Experimento->resolution;
+$repetitions= $Experimento->repetitions;
+$trainpercent= $Experimento->trainpercent;
+$numpontos = $Experimento->num_points;
+$tss = $Experimento->tss;
+$extent_model = $Experimento->extent_model;
 ?>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">

@@ -42,14 +42,31 @@ class Experimento
 		values ('.$id.','.$idraster.')';
 //		echo $sql.'<br>';
 		
-		$res2 = pg_exec($this->conn,$sql);
+		$resultado = pg_exec($this->conn,$sql);
+		
+		if ($resultado)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 	function limparRaster($id)
 	{	
 		$sql = "delete from modelr.experiment_use_raster where idexperiment = '".$id."'; ";
 		
-		$res2 = pg_exec($this->conn,$sql);
+		$resultado = pg_exec($this->conn,$sql);
+		if ($resultado)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 	function incluirBioOracleRaster($id,$idraster,$params)
@@ -60,13 +77,22 @@ class Experimento
 		if (pg_num_rows($res)>0)
 		{
 			$sql = "update modelr.experiment_use_raster set params = '".$params."' where idexperiment=".$id." and idraster=" . $idraster. ";";
-			$res2 = pg_exec($this->conn,$sql);
+			$resultado = pg_exec($this->conn,$sql);
 		}
 		else {
 			$sql = "insert into modelr.experiment_use_raster (idexperiment,idraster,params)
 			values (".$id.",".$idraster.",'".$params."')";
 			
-			$res2 = pg_exec($this->conn,$sql);
+			$resultado = pg_exec($this->conn,$sql);
+		}
+		
+		if ($resultado)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
 		}
 	}
 
@@ -91,6 +117,14 @@ class Experimento
 		// echo $sql;
 		// exit;
 		$resultado = pg_exec($this->conn,$sql);
+		if ($resultado)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 	function usaAlgoritmo($id,$idalgoritmos)
@@ -161,7 +195,7 @@ class Experimento
 		
 	}	
 	
-	function marcarpontosduplicados($idexperimento)
+	function marcarduplicatas($idexperimento)
 	{
 		$sql = "select * from modelr.occurrence where idexperiment = $idexperimento order by idoccurrence";
 		$res = pg_exec($this->conn,$sql);
@@ -173,6 +207,24 @@ class Experimento
 			taxon = '".$row['taxon']."' and
 			collector = '".$row['collector']."' and
 			collectnumber = '".$row['collectnumber']."' and
+			idoccurrence > ".$row['idoccurrence'];
+//			echo $sql2;
+//			echo ';<br>';
+			$res2 = pg_exec($this->conn,$sql2);
+		}
+//		exit;
+	}
+	
+	function marcarduplicados($idexperimento)
+	{
+		$sql = "select * from modelr.occurrence where idexperiment = $idexperimento order by idoccurrence";
+		$res = pg_exec($this->conn,$sql);
+		while ($row = pg_fetch_array($res))
+		{				
+			$sql2 = "update modelr.occurrence set idstatusoccurrence=20 where idexperiment = $idexperimento and
+			lat = ".$row['lat']." and
+			long = ".$row['long']." and
+			taxon = '".$row['taxon']."' and
 			idoccurrence > ".$row['idoccurrence'];
 //			echo $sql2;
 //			echo ';<br>';
@@ -270,10 +322,10 @@ class Experimento
 		".$codtestemunho.",
 		'".$fonte."'
 		)";
-
+		
+		//echo $sql . "<br>";
 		// 8 status occurrence = OK
 		$resultado = pg_exec($this->conn,$sql);
-		
 		//echo $sql;
 		//echo '<br>';
 		//echo '<br>';
@@ -282,6 +334,7 @@ class Experimento
 		//if ($resultado){
 
 	   	//}
+		
 	}
 	
 	function limparDados($idexperimento)
@@ -305,7 +358,7 @@ class Experimento
 	
 	function incluir()
 	{
- 		$sql = "insert into modelr.experiment (name,description,group_name,iduser,idstatusexperiment,type,automatic_filter,idpartitiontype,num_partition,num_points,tss,buffer
+ 		$sql = "insert into modelr.experiment (name,description,group_name,iduser,idstatusexperiment,type,automatic_filter,idpartitiontype,num_partition,num_points,tss,buffer,resolution,repetitions,trainpercent
 		) values (
 		'".$this->name."',
 		'".$this->description."',
@@ -317,7 +370,10 @@ class Experimento
 		3,
 		1000,
 		0.60,
-		'mean' 
+		'mean',
+		10,
+		1,
+		50
 		)";
 		
 		$resultado = pg_exec($this->conn,$sql);
@@ -411,12 +467,8 @@ class Experimento
 			   
 			   
        $sql = "update modelr.experiment set 
-	   name='".$this->name."',
-	   description='".$this->description."',
-	   group_name='".$this->group."',
 	   num_partition = ".$this->num_partition.",
 	   buffer = ".$this->buffer.",
-	   extent_model = '".$this->extent_model."',
        idpartitiontype = ".$this->idpartitiontype.",
 	   num_points = ".$this->num_points.",
 	   tss = ".$this->tss.",
@@ -438,7 +490,8 @@ class Experimento
 
 	function excluir($id)
 	{
-		$sql = "delete from modelr.experiment_use_algorithm where idexperiment = '".$id."'; ";
+		$sql = "delete from modelr.experiment_result where idexperiment = '".$id."'; ";
+		$sql .= "delete from modelr.experiment_use_algorithm where idexperiment = '".$id."'; ";
 		$sql .= "delete from modelr.experiment_use_raster where idexperiment = '".$id."'; ";
 		$sql .= "delete from modelr.occurrence where idexperiment = '".$id."'; ";
 		$sql .= "delete from modelr.experiment where idexperiment = '".$id."'; ";

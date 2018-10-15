@@ -8,7 +8,7 @@ header('Access-Control-Allow-Origin: https://modelr.jbrj.gov.br');
 require_once('../classes/conexao.class.php');
 $clConexao = new Conexao;
 $conn = $clConexao->Conectar();
-print_r($_REQUEST);
+//print_r($_REQUEST);
 if (isset($_REQUEST['op']))
 {
 	$op=$_REQUEST['op'];
@@ -24,7 +24,10 @@ if (isset($_REQUEST['op']))
 
 	$ws = file_get_contents("https://model-r.jbrj.gov.br/ws/?idexperiment=" . $id);
 	$json = json_decode($ws);
-	$unhashedid = $json->experiment[0]->id;
+	//print_r($json);
+	//echo 'entrou';
+	//exit;
+	$unhashedid = $json[0]->id;
 
 	$kappa=$_REQUEST['kappa'];
 	

@@ -22,7 +22,6 @@ $TipoParticionamento = new TipoParticionamento();
 $TipoParticionamento->conn = $conn;
 
 $id = $_REQUEST['id'];
-$tab = $_REQUEST['tab'];
 
 $Experimento->getById($id);
 $idexperiment = $Experimento->idexperiment;//= $row['nomepropriedade'];
@@ -214,7 +213,7 @@ if (empty($resolution))
 									<div class="radio-group-buffer">
 										<div><input onchange="document.getElementById('lblresolution').value=this.value" type="radio" name="edtresolution[]" id="checkbuffer2_5" value="2.5" <?php if ($_REQUEST['edtresolution'][0]=='2.5') echo "checked";?> />2.5</div>
 										<div><input onchange="document.getElementById('lblresolution').value=this.value" type="radio" name="edtresolution[]" id="checkbuffer5" value="5" <?php if ($_REQUEST['edtresolution'][0]=='5') echo "checked";?>/>5</div>
-										<div><input checked onchange="document.getElementById('lblresolution').value=this.value" type="radio" name="edtresolution[]" id="checkbuffer10" value="10" <?php if ($_REQUEST['edtresolution'][0]=='10') echo "checked";?>/>10</div>
+										<div><input onchange="document.getElementById('lblresolution').value=this.value" type="radio" name="edtresolution[]" id="checkbuffer10" value="10" <?php if ($_REQUEST['edtresolution'][0]=='10') echo "checked";?>/>10</div>
 									</div>
 								</div>
 								<div class="col-md-2 col-sm-2 col-xs-2">
@@ -235,8 +234,13 @@ if (empty($resolution))
 							 while ($row = pg_fetch_array($res))
 							 {
 								 ?>
+								 <?php if($row['idalgorithm'] == 1 || $row['idalgorithm'] == 4 || $row['idalgorithm'] == 7) {?>
+									<input <?php if ($Experimento->usaAlgoritmo($id,$row['idalgorithm'])) echo "checked";?> type="checkbox" name="algoritmo[]" id="checkalgoritmo<?php echo $row['idalgorithm'];?>" value="<?php echo $row['idalgorithm'];?>" data-parsley-mincheck="2" required class="flat" /> <?php echo $row['algorithm'];?>
+										<br />
+								 <?php } else { ?>
 									   <input <?php if ($Experimento->usaAlgoritmo($id,$row['idalgorithm'])) echo "checked";?> type="checkbox" name="algoritmo[]" id="checkalgoritmo<?php echo $row['idalgorithm'];?>" value="<?php echo $row['idalgorithm'];?>" data-parsley-mincheck="2" required class="flat" /> <?php echo $row['algorithm'];?>
 										<br />
+								 <?php } ?>
 								 
 							 <?php } ?>
 								<!-- end pop-over -->
@@ -251,12 +255,18 @@ if (empty($resolution))
 		<div class="form-group">
 				<div class="send-button">
 					<button id="send" type="button" onclick="enviarDadosModelagem(6)" class="btn btn-success">Salvar</button>
-					<?php
-						if ($liberado && $_SESSION['s_idtipousuario'] != '5') {?>
-							<button type="button" class="btn btn-success" onClick='liberarExperimento(6)'>Liberar Experimeto para Modelagem</button>
-						<?php
-						}
-					?>
+					<?php if ($liberado) { 
+						    if($_SESSION['s_idtipousuario'] == '2') {?>
+								<button type="button" class="btn btn-success" onClick='liberarExperimento(6)'>Liberar Experimeto para Modelagem</button>
+								<button type="button" class="btn btn-success" onClick='executarModelagem(6)'>Executar Modelagem</button>							
+							<?php } 
+							if($_SESSION['s_idtipousuario'] == '3') {?>
+								<button type="button" class="btn btn-success" onClick='liberarExperimento(6)'>Liberar Experimeto para Modelagem</button>
+							<?php } 
+							if($_SESSION['s_idtipousuario'] == '6') {?>
+								<button type="button" class="btn btn-success" onClick='executarModelagem(6)'>Executar Modelagem</button>							
+							<?php } ?>
+					<?php } ?>
 				</div>
 			</div>
 			<?php
@@ -360,15 +370,16 @@ function parseEdtBuffer(){
 }
 
 function liberarExperimento(tab){
-	if(<?php echo $_SESSION['s_idtipousuario'];?> == 6 ){
-		exibe('loading', 'Processando ...')
-		document.getElementById('frm').action='setupmodelagem.php?expid=' + <?php echo $id;?>;
-		document.getElementById('frm').submit();
-	} else {
-		document.getElementById('frm').action='exec.experimento.php?page=dc&op=LE&id=' + <?php echo $id;?>;
-		document.getElementById('frm').submit();
-	} 
+	document.getElementById('frm').action='exec.experimento.php?page=dc&op=LE&id=' + <?php echo $id;?>;
+	document.getElementById('frm').submit();
 }
+
+function executarModelagem(tab){
+	exibe('loading', 'Processando ...')
+	document.getElementById('frmdadosmodelgem').action='setupmodelagem.php?expid=' + <?php echo $id;?>;
+	document.getElementById('frmdadosmodelgem').submit();
+}
+
 
 var tipopartionamento
 $("#cmboxtipoparticionamento").change(function(){

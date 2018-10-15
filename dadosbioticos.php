@@ -32,7 +32,9 @@ if ($op=='A')
 }
 
 ?>
-	
+
+<link href="css/dadosbioticos.css" rel="stylesheet" type="text/css" media="all">
+
 <div class="modal fade" id="instructionModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog"> 
         <div class="modal-content"> 
@@ -44,7 +46,7 @@ if ($op=='A')
             <p>
                 O CSV deve seguir o seguinte modelo:
                 <br><br>
-                [espécie],[estado],[município],[longitude],[latitude]
+                [espécie],[estado],[município],[coletor],[número de coleta],[longitude],[latitude]
                 <br><br>
                 Todos os dados podem ser separados por vírgula(,), dois pontos(:) ou ponto e vírgula(;).
                 Não é necessário marcar o final da linha. 
@@ -288,27 +290,6 @@ function contaSelecionados(objeto)
    
 function getSibbr(sp)
 {
-	//alert('');
-	// var xmlhttp = new XMLHttpRequest();
-	// xmlhttp.onreadystatechange = function() {
-    // if (this.readyState == 4 && this.status == 200) {
-    //     var myObj = JSON.parse(this.responseText);
-    //     console.log(myObj);
-	// 	}
-	// };
-	// console.log(sp);
-	// xmlhttp.open("GET", "http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=" + sp + "&ignoreNullCoordinates=true", true);
-	// xmlhttp.send();
-    // var xhr = createCORSRequest('GET', "http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=" + sp + "&ignoreNullCoordinates=true");
-    // if (!xhr) {
-    //     throw new Error('CORS not supported');
-    // }
-
-    // example request
-    // getCORS('http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=' + sp + '&ignoreNullCoordinates=true', function(request){
-    //     var response = request.currentTarget.response || request.target.responseText;
-    //     console.log(response);
-    // });
     var destinationUrl = 'https://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=' + sp + '&ignoreNullCoordinates=true';
     $.ajax({
       type: 'GET',
@@ -373,11 +354,12 @@ function jabot (gbifTaxonKey) {
     var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
-			//console.log('resultado jabot');
-			//console.log(this.responseText)
-			var jabotData = JSON.parse(this.responseText);
-			if(gbifTaxonKey) gbif(gbifTaxonKey, jabotData)
-			else printJabotOnly(jabotData)
+			console.log('resultado jabot');
+			console.log(this)
+			//var jabotData = JSON.parse(this.responseText);
+			if(gbifTaxonKey && this.responseText != ']') gbif(gbifTaxonKey, JSON.parse(this.responseText))
+			else if(gbifTaxonKey && this.responseText == ']') gbif(gbifTaxonKey, [])
+			else printJabotOnly(JSON.parse(this.responseText))
 		}
 		else {
 			//console.log(this.readyState)
@@ -432,7 +414,7 @@ function printJabotOnly(jabotData){
 	
 	var table = '';
 	table += '<table class="table table-striped responsive-utilities jambo_table bulk_action"><thead><tr class="headings"><th><input type="checkbox" id="chkboxtodos2" name="chkboxtodos2" onclick="selecionaTodos2(true);">';
-	table += '</th><th class="column-title">Táxon </th><th class="column-title">Origem </th><th class="column-title">Herbário </th><th class="column-title">Tombo </th><th class="column-title">Coletor </th><th class="column-title">Coordenadas </th>';
+	table += '</th><th class="column-title">Táxon </th><th class="column-title">Origem </th><th class="column-title">Coleção</th><th class="column-title">Tombo </th><th class="column-title">Coletor </th><th class="column-title">Coordenadas </th>';
 	table += '<th class="column-title">Localização</th>';
 	table += '<a class="antoo" style="color:#fff; font-weight:500;">Total de Registros selecionados: ( <span class="action-cnt"> </span> ) </a>';
 	table += '</th></tr></thead>';
@@ -443,13 +425,14 @@ function printJabotOnly(jabotData){
 }
 
 function gbif(taxonKey, jabotData)
-{
+{	
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
 		//console.log('resultado gbif222');
 			//console.log(this.responseText)
         var myObj = JSON.parse(this.responseText);
+		//console.log(myObj.results[0])
 		var body = '';
 		//print gbif
 		for (i = 0; i < myObj.results.length; i++) {
@@ -457,7 +440,7 @@ function gbif(taxonKey, jabotData)
 			longitude = myObj.results[i].decimalLongitude;
 			latitude = myObj.results[i].decimalLatitude;
 
-			taxon = myObj.results[i].scientificName;
+			taxon = myObj.results[0].scientificName;
 			tombo = myObj.results[i].catalogNumber;
 			coletor = myObj.results[i].recordedBy;
 			numcoleta = myObj.results[i].recordNumber;
@@ -514,7 +497,7 @@ function gbif(taxonKey, jabotData)
 		
 		var table = '';
 		table += '<table class="table table-striped responsive-utilities jambo_table bulk_action"><thead><tr class="headings"><th><input type="checkbox" id="chkboxtodos2" name="chkboxtodos2" onclick="selecionaTodos2(true);">';
-		table += '</th><th class="column-title">Táxon </th><th class="column-title">Origem </th><th class="column-title">Herbário </th><th class="column-title">Tombo </th><th class="column-title">Coletor </th><th class="column-title">Coordenadas </th>';
+		table += '</th><th class="column-title">Táxon </th><th class="column-title">Origem </th><th class="column-title">Coleção</th><th class="column-title">Tombo </th><th class="column-title">Coletor </th><th class="column-title">Coordenadas </th>';
 		table += '<th class="column-title">Localização</th>';
 		table += '<a class="antoo" style="color:#fff; font-weight:500;">Total de Registros selecionados: ( <span class="action-cnt"> </span> ) </a>';
 		table += '</th></tr></thead>';
@@ -532,6 +515,7 @@ function gbif(taxonKey, jabotData)
 	xmlhttp.open("GET", "https://api.gbif.org/v1/occurrence/search?taxonKey="+taxonKey+'&hasCoordinate=true&limit=4000', true);
 //	xmlhttp.open("GET", "https://api.gbif.org/v1/occurrence/search?taxonKey="+taxonKey+'', true);
 	xmlhttp.send();
+	
 }
 
 function adicionarOcorrencia()
@@ -591,19 +575,23 @@ function printCSV(lines){
 
 		var values = lines[i].split(separator);
 		//alert(i);
-		//[espécie],[estado],[município],[longitude],[latitude]
+		//[espécie],[estado],[município],[coletor],[número de coleta],[longitude],[latitude]
 		taxon = values[0];
 		estado = values[1];
 		municipio = values[2];
-		longitude = values[3] || 0;
-		latitude = values[4] || 0;
+		coletor = values[3];
+		numcoleta = values[4];
+		longitude = values[5] || 0;
+		latitude = values[6] || 0;
 		
 		var idexperimento = document.getElementById('id').value;
 		//split * 
-		var Jval = idexperimento + '*2*'+latitude+'*'+longitude+'*'+taxon+'*******'+estado+'*'+municipio+'**'; 
-
+		var Jval = idexperimento + '*2*'+latitude+'*'+longitude+'*'+taxon+'*'+ coletor+'*'+numcoleta+'*****'+estado+'*'+municipio+'**'; 
+		 
 		body += '<tr class="even pointer"><td class="a-center "><input name="chtestemunho[]" id="chtestemunho[]" value="'+Jval+'" type="checkbox" ></td>';
 		body +='<td class=" ">'+taxon+'</td>';
+		body +='<td class=" ">'+coletor+'</td>';
+		body +='<td class=" ">'+numcoleta+'</td>';
 		body +='<td class=" ">'+estado+'</td>';
 		body +='<td class=" ">'+municipio+'</td>';
 		body +='<td class=" ">'+latitude+', '+longitude+'</td>';
@@ -612,7 +600,7 @@ function printCSV(lines){
 	
 	var table = '';
 	table += '<table class="table table-csv table-striped responsive-utilities jambo_table bulk_action"><thead><tr class="headings"><th><input type="checkbox" id="chkboxtodos2" name="chkboxtodos2" onclick="selecionaTodos2(true);">';
-	table += '</th><th class="column-title">Taxon </th><th>Estado</th><th>Município</th><th class="column-title">Coordenadas</th>';
+	table += '</th><th class="column-title">Taxon </th><th>Coletor</th><th>Número de Coleta</th><th>Estado</th><th>Município</th><th class="column-title">Coordenadas</th>';
 	table += '<a class="antoo" style="color:#fff; font-weight:500;">Total de Registros selecionados: ( <span class="action-cnt"> </span> ) </a>';
 	table += '</th></tr></thead>';
 	table += '<tbody>'+body+'</tbody></table>';
@@ -665,6 +653,7 @@ $(document).ready(function(){
 
 function buscar()
 {
+	 exibe('loading','Buscando Ocorrências');
 	 if (document.getElementById('edtespecie').value=='' && document.getElementById('checkfontecsv').checked==false)// && document.getElementById('checkfontecsv').checked==false)
 	 {
 	 	criarNotificacao('Atenção','Informe o nome da espécie','warning')
@@ -676,7 +665,7 @@ function buscar()
 		
          if (document.getElementById('checkfontejabot').checked==true || document.getElementById('checkfontegbif').checked==true)
          {
-             document.getElementById('frm2').action="cadexperimento.php?id=" + '<?php echo $id;?>' + "&op=" + '<?php echo $op;?>' + "&busca=TRUE&tab=2";
+             document.getElementById('frm2').action="cadexperimento.php?id=" + '<?php echo $id;?>' + "&op=" + '<?php echo $op;?>' + "&busca=TRUE&tab=9";
              document.getElementById('frm2').submit();
          }
          else if (document.getElementById('checkfontesibbr').checked==true)
@@ -685,6 +674,7 @@ function buscar()
          }
          else printCSV(file);
      }
+	 //exibe('loading','Buscando Ocorrências');
 }
 
 function sameExperiment () {

@@ -18,9 +18,7 @@ $extensao1 = $_REQUEST['edtextensao1_oeste'].';'.$_REQUEST['edtextensao1_leste']
 
 $Experimento->extent_model = $extensao1;
 
-$Experimento->incluirExtensao($id, $extensao1);
-
-if ($result = $Experimento->alterar($id))
+if ($result = $Experimento->incluirExtensao($id, $extensao1))
 {
 	header("Location: cadexperimento.php?op=A&MSGCODIGO=84&id=$id&tab=$tab");
 }

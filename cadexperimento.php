@@ -10,8 +10,30 @@ if ($_SESSION['donoDaSessao'] != $tokenUsuario)
 
 <?php
 
+
 require_once('classes/experimento.class.php');
 require_once('classes/conexao.class.php');
+
+$tab=$_REQUEST['tab'];
+	
+if($tab == 4 || $tab == 5){
+	$stab = $tab; $tab = 1;		
+}
+if($tab == 6 || $tab == 7){
+	$stab = $tab; $tab = 2;		
+}
+if($tab == 8){
+	$stab = $tab; $tab = 3;		
+}
+if($tab == 9 || $tab == 10){
+	$ttab = $tab; $tab = 1; $stab = 4;	
+}
+if($tab == 11 || $tab == 12){
+	$ttab = $tab; $tab = 1; $stab = 5;		
+}
+if($tab == 13 || $tab == 14 || $tab == 15 || $tab == 16 || $tab == 17){
+	$ttab = $tab; $tab = 2; $stab = 7;		
+}
 
 $clConexao = new Conexao;
 $conn = $clConexao->Conectar();
@@ -21,7 +43,6 @@ $Experimento->conn = $conn;
 
 $op=$_REQUEST['op'];
 $id=$_REQUEST['id'];
-$tab=$_REQUEST['tab'];
 if (empty($tab))
 {
 	$tab = 1;
@@ -39,17 +60,24 @@ $statusExperiment = $Experimento->statusExperiment;
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Model-R </title>
-
+	<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+	<script src="js/jquery.min.js"></script>
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+	
+	
 	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
     <!-- Bootstrap core CSS -->
 
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!--<link href="css/bootstrap.min.css" rel="stylesheet">-->
 
     <link href="fonts/css/font-awesome.min.css" rel="stylesheet">
     <link href="css/animate.min.css" rel="stylesheet">
 
     <!-- Custom styling plus plugins -->
     <link href="css/custom.css" rel="stylesheet">
+	<link href="css/mainTab.css" rel="stylesheet">
     <link href="css/icheck/flat/green.css" rel="stylesheet">
 	
 	<!-- select2 -->
@@ -57,11 +85,34 @@ $statusExperiment = $Experimento->statusExperiment;
 	<!-- switchery -->
     <link rel="stylesheet" href="css/switchery/switchery.min.css" />
 
-
-    <script src="js/jquery.min.js"></script>
-
-	
 </head>
+<script>
+$(function(){
+ $('.btn-circle').on('click',function(){
+   $('.btn-circle.btn-info').removeClass('btn-info').addClass('btn-default');
+   $(this).addClass('btn-info').removeClass('btn-default').blur();
+ });
+
+ $('.next-step, .prev-step').on('click', function (e){
+   var $activeTab = $('.tab-pane.active');
+
+   $('.btn-circle.btn-info').removeClass('btn-info').addClass('btn-default');
+
+   if ( $(e.target).hasClass('next-step') )
+   {
+      var nextTab = $activeTab.next('.tab-pane').attr('id');
+      $('[href="#'+ nextTab +'"]').addClass('btn-info').removeClass('btn-default');
+      $('[href="#'+ nextTab +'"]').tab('show');
+   }
+   else
+   {
+      var prevTab = $activeTab.prev('.tab-pane').attr('id');
+      $('[href="#'+ prevTab +'"]').addClass('btn-info').removeClass('btn-default');
+      $('[href="#'+ prevTab +'"]').tab('show');
+   }
+ });
+});
+</script>
 <body class="nav-md">					
 
     <?php require "./templates/loading.php";?>					
@@ -165,44 +216,45 @@ $statusExperiment = $Experimento->statusExperiment;
 									<!--</div>-->
 										<?php if ($op=='A')
 										{?>
+										<form name='frm' id='frm' action='exec.experimento.php' method="post" class="form-horizontal form-label-left" novalidate></form>
 										<div class="x_content">
-											<div class="" role="tabpanel" data-example-id="togglable-tabs">
-                                                <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-                                                    <li role="presentation" <?php if ($tab=='1') echo 'class="active"';?>><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Informações</a>
+											<!--<div class="" role="tabpanel" data-example-id="togglable-tabs">-->
+												<div class="process">
+												   <div class="process-row nav nav-tabs">
+														<div class="process-step">
+														 <button type="button" <?php if ($tab=='1') echo 'class="btn btn-circle btn-info"';?> class="btn btn-default btn-circle" data-toggle="tab" href="#tab_content1"><i class="fa fa-pencil-square-o fa-2x"></i></button>
+														 <p><small>Pré-tratamento</small></p>
+														</div>
+														<div class="process-step">
+														 <button type="button" <?php if ($tab=='2') echo 'class="btn btn-circle btn-info"';?> class="btn btn-default btn-circle" data-toggle="tab" href="#tab_content2"><i class="fa fa-gears fa-2x"></i></button>
+														 <p><small>Modelagem</small></p>
+														</div>
+														<div class="process-step">
+														 <button type="button" <?php if ($tab=='3') echo 'class="btn btn-circle btn-info"';?> class="btn btn-default btn-circle" data-toggle="tab" href="#tab_content3"><i class="fa fa-globe fa-2x"></i></button>
+														 <p><small>Pós-processamento</small></p>
+														</div>
+												   </div>
+												</div>
+                                                <!--<ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                                                    <li role="presentation" <?php //if ($tab=='1') echo 'class="active"';?>><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Pré-tratamento</a>
                                                     </li>
-													<li role="presentation" <?php if ($tab=='2') echo 'class="active"';?>><a href="#tab_content2" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Dados Bióticos</a>
+													<li role="presentation" <?php //if ($tab=='2') echo 'class="active"';?>><a href="#tab_content2" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Modelagem</a>
 													</li>
-													<li role="presentation" <?php if ($tab=='3') echo 'class="active"';?>><a href="#tab_content3" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Data Cleaning</a>
+													<li role="presentation" <?php //if ($tab=='3') echo 'class="active"';?>><a href="#tab_content3" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Pós-processamento</a>
                                                     </li>
-                                                    <?php if ($_SESSION['s_idtipousuario']!='5')
-                                                    {?>
-                                                        <li role="presentation" <?php if ($tab=='4') echo 'class="active"';?>><a href="#tab_content4" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Modelagem</a>
-                                                        </li>
-                                                    <?php }?>
-                                                    <li role="presentation" <?php if ($tab=='8') echo 'class="active"';?>><a href="#tab_content8" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Resultados</a>
-                                                    </li>
-												</ul>
+												</ul>-->
 												<div id="myTabContent" class="tab-content">
 													<div class="tab-pane  <?php if ($tab=='1') echo 'in active';?>" id="tab_content1" aria-labelledby="home-tab">
-                                                        <?php require "infoexperimento.php";?>
+                                                        <?php require "pretratamentotab.php";?>
 													</div> <!-- table panel -->	
 													<div  class="tab-pane fade <?php if ($tab=='2') echo 'in active';?>" id="tab_content2" aria-labelledby="home-tab">
-                                                        <?php require "dadosbioticos.php";?>
+                                                        <?php require "modelagemtab.php";?>
                                                     </div> <!-- table panel -->
-                                                    <div  class="tab-pane fade <?php if ($tab=='3') echo 'in active';?>" id="tab_content3" aria-labelledby="home-tab">
-                                                        <?php require "expdatacleaning.php";?>
-                                                    </div> <!-- table panel -->
-                                                    <?php if ($_SESSION['s_idtipousuario']!='5')
-                                                    {?>
-                                                        <div  class="tab-pane fade <?php if ($tab=='4') echo 'in active';?>" id="tab_content4" aria-labelledby="home-tab">
-                                                            <?php require "expmodelagem.php";?>
-                                                        </div> <!-- table panel -->
-                                                    <?php }?>
-                                                    <div  class="tab-pane fade <?php if ($tab=='8') echo 'in active';?>" id="tab_content8" aria-labelledby="home-tab">
-                                                        <?php require "expresultado.php";?>
+                                                    <div  class="tab-pane <?php echo 'teste ' . $tab ?> fade <?php if ($tab=='3') echo 'in active';?>" id="tab_content3" aria-labelledby="home-tab">
+														<?php require "posprocessamentotab.php";?>
                                                     </div> <!-- table panel -->
 												</div> <!-- myTabContent -->
-											</div> <!-- tabpanel -->
+											<!--</div> <!-- tabpanel -->
 										</div>
 <?php }?>
 
@@ -235,7 +287,7 @@ $MSGCODIGO = $_REQUEST['MSGCODIGO'];
 ?>
 
 </script>
-    <script src="js/bootstrap.min.js"></script>
+    <!--<script src="js/bootstrap.min.js"></script>-->
 
     <!-- chart js -->
     <script src="js/chartjs/chart.min.js"></script>

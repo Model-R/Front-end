@@ -23,13 +23,11 @@ ocorrenciasCSVPath <- args[11]
 algorithms <- args[12]
 extensionPath <- args[13]
 
-cat('teste')
-args
+cat('antes')
 algorithms
 #extensionPath <- paste0('../../../../../../','mnt/dados/modelr/json/polygon-317.json')
-extensionPath
 
-if(getwd() == "/var/www/html/rafael/modelr/v2"){
+if(getwd() == "/var/www/html/rafael/modelr/v2" || getwd() == "/var/www/html/rafael/modelr/v3"){
 	cat('v2')
 	baseUrl <- '../'
 } else {
@@ -79,8 +77,7 @@ clean <- function(coord, abio) {
     } else (stop("Coordinate table has more than two columns.\nThis table should only have longitude and latitude in this order."))
 }
 
-cat('antes clean')
-coordenadas
+
 reg.clean <- c()
 for (especie in especies) {
     sp.clean <- clean(coordenadas[coordenadas[, "taxon"] == especie, c("lon","lat")], stack_rasters[[1]])
@@ -135,8 +132,8 @@ for (especie in especies) {
 	 rf = algorithmsArray[[5]] == TRUE,
 	 svm.k = algorithmsArray[[7]] == TRUE,#svm agora é svm.k do pacote kernlab
 	 svm.e = F,#svm2 agora é svm.e do pacote e1071
-	 #domain = algorithmsArray[[6]] == TRUE,
-	 #mahal = algorithmsArray[[1]] == TRUE,
+	 domain = algorithmsArray[[6]] == TRUE,
+	 mahal = algorithmsArray[[1]] == TRUE,
 	 #centroid = ...,#NEW! mas é lento, eu não botaria
 	 #mindist = ...,#NEW! mas é lento, eu não botaria
 	 )

@@ -54,7 +54,7 @@ if ($operacao=='I')
    if ($result = $Experimento->incluir())
 	{
 	// MENSAGEM 19 ==> CADASTRAR TECNICO
-	 header("Location: cadexperimento.php?op=A&MSGCODIGO=82&tab=2&id=$result");
+	 header("Location: cadexperimento.php?op=A&MSGCODIGO=82&tab=9&id=$result");
 	}
 	else
 	{
@@ -78,6 +78,18 @@ if ($operacao=='A')
    
 }
 
+if ($operacao=='LDDC')
+{
+   if ($result = $Experimento->limparDados($idexperimento))
+	{
+	 header("Location: cadexperimento.php?MSGCODIGO=19&op=A&tab=10&id=$idexperimento");
+	}
+	else
+	{
+	 header("Location: cadexperimento.php?MSGCODIGO=20&op=A&tab=10&id=$idexperimento");
+	}
+}
+
 if ($operacao=='LD')
 {
    if ($result = $Experimento->limparDados($idexperimento))
@@ -91,17 +103,16 @@ if ($operacao=='LD')
 }
 
 if ($operacao=='E')
-{
+{	
     $id = $_REQUEST['id'];
     if (!empty($id)){
-		//echo '!empty ' . $id;
+		echo '!empty ' . $id;
  		$result = $Experimento->excluir($id);
 	}
 	else
 	{
 		$box=$_POST['id_experiment'];
 		while (list ($key,$val) = @each($box)) {
-			//echo ' list ' . $val; 
    			$result = $Experimento->excluir($val);
 		}
 	}

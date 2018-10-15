@@ -36,7 +36,7 @@ foreach ($rasterBio as &$value) {
 	}
 }
 
-if ($result = $Experimento->alterar($id))
+if ($result)
 {
 	header("Location: cadexperimento.php?op=A&MSGCODIGO=84&id=$id&tab=$tab");
 }

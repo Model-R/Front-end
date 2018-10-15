@@ -6,8 +6,8 @@ if ($_SESSION['donoDaSessao'] != $tokenUsuario)
 }
 error_reporting(E_ALL);
 ini_set('display_errors','1');
-//print_r($_REQUEST);
-//exit;
+#print_r($_REQUEST);
+#exit;
 
 require_once('classes/experimento.class.php');
 require_once('classes/conexao.class.php');
@@ -16,10 +16,16 @@ $conn = $conexao->Conectar();
 $Experimento = new Experimento();
 $Experimento->conn = $conn;
 $idexperimento = $_REQUEST['id'];
+$filtro = $_REQUEST['filtro'];
 
-$Experimento->marcarPontosDuplicados($idexperimento);
+if($_REQUEST['type'] == 'duplicatas'){
+	$Experimento->marcarduplicatas($idexperimento);
+}
+else if ($_REQUEST['type'] == 'duplicados') {
+	$Experimento->marcarduplicados($idexperimento);
+}
 
- header("Location: cadexperimento.php?op=A&tab=3&MSGCODIGO=72&id=$idexperimento");
+ header("Location: cadexperimento.php?op=A&tab=10&MSGCODIGO=72&id=$idexperimento&filtro=$filtro");
 ?>
 
 

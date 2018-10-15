@@ -8,20 +8,57 @@ require_once('classes/conexao.class.php');
 $clConexao = new Conexao;
 $conn = $clConexao->Conectar();
 
+$Experimento = new Experimento();
+$Experimento->conn = $conn;
+
 $id = $_REQUEST['expid'];
-//$id = 113;
+
+//-------------------------------------------------------------
+//Atualizar parâmetros antes de executar a modelagem
+
+$idtipoparticionamento = $_REQUEST['cmboxtipoparticionamento'];
+$numpontos = $_REQUEST['edtnumpontos'];
+$buffer = $_REQUEST['edtbuffer'];
+$tss = $_REQUEST['edttss'];
+$numparticoes = $_REQUEST['edtnumparticoes'];
+$resolution = $_REQUEST['edtresolution'];
+$repetitions = $_REQUEST['edtnumrepetitions'];
+$trainpercent = $_REQUEST['edttrainpercent'];
+
+$Experimento->idpartitiontype = $idtipoparticionamento;//integer,
+$Experimento->num_partition = $numparticoes;//integer,
+$Experimento->num_points = $numpontos ;//integer,
+$Experimento->buffer = "'" . $buffer[0] . "'" ;//string
+$Experimento->tss = $tss;
+$Experimento->resolution = "'" . $resolution[0] . "'";
+$Experimento->repetitions = $repetitions;
+$Experimento->trainpercent = $trainpercent;
+
+
+if(!empty($_REQUEST['algoritmo'])){
+	$result = $Experimento->limparAlgoritmo($id);
+}
+
+$box=$_REQUEST['algoritmo'];
+while (list ($key,$val) = @each($box)) { 
+	$result = $Experimento->incluirAlgoritmo($id,$val);
+}
+
+$result = $Experimento->alterar($id);
+
+//-------------------------------------------------------------
 $ws = file_get_contents("https://model-r.jbrj.gov.br/ws/?id=" . $id);
 $json = json_decode($ws); 
 //print_r($json);
 //exit;
 
-if(dirname(__FILE__) == '/var/www/html/rafael/modelr/v2'){
+if(dirname(__FILE__) == '/var/www/html/rafael/modelr/v2' || dirname(__FILE__) == '/var/www/html/rafael/modelr/v3'){
 	$baseUrl = '../';
 } else {
 	$baseUrl = '';
 }
 if($_SESSION['s_idtipousuario']==6 && sizeof($json[0]->raster) == 0){
-	header("Location: cadexperimento.php?op=A&tab=4&MSGCODIGO=78&id=" . $id);
+	header("Location: cadexperimento.php?op=A&tab=6&MSGCODIGO=78&id=" . $id);
 	exit;
 }
 
@@ -182,8 +219,10 @@ $ExtentModelPath = $baseUrl . "temp/" . $id . "/extent_model.json";
 $file = fopen($ExtentModelPath, 'w');
 
 $extent_model = $json[0]->extent_model;
+
 if($extent_model == ""){
 	$ExtentModelPath = $baseUrl . 'temp/dados/polygon-brazil.json';
+	echo $ExtentModelPath;
 } else {
 	$extent_model = explode(";",$extent_model);
 	$west = $extent_model[0];
@@ -198,7 +237,6 @@ if($extent_model == ""){
 	$result[] = [$west,$north];
 	$coordinates[] = [$result];
 	
-	$myObj = new stdClass();
 	$myObj->type = "MultiPolygon";
 	$myObj->coordinates = $coordinates;
 	$myJSON = json_encode($myObj, JSON_PRETTY_PRINT|JSON_NUMERIC_CHECK);
@@ -207,24 +245,22 @@ if($extent_model == ""){
 	fclose($file);
 	print_r($myJSON);
 }
+
 #start time
 $time = $_SESSION['s_nome'] . " - experimento " . $id . " - Inicio: " . date("h:i:sa");
 
 $algString = implode(";",$arrayAlg);
 exec("Rscript script_number_valid_points.r " . $id . ' ' . $rasterCSVPath . ' '. $ocorrenciasCSVPath, $a, $b);
 $returnData = explode(" ",$a[1]);
-#print_r($returnData);
-
-#echo "\n\n";
-#echo "Rscript script_exemplo_modelr.r $id $hashId $repetitions $partitions $partitiontype $trainpercent '$buffer' $num_points $tss '$rasterCSVPath' '$ocorrenciasCSVPath' '$algString' '$ExtentModelPath'";
-#exit;
+//echo "Rscript script_exemplo_modelr.r $id $hashId $repetitions $partitions $partitiontype $trainpercent '$buffer' $num_points $tss '$rasterCSVPath' '$ocorrenciasCSVPath' '$algString' '$ExtentModelPath'";
+//exit;
 if($returnData[1] < 10){
-	header("Location: cadexperimento.php?op=A&tab=3&MSGCODIGO=76&id=" . $id);
+	header("Location: cadexperimento.php?op=A&tab=6&MSGCODIGO=76&id=" . $id);
 } else {
 	//echo "Rscript script_exemplo_modelr.r " . $id . ' ' . $hashId . ' '. $partitions . ' '. $buffer . ' '. $num_points . ' '. $tss . ' '. $rasterCSVPath . ' '. $ocorrenciasCSVPath;
 	exec("Rscript script_exemplo_modelr.r $id $hashId $repetitions $partitions $partitiontype $trainpercent '$buffer' $num_points $tss '$rasterCSVPath' '$ocorrenciasCSVPath' '$algString' '$ExtentModelPath'");
 	if (!file_exists($baseUrl . "temp/result/" . $hashId . "/" . $speciesName . ".csv")) {
-		header("Location: cadexperimento.php?op=A&tab=3&MSGCODIGO=77&id=" . $id);
+		header("Location: cadexperimento.php?op=A&tab=6&MSGCODIGO=77&id=" . $id);
 	} else {
 		$csvFile = file($baseUrl . "temp/result/" . $hashId . "/" . $speciesName . ".csv");
 		$data = [];
@@ -232,18 +268,24 @@ if($returnData[1] < 10){
 			$csvline = str_getcsv($line);
 			$data = explode(";", $csvline[0]);
 			if($data[0] != "kappa"){	
-				//print_r($data);
-				//echo "<br>";
 				addToExperimentResult($conn, $id, $data, $speciesName,$hashId);
 			}
 		}
-		addMapImageToExperimentResult($conn, $id, $speciesName,$hashId);
+		
+		//procurar without_margins.png
+		$dir = '/var/www/html/rafael/modelr/temp/result/'.$hashId.'/'.$speciesName.'/present/ensemble/';
+		$files = scandir($dir);
+		foreach ($files as $f) {
+			if (strpos($f, 'without_margins') !== false) {
+				addMapImageToExperimentResult($conn, $id, $speciesName,$hashId,$dir . $f);
+			}
+		}
 		$sql =" update modelr.experiment set idstatusexperiment = '4' where
 		md5(cast(idexperiment as text)) = '".$hashId."'";
 		
 		$res = pg_exec($conn,$sql);
 		calculateTime($time);
-		header("Location: cadexperimento.php?op=A&tab=3&id=" . $id);
+		header("Location: cadexperimento.php?op=A&tab=14&id=" . $id);
 	}
 }   
 
@@ -318,11 +360,11 @@ function addToExperimentResult ($conn, $expid, $expdata, $speciesName,$hashId) {
 	}
 }	
 
-function addMapImageToExperimentResult ($conn, $expid, $speciesName,$hashId) {
+function addMapImageToExperimentResult ($conn, $expid, $speciesName,$hashId, $withoutMarginPng) {
 	$baseUrl = '/var/www/html/rafael/modelr/temp/result/'.$hashId.'/'.$speciesName.'/present/ensemble/';
 		$partition = '';
 		$algorithm = '';
-		$raster_png_path = $baseUrl.$speciesName . '_cut_mean_th_ensemble_without_margins.png';
+		$raster_png_path = $withoutMarginPng;
 		$png_path = $baseUrl.$speciesName . '_cut_mean_th_ensemble_mean.png';
 		$tiff_path = $baseUrl.$speciesName . '_cut_mean_th_ensemble_mean.tif';
 		$unhashedid = $expid;

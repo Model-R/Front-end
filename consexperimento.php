@@ -39,8 +39,8 @@ if ($_SESSION['donoDaSessao'] != $tokenUsuario)
 				$html.='<th class="column-title">Usuário </th>';
 			}
 			$html.='						
-                    <th class="column-title">Ação </th>
-                    <th class="column-title no-link last"><span class="nobr">status</span>
+                    <th class="column-title" style="width: 300px;">Ação </th>
+                    <th class="column-title no-link last" style="width: 400px;"><span class="nobr">status</span>
                     </th>
                     <th class="bulk-actions" colspan="7">
                         <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
@@ -77,11 +77,19 @@ if ($_SESSION['donoDaSessao'] != $tokenUsuario)
 			{
 				$html.='<td class=" ">'.$row['username'].'</td>';
 			}			
-			$html.='				<td class="actions">
-									<a class="btn btn-app" href="cadexperimento.php?op='.'A'.'&tab='.'2'.'&id='.$row['idexperiment'].'" data-toggle="tooltip" data-placement="top" title="Visualizar">
-                                        <span class="badge bg-blue">'.$qtd.'</span>
-                                        <i class="fa fa-edit"></i>
-                                    </a>
+			$html.='				<td class="actions" style="display: flex;justify-content: center;">
+									<div>
+										<a class="btn btn-app" href="cadexperimento.php?op='.'A'.'&tab='.'9'.'&id='.$row['idexperiment'].'" data-toggle="tooltip" data-placement="top" title="Pré-tratamento">
+											<i class="fa fa-pencil-square-o"></i>
+											<span class="badge bg-blue">'.$qtd.'</span>
+										</a>
+										<a class="btn btn-app" href="cadexperimento.php?op='.'A'.'&tab='.'6'.'&id='.$row['idexperiment'].'" data-toggle="tooltip" data-placement="top" title="Modelagem">
+											<i class="fa fa-gears"></i>
+										</a>
+										<a class="btn btn-app" href="cadexperimento.php?op='.'A'.'&tab='.'8'.'&id='.$row['idexperiment'].'" data-toggle="tooltip" data-placement="top" title="Pós-processamento">
+											<i class="fa fa-globe"></i>
+										</a>
+									</div>
 									<a class="btn btn-app" onclick="confirmarLimparDados('.$row['idexperiment'].')" data-toggle="tooltip" data-placement="top" title="Limpar">
                                         <span class="badge bg-red">'.$qtd.'</span>
                                         <i class="fa fa-eraser"></i>
@@ -234,6 +242,7 @@ if (($ordenapor=='GRUPO'))
 
     <!-- Custom styling plus plugins -->
     <link href="css/custom.css" rel="stylesheet">
+	<link href="css/consexperimento.css" rel="stylesheet">
     <link href="css/icheck/flat/green.css" rel="stylesheet">
 
 
@@ -253,6 +262,8 @@ if (($ordenapor=='GRUPO'))
 
 
 <body class="nav-md">
+
+<?php include_once 'templates/passoapasso.php'?>
 
 <div id="myModal" class="modal fade">
   <div class="modal-dialog"> 
@@ -384,8 +395,8 @@ if (($ordenapor=='GRUPO'))
                                             <button type="button" class="btn btn-success" onClick='filterApply()' data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar experimentos">Filtrar</button>
                                         </div>
                                         <div class="row-action">
-                                            <!-- <button type="button" class="btn btn-success" onClick='liberarExperimento()' data-toggle="tooltip" data-placement="top" title data-original-title="Liberar experimento para Modelagem">Liberar</button> -->
-                                            <button type="button" class="btn btn-info" onClick='novo()' data-toggle="tooltip" data-placement="top" title data-original-title="Criar novo experimento">Novo</button>
+                                            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#passoapassoModal" data-toggle="tooltip" data-placement="top" title data-original-title="Passo a Passo do experimento">Fluxo Experimento</button>
+                                            <button type="button" class="btn btn-success" onClick='novo()' data-toggle="tooltip" data-placement="top" title data-original-title="Criar novo experimento">Novo</button>
                                             <button type="button" class="btn btn-danger" onClick='showExcluir()' data-toggle="tooltip" data-placement="top" title data-original-title="Excluir experimento">Excluir</button>
                                         </div>
                                     </div>
@@ -528,7 +539,7 @@ require 'MSGCODIGO.php';
 	}
 	
 	function excluir()
-	{
+	{	
 		$('#myModal').modal('hide');
 		document.getElementById('frm').action='exec.<?php echo strtolower($FORM_ACTION);?>.php?op=E';
         console.log('exec.<?php echo strtolower($FORM_ACTION);?>.php?op=E')

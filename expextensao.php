@@ -84,7 +84,7 @@ if(empty($extent_model) || $extent_model == ';;;' || $extent_model == '')
 <div class="col-md-12 col-sm-12 col-xs-12">
 	<div class="x_panel">
 		<div class="x_title">
-			<h2>Extensão Criação <small></small></h2>
+			<h2>Extensão<small></small></h2>
 			<div class="clearfix"></div>
 		</div>
 		<div class="col-md-6 col-sm-6 col-xs-12">
@@ -385,7 +385,8 @@ function getShapeExtent () {
 }
 
 function enviarExtensao(tab)
-{
+{	
+	//console.log('exec.expextensao.php?tab='+tab+'&id=' + '<?php echo $id?>')
 	document.getElementById('frmextensao').action='exec.expextensao.php?tab='+tab+'&id=' + '<?php echo $id?>';
 	document.getElementById('frmextensao').submit();
 }
