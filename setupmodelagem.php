@@ -21,7 +21,7 @@ $numpontos = $_REQUEST['edtnumpontos'];
 $buffer = $_REQUEST['edtbuffer'];
 $tss = $_REQUEST['edttss'];
 $numparticoes = $_REQUEST['edtnumparticoes'];
-$resolution = $_REQUEST['edtresolution'];
+//$resolution = $_REQUEST['edtresolution'];
 $repetitions = $_REQUEST['edtnumrepetitions'];
 $trainpercent = $_REQUEST['edttrainpercent'];
 
@@ -30,7 +30,7 @@ $Experimento->num_partition = $numparticoes;//integer,
 $Experimento->num_points = $numpontos ;//integer,
 $Experimento->buffer = "'" . $buffer[0] . "'" ;//string
 $Experimento->tss = $tss;
-$Experimento->resolution = "'" . $resolution[0] . "'";
+//$Experimento->resolution = "'" . $resolution[0] . "'";
 $Experimento->repetitions = $repetitions;
 $Experimento->trainpercent = $trainpercent;
 
@@ -72,9 +72,10 @@ $sql =" update modelr.experiment set idstatusexperiment = '3' where
 		md5(cast(idexperiment as text)) = '".$hashId."'";
 		
 		$res = pg_exec($conn,$sql);
-
+		
 rrmdir($baseUrl . "temp/result/" . $hashId);
 removeRowExperimentResult($conn, $id);
+
 //echo 'hashId: ' . $hashId;
 //echo '<br>';
 #partitions
@@ -110,6 +111,7 @@ $trainpercent= $json[0]->trainpercent;
 $rasterList = $json[0]->raster;
 $rasterPathList = [];
 
+echo $resolution;
 #checar se usuário é Reflora - Raster -> PCA
 if($_SESSION['s_idtipousuario']==5){
 	$path = 'mnt/dados/modelr/env';
@@ -132,6 +134,13 @@ if($_SESSION['s_idtipousuario']==5){
 				$path = $path . '/Worldclim2/'.$resolution.'min/wc2.0_bio_'.$resolution.'m_' . $bio . '.tif';
 				array_push($rasterPathList,"'" . $path . "'");
 			}
+		} else if($raster->source == 'Chelsa'){
+			$bio = str_replace("bio","",strtolower(explode(" ",$raster->raster)[0]));
+			$path = $path . '/Chelsa/CHELSA_bio10_' . $bio . '.tif';
+			array_push($rasterPathList,"'" . $path . "'");
+		} else if($raster->source == 'PCA'){
+			$path = $path . '/PCA/1Km_.eigenvariables.tif';
+			array_push($rasterPathList,"'" . $path . "'");
 		} else {
 			$params = explode(",",$raster->params);
 			foreach($params as $param){
@@ -222,7 +231,7 @@ $extent_model = $json[0]->extent_model;
 
 if($extent_model == ""){
 	$ExtentModelPath = $baseUrl . 'temp/dados/polygon-brazil.json';
-	echo $ExtentModelPath;
+	//echo $ExtentModelPath;
 } else {
 	$extent_model = explode(";",$extent_model);
 	$west = $extent_model[0];
@@ -246,29 +255,62 @@ if($extent_model == ""){
 	print_r($myJSON);
 }
 
+#projection model
+$ProjectionModelPath = $baseUrl . "temp/" . $id . "/projection_model.json";
+$file2 = fopen($ProjectionModelPath, 'w');
+
+$projection_model = $json[0]->extent_projection;
+
+if($projection_model == ""){
+	$ProjectionModelPath = $baseUrl . 'temp/dados/polygon-brazil.json';
+	////echo $ProjectionModelPath;
+} else {
+	$projection_model = explode(";",$projection_model);
+	$west = $projection_model[0];
+	$east = $projection_model[1];
+	$north = $projection_model[2];
+	$south = $projection_model[3];
+
+	$result = [];
+	$result[] = [$east,$south];
+	$result[] = [$east,$north];
+	$result[] = [$west,$south];
+	$result[] = [$west,$north];
+	$coordinates[] = [$result];
+	
+	$myObj2->type = "MultiPolygon";
+	$myObj2->coordinates = $coordinates;
+	$myJSON2 = json_encode($myObj2, JSON_PRETTY_PRINT|JSON_NUMERIC_CHECK);
+
+	fwrite($file2, $myJSON2);
+	fclose($file2);
+	//print_r($myJSON2);
+}
+
 #start time
 $time = $_SESSION['s_nome'] . " - experimento " . $id . " - Inicio: " . date("h:i:sa");
 
+
+
+//---------------------------------------
 $algString = implode(";",$arrayAlg);
-exec("Rscript script_number_valid_points.r " . $id . ' ' . $rasterCSVPath . ' '. $ocorrenciasCSVPath, $a, $b);
-$returnData = explode(" ",$a[1]);
-//echo "Rscript script_exemplo_modelr.r $id $hashId $repetitions $partitions $partitiontype $trainpercent '$buffer' $num_points $tss '$rasterCSVPath' '$ocorrenciasCSVPath' '$algString' '$ExtentModelPath'";
-//exit;
-if($returnData[1] < 10){
-	header("Location: cadexperimento.php?op=A&tab=6&MSGCODIGO=76&id=" . $id);
-} else {
-	//echo "Rscript script_exemplo_modelr.r " . $id . ' ' . $hashId . ' '. $partitions . ' '. $buffer . ' '. $num_points . ' '. $tss . ' '. $rasterCSVPath . ' '. $ocorrenciasCSVPath;
-	exec("Rscript script_exemplo_modelr.r $id $hashId $repetitions $partitions $partitiontype $trainpercent '$buffer' $num_points $tss '$rasterCSVPath' '$ocorrenciasCSVPath' '$algString' '$ExtentModelPath'");
+// exec("Rscript script_number_valid_points.r " . $id . ' ' . $rasterCSVPath . ' '. $ocorrenciasCSVPath . ' ' . $ExtentModelPath, $a, $b);
+// $returnData = explode(" ",$a[1]);
+// if($returnData[0] < 10){
+	// header("Location: cadexperimento.php?op=A&tab=6&MSGCODIGO=76&id=" . $id);
+// } else {
+	exec("Rscript script_exemplo_modelr.r $id $hashId $repetitions $partitions $partitiontype $trainpercent '$buffer' $num_points $tss '$rasterCSVPath' '$ocorrenciasCSVPath' '$algString' '$ExtentModelPath' '$ProjectionModelPath'");
 	if (!file_exists($baseUrl . "temp/result/" . $hashId . "/" . $speciesName . ".csv")) {
 		header("Location: cadexperimento.php?op=A&tab=6&MSGCODIGO=77&id=" . $id);
 	} else {
-		$csvFile = file($baseUrl . "temp/result/" . $hashId . "/" . $speciesName . ".csv");
+		$csvFile = file($baseUrl . "temp/result/" . $hashId . "/" . $speciesName . "/present/final_models/".$speciesName."_final_statistics.csv");
+		echo $baseUrl . "temp/result/" . $hashId . "/" . $speciesName . "/present/final_models/".$speciesName."_final_statistics.csv";
+		echo "<br>";
 		$data = [];
 		foreach ($csvFile as $line) {
 			$csvline = str_getcsv($line);
-			$data = explode(";", $csvline[0]);
-			if($data[0] != "kappa"){	
-				addToExperimentResult($conn, $id, $data, $speciesName,$hashId);
+			if($csvline[2] != "kappa"){	
+				addToExperimentResult($conn, $id, $csvline, $speciesName,$hashId);
 			}
 		}
 		
@@ -287,7 +329,7 @@ if($returnData[1] < 10){
 		calculateTime($time);
 		header("Location: cadexperimento.php?op=A&tab=14&id=" . $id);
 	}
-}   
+//}  
 
 
 function rrmdir($dir) { 
@@ -315,8 +357,8 @@ function removeRowExperimentResult ($conn, $expid){
 function addToExperimentResult ($conn, $expid, $expdata, $speciesName,$hashId) {
 	$baseUrl = '/var/www/html/rafael/modelr/temp/result/'.$hashId.'/'.$speciesName.'/present/partitions/';
 	for ($i = 1; $i <= 3; $i++) {
-		$partition = $expdata[9];
-		$algorithm = str_replace('"',"",$expdata[8]);
+		$partition = $expdata[12];
+		$algorithm = str_replace('"',"",$expdata[10]);
 
 		if($i == 1){
 			$raster_png_path = '';
@@ -335,14 +377,14 @@ function addToExperimentResult ($conn, $expid, $expdata, $speciesName,$hashId) {
 		}
 		$unhashedid = $expid;
 		$idresulttype = (100 + $i);
-		$tss = $expdata[7];
-		$auc = $expdata[6];
-		$sensitivity = $expdata[5];
-		$equal_sens_spec = $expdata[4];
-		$prevalence = $expdata[3];
-		$no_omission = $expdata[2];
-		$spec_sens = $expdata[1];
-		$kappa = $expdata[0];
+		$tss = $expdata[9];
+		$auc = $expdata[8];
+		$sensitivity = $expdata[7];
+		$equal_sens_spec = $expdata[6];
+		$prevalence = $expdata[5];
+		$no_omission = $expdata[4];
+		$spec_sens = $expdata[3];
+		$kappa = $expdata[2];
 		$sql = "insert into modelr.experiment_result (
 				idexperiment ,  idresulttype ,  
 			partition ,  algorithm ,  tss,  auc ,  sensitivity ,  equal_sens_spec ,

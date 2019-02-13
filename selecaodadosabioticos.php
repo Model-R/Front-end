@@ -21,6 +21,8 @@ $Experimento->conn = $conn;
 $Fonte = new Fonte();
 $Fonte->conn = $conn;
 
+$msgcodigo = $_REQUEST['MSGCODIGO'];
+
 $idsource = $_REQUEST['cmboxfonte'];
 
 $Experimento->getById($id);
@@ -37,6 +39,17 @@ $trainpercent= $Experimento->trainpercent;
 $numpontos = $Experimento->num_points;
 $tss = $Experimento->tss;
 $extent_model = $Experimento->extent_model;
+
+if (empty($resolution))
+{
+    $resolution = '10';
+}
+
+if(dirname(__FILE__) == '/var/www/html/rafael/modelr/v2' || dirname(__FILE__) == '/var/www/html/rafael/modelr/v3'){
+	$baseUrl = '../';
+} else {
+	$baseUrl = '';
+}
 ?>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -98,6 +111,22 @@ $extent_model = $Experimento->extent_model;
 			</div>
 			<div class="x_content">
 				<form name='frmmodelgem' id='frmmodelgem' action='exec.modelagem.php' method="post" class="form-horizontal form-label-left" novalidate>
+					
+					<div class="item form-group" id="resolution_item">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="resolution">Resolução
+						</label>
+						<div class="col-md-6 col-sm-6 col-xs-6">
+							<div class="radio-group-buffer">
+								<div><input onchange="document.getElementById('lblresolution').value=this.value" type="radio" name="edtresolution[]" id="checkbuffer2_5" value="2.5" <?php if ($resolution=='2.5') echo "checked";?> />2.5</div>
+								<div><input onchange="document.getElementById('lblresolution').value=this.value" type="radio" name="edtresolution[]" id="checkbuffer5" value="5" <?php if ($resolution=='5') echo "checked";?>/>5</div>
+								<div><input onchange="document.getElementById('lblresolution').value=this.value" type="radio" name="edtresolution[]" id="checkbuffer10" value="10" <?php if ($resolution=='10') echo "checked";?>/>10</div>
+							</div>
+						</div>
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<input id="lblresolution" onchange="document.getElementById('edtresolution').value= this.value " value="<?php echo $resolution;?>"  name="lblresolution" class="form-control col-md-2 col-xs-12" data-toggle="tooltip" data-placement="top" title="Valor entre 2.5,5,10">
+						</div>
+					</div>
+					
 					<div class="item form-group">
 						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">Fonte<span class="required">*</span>
 						</label>
@@ -124,9 +153,13 @@ $extent_model = $Experimento->extent_model;
 			   <div class="x_content">
 			 <p style="padding: 5px;">
 			 <?php 
-			
-			 if($idsource != 1) {
+				
+			if($idsource == 1){
+				include_once "templates/biooracleparams.php";
+			}
+			else if($idsource == 2 || $idsource == 3) {
 				$sql = 'select * from modelr.raster where idsource = '.$idsource;
+	
 				$res = pg_exec($conn,$sql);
 				while ($row = pg_fetch_array($res))
 				{
@@ -141,9 +174,11 @@ $extent_model = $Experimento->extent_model;
 						
 			 <?php }
 			 
-			 } else {
-				include_once "templates/biooracleparams.php";
-			 }?>	 
+			} else if($idsource == 4){
+				include_once "templates/chelsa.php";
+			} else if($idsource == 5){
+				include_once "templates/pca.php";
+			}?>	 
 				<!-- end pop-over -->
 
 			</div>
@@ -158,10 +193,16 @@ $extent_model = $Experimento->extent_model;
 		<div class="form-group">
 				<div class="send-button">
 					<button id="send" type="button" onclick="enviarDadosAbioticos(11)" class="btn btn-success">Salvar</button>
+					<button id="correlation" type="button" onclick="calcularCorrelacao(11)" class="btn btn-success">Calcular Correlação</button>
 				</div>
 			</div>
 	</div>
-
+	
+	<?php if (file_exists($baseUrl . 'temp/' . $id . '/correlation-' . $id . '.png')) { ?>
+		<div class="col-md-6 col-sm-6 col-xs-12" style="text-align: center;">
+			<img src="<?php echo $baseUrl;?>temp/<?php echo $id;?>/correlation-<?php echo $id;?>.png?<?php echo rand();?>">
+		</div>
+	<?php } ?>
 	</div> <!-- row -->
 
 	<!-- CUSTOM NOTIFICATION -->
@@ -212,6 +253,12 @@ $extent_model = $Experimento->extent_model;
 	{
 		var source = document.getElementById('cmboxfonte').value;
 		document.getElementById('frmmodelgem').action="cadexperimento.php?op=A&id="+ '<?php echo $id?>' +"&tab="+tab + "&cmboxfonte=" + source;
+		document.getElementById('frmmodelgem').submit();
+	}
+	
+	function calcularCorrelacao (tab) {
+		exibe('loading','Calculando');
+		document.getElementById('frmmodelgem').action='exec.calcularcorrelacao.php?tab='+tab+'&id=' + '<?php echo $id?>';
 		document.getElementById('frmmodelgem').submit();
 	}
 

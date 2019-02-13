@@ -79,7 +79,7 @@ Licence URI: http://www.os-templates.com/template-terms
         <header class="heading">Publicações</header>
 		<div>
 			<div class="publicacao1">
-				<p><span>Model-R: A Framework for Scalable and Reproducible Ecological Niche Modeling. Communications in Computer and Information Science. </span><a href="papers/Model-R A Framework for Scalable and Reproducible Ecological Niche Modeling. Communications in Computer and Information Science.pdf"><img src="images/logo-pdf.jpg"></a></p>
+				<p><span>Model-R: A Framework for Scalable and Reproducible Ecological Niche Modeling. Communications in Computer and Information Science. </span><a href="papers/ModelR A Framework for Scalable and Reproducible Ecological Niche Modeling.pdf"><img src="images/logo-pdf.jpg"></a></p>
 				<br>
 				<p><a target="_blank" href="https://doi.org/10.1007/978-3-319-73353-1_15">1ed.: Springer International Publishing, 2018, v. 796, p. 218-232.</a></p>
 				<br>
@@ -99,7 +99,7 @@ Licence URI: http://www.os-templates.com/template-terms
 <div class="wrapper row6">
   <div id="copyright" class="clear"> 
     <!-- ################################################################################################ -->
-    <p class="fl_left">Copyright &copy; 2015 - All Rights Reserved - <a href="#">Domain Name</a></p>
+    <p class="fl_left">Copyright &copy; 2018 Jardim Botânico do Rio de Janeiro - Todos os direitos reservados.</a></p>
     <p class="fl_right">Template by <a target="_blank" href="http://www.os-templates.com/" title="Free Website Templates">OS Templates</a></p>
     <!-- ################################################################################################ -->
   </div>

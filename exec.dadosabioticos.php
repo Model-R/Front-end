@@ -13,7 +13,9 @@ $Experimento->conn = $conn;
 
 $id = $_REQUEST['id'];
 $tab = $_REQUEST['tab'];
+$resolution = $_REQUEST['lblresolution'];
 
+$result = $Experimento->incluirResolucao($id, $resolution);
 
 if(!empty($_REQUEST['raster'])){
 	$result = $Experimento->limparRaster($id);

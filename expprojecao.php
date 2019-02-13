@@ -19,23 +19,27 @@ $Experimento->conn = $conn;
 
 $id = $_REQUEST['id'];
 
-$extensao2_norte = '6.41';
-$extensao2_sul = '-32.490';
-$extensao2_leste = '-34';
-$extensao2_oeste = '-62';
-
 $Experimento->getById($id);
+$projection_model = $Experimento->extent_projection;
 $extent_model = $Experimento->extent_model;
 
-if(empty($extent_model) || $extent_model == ';;;' || $extent_model == '')
-{	
-	$extensao1_norte = 0;
-    $extensao1_sul = 0;
-    $extensao1_leste = 0;
-    $extensao1_oeste = 0;
-    $has_extent = 'false';
+if(empty($projection_model) || $projection_model == ';;;' || $projection_model == ''){
+    if(empty($extent_model) || $extent_model == ';;;' || $extent_model == ''){	
+		$extensao1_norte = 0;
+		$extensao1_sul = 0;
+		$extensao1_leste = 0;
+		$extensao1_oeste = 0;
+		$has_extent = 'false';
+	} else {
+		$extents = explode(';', $extent_model);
+		$extensao1_norte = $extents[2];
+		$extensao1_sul = $extents[3];
+		$extensao1_leste = $extents[1];
+		$extensao1_oeste = $extents[0];
+		$has_extent = 'true';
+	}
 } else {
-    $extents = explode(';', $extent_model);
+    $extents = explode(';', $projection_model);
     $extensao1_norte = $extents[2];
     $extensao1_sul = $extents[3];
     $extensao1_leste = $extents[1];
@@ -72,7 +76,7 @@ if(empty($extent_model) || $extent_model == ';;;' || $extent_model == '')
         margin: 0;
         padding: 0;
       }
-      #mapMod {
+      #mapModProjecao {
         height: 65%;
       }
 	  #map3 {
@@ -86,59 +90,45 @@ if(empty($extent_model) || $extent_model == ';;;' || $extent_model == '')
 <div class="col-md-12 col-sm-12 col-xs-12">
 	<div class="x_panel">
 		<div class="x_title">
-			<h2>Extensão<small></small></h2>
+			<h2>Projeção<small></small></h2>
 			<div class="clearfix"></div>
 		</div>
 		<div class="col-md-6 col-sm-6 col-xs-12">
 		<div class="x_content">
 		 <p style="padding: 5px;">
-		 <div id="mapMod"></div>
+		 <div id="mapModProjecao"></div>
 			<!-- end pop-over -->
 		</div>
 		</div>
 		<div class="col-md-6 col-sm-6 col-xs-12">
 		<div class="x_content coordinates">
-			<form name='frmextensao' id='frmextensao' action='exec.extensao.php' method="post" class="form-horizontal form-label-left" novalidate>
-				<!--<div class="item form-group">
-					<label class="control-label col-md-4 col-sm-4 col-xs-4" for="shape">Selecionar shape: 
-					</label>
-					<div class="col-md-4 col-sm-4 col-xs-4">
-						<select id="shape" onChange="saveShape()" style="display: flex;width: -webkit-fill-available;height: 34px;">
-						  <option value="amazonia">Amazônia</option>
-						  <option value="caatinga">Caatinga</option>
-						  <option value="cerrado">Cerrado</option>
-						  <option value="mataatlantica">Mata Atlântica</option>
-						  <option value="pampa">Pampa</option>
-						  <option value="pantanal">Pantanal</option>
-						</select>
-					</div>
-				</div>-->
+			<form name='frmprojecao' id='frmprojecao' action='exec.projecao.php' method="post" class="form-horizontal form-label-left" novalidate>
 				<div class="item form-group">
 					<label class="control-label col-md-4 col-sm-4 col-xs-4" for="email">Longitude esquerda: 
 					</label>
 					<div class="col-md-4 col-sm-4 col-xs-4">
-						<input id="edtextensao1_oeste" value="<?php echo $extensao1_oeste;?>"  name="edtextensao1_oeste" class="form-control col-md-7 col-xs-12" >
+						<input id="edtprojecao1_oeste" value="<?php echo $extensao1_oeste;?>"  name="edtprojecao1_oeste" class="form-control col-md-7 col-xs-12" >
 					</div>
 				</div>
 				<div class="item form-group">
 					<label class="control-label col-md-4 col-sm-4 col-xs-4" for="email">Longitude direita:
 					</label>
 					 <div class="col-md-4 col-sm-4 col-xs-4">
-						<input id="edtextensao1_leste" value="<?php echo $extensao1_leste;?>"  name="edtextensao1_leste" class="form-control col-md-7 col-xs-12">
+						<input id="edtprojecao1_leste" value="<?php echo $extensao1_leste;?>"  name="edtprojecao1_leste" class="form-control col-md-7 col-xs-12">
 					</div>
 				</div>	
 				<div class="item form-group">
 					<label class="control-label col-md-4 col-sm-4 col-xs-4" for="email">Latitude superior:
 					</label>
 					 <div class="col-md-4 col-sm-4 col-xs-4">
-						<input id="edtextensao1_norte" value="<?php echo $extensao1_norte;?>"  name="edtextensao1_norte" class="form-control col-md-7 col-xs-12" >
+						<input id="edtprojecao1_norte" value="<?php echo $extensao1_norte;?>"  name="edtprojecao1_norte" class="form-control col-md-7 col-xs-12" >
 					</div>
 				</div>	
 				<div class="item form-group">
 					<label class="control-label col-md-4 col-sm-4 col-xs-4" for="email">Latitude inferior:</span>
 					</label>
 					<div class="col-md-4 col-sm-4 col-xs-4">
-						<input id="edtextensao1_sul" value="<?php echo $extensao1_sul;?>"  name="edtextensao1_sul" class="form-control col-md-7 col-xs-12" >
+						<input id="edtprojecao1_sul" value="<?php echo $extensao1_sul;?>"  name="edtprojecao1_sul" class="form-control col-md-7 col-xs-12" >
 					</div>
 				</div>	
 			</form>
@@ -147,7 +137,7 @@ if(empty($extent_model) || $extent_model == ';;;' || $extent_model == '')
 	</div>
 	<div class="form-group">
 			<div class="send-button">
-				<button id="send" type="button" onclick="enviarExtensao(12)" class="btn btn-success">Salvar</button>
+				<button id="send" type="button" onclick="enviarProjecao(18)" class="btn btn-success">Salvar</button>
 			</div>
 		</div>
 </div>
@@ -191,7 +181,7 @@ if(empty($extent_model) || $extent_model == ';;;' || $extent_model == '')
 var mainMap;
 var rectangleExtension;
 
-function initMapModelagem() {
+function initMapProjecao() {
 	<?php if (empty($latcenter))
 	{
 		$latcenter = -24.5452;
@@ -199,7 +189,7 @@ function initMapModelagem() {
 	}
 	?>
 
-  var mapMod = new google.maps.Map(document.getElementById('mapMod'), {
+  var mapModProjecao = new google.maps.Map(document.getElementById('mapModProjecao'), {
     center: {lat: -24.5452, lng: -42.5389},
     mapTypeId: 'terrain',
     gestureHandling: 'greedy',
@@ -271,11 +261,11 @@ function initMapModelagem() {
 // [START region_rectangle]
   var bounds1 = {
     north: <?php echo $extensao1_norte;?>,
-    south: <?php echo $extensao1_sul;?>,
-    east: <?php echo $extensao1_leste;?>,
-    west: <?php echo $extensao1_oeste;?>
+    south: <?php echo $extensao1_sul ;?>,
+    east: <?php echo $extensao1_leste ;?>,
+    west: <?php echo $extensao1_oeste ;?>
   };
-	 
+  
   if(<?php echo $has_extent;?>){
 	// Define a rectangle and set its editable property to true.
 	  var rectangle = new google.maps.Rectangle({
@@ -285,23 +275,23 @@ function initMapModelagem() {
 	  });
 
 	  // [END region_rectangle]
-	  rectangle.setMap(mapMod);
+	  rectangle.setMap(mapModProjecao);
 	  
 	  rectangle.addListener('bounds_changed', showNewRect);
 	  
 	  rectangleExtension = rectangle;
 	  
-	  function showNewRect(event) {
-        var ne = rectangle.getBounds().getNorthEast();
-        var sw = rectangle.getBounds().getSouthWest();
+	   function showNewRect(event) {
+			var ne = rectangle.getBounds().getNorthEast();
+			var sw = rectangle.getBounds().getSouthWest();
 
-        document.getElementById('edtextensao1_norte').value=ne.lat();
-        document.getElementById('edtextensao1_sul').value=sw.lat();
-        document.getElementById('edtextensao1_oeste').value=sw.lng();
-        document.getElementById('edtextensao1_leste').value=ne.lng();
-		
-      }
-  }
+			document.getElementById('edtprojecao1_norte').value=ne.lat();
+			document.getElementById('edtprojecao1_sul').value=sw.lat();
+			document.getElementById('edtprojecao1_oeste').value=sw.lng();
+			document.getElementById('edtprojecao1_leste').value=ne.lng();
+			
+		}
+	}
  
 <?php 
 	$sql = "select idoccurrence,idexperiment,iddatasource,taxon,collector,collectnumber,server,
@@ -345,20 +335,20 @@ $marker = '';
         var position = new google.maps.LatLng(markers[i][1], markers[i][2]);
 		marker2 = new google.maps.Marker({
             position: position,
-            map: mapMod,
+            map: mapModProjecao,
 			draggable: false,
 			icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
             title: markers[i][0]
         });
         
     }
-	mainMap = mapMod;
+	mainMap = mapModProjecao;
 }
 
 function saveShape()
 {
 	//exibe('loading', 'Processando ...');
-	console.log('shape ', document.getElementById('shape').value);
+	//console.log('shape ', document.getElementById('shape').value);
 	//document.getElementById('shape').value
 	//document.getElementById('frmmodelgem').submit();
 	printshape()
@@ -366,17 +356,17 @@ function saveShape()
 
 function printshape()
 {	
-	console.log('entrou print shape')
-	console.log(mapOverlay, 'overlay')
+	//console.log('entrou print shape')
+	//console.log(mapOverlay, 'overlay')
 	if(mapOverlay) mapOverlay.setMap(null);
 	imageBounds = new google.maps.LatLngBounds(
         new google.maps.LatLng(-33.77584, -73.94917),
         new google.maps.LatLng(5.224162 , -34.84917));
 		
-	document.getElementById('edtextensao1_norte').value= -73.98005; //xmin
-	document.getElementById('edtextensao1_sul').value= -43.6135; //xmax
-	document.getElementById('edtextensao1_oeste').value=5.250803; //ymax
-	document.getElementById('edtextensao1_leste').value=-16.30544; //ymin
+	document.getElementById('edtprojecao1_norte').value= -73.98005; //xmin
+	document.getElementById('edtprojecao1_sul').value= -43.6135; //xmax
+	document.getElementById('edtprojecao1_oeste').value=5.250803; //ymax
+	document.getElementById('edtprojecao1_leste').value=-16.30544; //ymin
 		
 	var path = 'http://model-r.jbrj.gov.br/v2/shapes/amazonia/imagem-brasil (1).png';
 	mapOverlay = new google.maps.GroundOverlay(path,imageBounds,{opacity:0.7});
@@ -389,27 +379,24 @@ function getShapeExtent () {
 	
 }
 
-function enviarExtensao(tab)
+function enviarProjecao(tab)
 {	
 	//console.log('exec.expextensao.php?tab='+tab+'&id=' + '<?php echo $id?>')
-	document.getElementById('frmextensao').action='exec.expextensao.php?tab='+tab+'&id=' + '<?php echo $id?>';
-	document.getElementById('frmextensao').submit();
+	document.getElementById('frmprojecao').action='exec.expprojecao.php?tab='+tab+'&id=' + '<?php echo $id?>';
+	document.getElementById('frmprojecao').submit();
 }
 
 $(document ).ready(function() {
-	console.log('entrp 1')
-	initMapModelagem();	
+	initMapProjecao();	
 });
 
-$('.nav-tabs a[href="#tab_content12"]').click(function(){
-	console.log('entrp 2')
+$('.nav-tabs a[href="#tab_content18"]').click(function(){
 	google.maps.event.trigger(window, 'resize', {});
-	initMapModelagem();
+	initMapProjecao();
 })
 
 $('.nav-tabs').on('shown.bs.tab', function () {
-	console.log('entrp 3')
 	google.maps.event.trigger(window, 'resize', {});
-	initMapModelagem();
+	initMapProjecao();
 });
 </script>		

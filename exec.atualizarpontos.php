@@ -17,6 +17,12 @@ $idstatus = $_REQUEST['idstatus'];
 $latinf = $_REQUEST['latinf'];
 $longinf = $_REQUEST['longinf'];
 
+if(dirname(__FILE__) == '/var/www/html/rafael/modelr/v2' || dirname(__FILE__) == '/var/www/html/rafael/modelr/v3'){
+	$baseUrl = '../';
+} else {
+	$baseUrl = '';
+}
+
 print_r($_REQUEST);
 if(empty($_REQUEST['mult'])){ 
 	$mult = false;
@@ -253,6 +259,54 @@ or shape.nm_mun <> minorarea)
 	}
 
 }
+
+//criar extent
+if($idstatus == '4' || $idstatus == '17'){
+	
+	if (!file_exists($baseUrl . "temp/" . $idexperimento )) {
+		mkdir($baseUrl . "temp/" . $idexperimento , 0777, true);
+	}
+	#ocorrencias.csv
+	$ocorrenciasCSVPath = $baseUrl . 'temp/'. $idexperimento . '/ocorrencias.csv';
+	$file = fopen($ocorrenciasCSVPath, 'w');
+	fputcsv($file, array("taxon","lon","lat"), ";");
+	
+	$ws = file_get_contents("https://model-r.jbrj.gov.br/ws/?id=" . $idexperimento);
+	$json = json_decode($ws);
+
+	$occurrenceList = $json[0]->occurrences;
+	$count = 0;
+	foreach($occurrenceList as $occurrence){
+		$item = [];
+		if($occurrence->idstatusoccurrence == 4 || $occurrence->idstatusoccurrence == 17){
+			array_push($item,$occurrence->taxon,$occurrence->lon,$occurrence->lat);
+			fputcsv($file, $item, ";");
+			$count = $count + 1;
+		}
+	}
+	fclose($file);
+	
+	$ocorrenciasCSVPath = $baseUrl . 'temp/'. $idexperimento . '/ocorrencias.csv';
+	exec("Rscript extent-points.r " . $idexperimento . ' ' . $ocorrenciasCSVPath, $a, $b);
+	$leste = str_replace('xmin',"",$a[1]);
+	$leste = str_replace(' ',"",$leste);
+	$leste = str_replace(':',"",$leste);
+	$oeste = str_replace("xmax","",$a[2]);
+	$oeste = str_replace(" ","",$oeste);
+	$oeste = str_replace(":","",$oeste);
+	$sul = str_replace("ymin","",$a[3]);
+	$sul = str_replace(" ","",$sul);
+	$sul = str_replace(":","",$sul);
+	$norte = str_replace("ymax","",$a[4]);
+	$norte = str_replace(" ","",$norte);
+	$norte = str_replace(":","",$norte);
+	
+	$extensao = $leste.';'.$oeste.';'.$norte.';'.$sul;
+	$result = $Experimento->incluirExtensao($idexperimento, $extensao);
+	$result = $Experimento->incluirProjecao($idexperimento, $extensao);
+	
+}
+
 header("Location: cadexperimento.php?op=A&MSGCODIGO=$MSGCODIGO&tab=10&pag=2&id=$idexperimento&filtro=$filtro");
 ?>
 

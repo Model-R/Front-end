@@ -143,6 +143,18 @@ if ($operacao=='LE')
 	}	
 }
 
+if ($operacao == 'CN') { //change name
+	$nome = $_REQUEST['nome'];
+	if ($result = $Experimento->trocarNome($idexperimento, $nome))
+	{
+	 header("Location: consexperimento.php?MSGCODIGO=79");
+	}
+	else
+	{
+	 header("Location: cadexperimento.php?MSGCODIGO=80");
+	}
+}
+
 
 // liberar experimento
 // if ($operacao=='LE')

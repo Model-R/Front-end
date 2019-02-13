@@ -9,8 +9,11 @@ require(vegan)
 require(psych)
 
 args <- commandArgs(TRUE)
-rasterCSVPath <- args[1]
-ocorrenciasCSVPath <- args[2]
+id <- args[1]
+rasterCSVPath <- args[2]
+ocorrenciasCSVPath <- args[3]
+rasterCSVPath
+ocorrenciasCSVPath
 
 coordenadas <- read.table(ocorrenciasCSVPath, sep = ';', header = T);
 rasters <- read.table(rasterCSVPath, sep = ';', header = F, as.is = T);
@@ -18,7 +21,7 @@ rasters <- read.table(rasterCSVPath, sep = ';', header = F, as.is = T);
 rasters <- paste0('../../../../../',rasters)
 stack_rasters <- stack(rasters)
 
-
+coordenadas
 #verificando a correlação
 pontos = dismo::randomPoints(stack_rasters, 1000)
 cat('1')
@@ -59,7 +62,8 @@ panel.hist <- function(x, ...) {
   rect(breaks[-nB], 0, breaks[-1], y, col = "gray", ...)
 }
 
-png('correlacao-images.png')
+png(paste0('/temp/',id,'/correlacao-images.png'))
+
 pairs(sdmdata,
 	cex = 0.1,
 	fig = TRUE,

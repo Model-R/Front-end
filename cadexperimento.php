@@ -16,23 +16,30 @@ require_once('classes/conexao.class.php');
 
 $tab=$_REQUEST['tab'];
 	
-if($tab == 4 || $tab == 5){
-	$stab = $tab; $tab = 1;		
+if($tab == 4 || $tab == 5){ //tab 4 e 5 não existem mais (tab Dados Bióticos e tab Dados Abióticos)
+	//$stab = $tab; $tab = 1;
+	$stab = 9; $tab = 1;
 }
-if($tab == 6 || $tab == 7){
+if($tab == 6){
 	$stab = $tab; $tab = 2;		
+}
+if($tab == 7){ //tab 7 não existe mais (tab Dados Resultados)
+	$stab = 13; $tab = 2;		
 }
 if($tab == 8){
 	$stab = $tab; $tab = 3;		
 }
 if($tab == 9 || $tab == 10){
-	$ttab = $tab; $tab = 1; $stab = 4;	
+	//$ttab = $tab; 
+	$stab = $tab; $tab = 1;	
 }
-if($tab == 11 || $tab == 12){
-	$ttab = $tab; $tab = 1; $stab = 5;		
+if($tab == 11 || $tab == 12 || $tab == 18){
+	//$ttab = $tab; 
+	$stab = $tab; $tab = 1;		
 }
 if($tab == 13 || $tab == 14 || $tab == 15 || $tab == 16 || $tab == 17){
-	$ttab = $tab; $tab = 2; $stab = 7;		
+	//$ttab = $tab; 
+	$stab = $tab; $tab = 2;		
 }
 
 $clConexao = new Conexao;
@@ -49,7 +56,9 @@ if (empty($tab))
 }
 
 $Experimento->getStatus($id);
+$Experimento->getById($id);
 $statusExperiment = $Experimento->statusExperiment;
+$nome_experimeto = $Experimento->name;
 ?>
 
 <head>
@@ -134,7 +143,8 @@ $(function(){
 						<div class="col-md-12 col-sm-12 col-xs-12">
 							<div class="x_panel">
 								<div class="x_title">
-									<h2><a href="consexperimento.php">Experimento <small>Cadastro experimento</small></a></h2>
+									<h2>Experimento: <?php echo $nome_experimeto;?></h2>
+									<a href="consexperimento.php"><small>Lista de Experimentos</small></a>
 									<div class="clearfix">
 									</div>
 								</div>
@@ -307,7 +317,7 @@ $MSGCODIGO = $_REQUEST['MSGCODIGO'];
 
     <script>
         function enviarExp(){
-            exibe('loading');
+            exibe('loading', 'Criando Experimento');
             if ((document.getElementById('edtexperimento').value==''))
             {
                 criarNotificacao('Atenção','Verifique o preenchimento','warning');

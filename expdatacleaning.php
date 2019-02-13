@@ -96,6 +96,7 @@ if ($op=='A')
 				<div class="modal-body">
 					<h4><div id="divtaxon"></div></h4>
 					<p>Dados originais<br>
+					<div id="dadosstatus"></div><br>
 					<div id="dadosoriginais"></div><br>
 					<div id="dadoscoletor"></div><br>
 					<div id="dadosherbario"></div><br>
@@ -299,17 +300,18 @@ while ($row = pg_fetch_array($res))
 	$tombo =  $row['numtombo'];
 	$localizacao = $row['country'].', '.$row['majorarea'].' - '.$row['minorarea'];
 	$coletor = $row['collector'].' '.$row['collectnumber'];
+	$status = $row['statusoccurrence'];
 	
 	$html_imagem='<a href=templaterb2.php?colbot=rb&codtestemunho='.$row['codtestemunho'].'&arquivo='.$arquivo.' target=\"Visualizador\"><img src="http://'.$servidor.'/fsi/server?type=image&source='.$path.'/'.$arquivo.'&width=300&height=70&profile=jpeg&quality=20"></a>';
 	
 	// preparo os quadros de informação para cada ponto
 	$c++;
 	if ($c < $conta) {
-		$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."','".$coletor."','".$herbario."','".$tombo."'],";
+		$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."','".$coletor."','".$herbario."','".$tombo."','".$status."'],";
 	}
 	else
 	{
-		$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."','".$coletor."','".$herbario."','".$tombo."']";
+		$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."','".$coletor."','".$herbario."','".$tombo."','".$status."'],";
 		$latcenter = $row['lat'];
 		$longcenter = $row['long'];
 	}
@@ -321,7 +323,7 @@ while ($row = pg_fetch_array($res))
 	?>
 								
     <tr class="even pointer points-table-line">
-        <td class="a-center "><input type="checkbox" name="table_records[]" id="table_records[]" value="<?php echo $row['idoccurrence'];?>" ><a data-toggle="tooltip" data-placement="top" title data-original-title="Editar" onclick="abreModal('<?php echo $row['taxon'];?>','<?php echo $row['lat'];?>','<?php echo $row['long'];?>','<?php echo $row['idoccurrence'];?>','<?php echo $row[''];?>','<?php echo $row[''];?>','<?php echo $servidor;?>','<?php echo $path;?>','<?php echo $arquivo;?>','<?php echo $row['idstatusoccurrence'];?>','<?php echo $localizacao;?>','<?php echo $coletor;?>','<?php echo $herbario;?>','<?php echo $tombo;?>')">  <span class="glyphicon glyphicon-edit edit-button" aria-hidden="true"></span></a></td><td><?php echo $html_imagem.' ';?></td>
+        <td class="a-center "><input type="checkbox" name="table_records[]" id="table_records[]" value="<?php echo $row['idoccurrence'];?>" ><a data-toggle="tooltip" data-placement="top" title data-original-title="Editar" onclick="abreModal('<?php echo $row['taxon'];?>','<?php echo $row['lat'];?>','<?php echo $row['long'];?>','<?php echo $row['idoccurrence'];?>','<?php echo $row[''];?>','<?php echo $row[''];?>','<?php echo $servidor;?>','<?php echo $path;?>','<?php echo $arquivo;?>','<?php echo $row['idstatusoccurrence'];?>','<?php echo $localizacao;?>','<?php echo $coletor;?>','<?php echo $herbario;?>','<?php echo $tombo;?>','<?php echo $status;?>')">  <span class="glyphicon glyphicon-edit edit-button" aria-hidden="true"></span></a></td><td><?php echo $html_imagem.' ';?></td>
         <td class="a-right a-right "><b><?php echo $row['fonte'];?></b></br><?php echo $row['herbario'];?></td>
 		<td class="a-right a-right " style="width: 200px;"><?php echo $row['taxon'];?></td>
         <td class="a-right a-right "><?php echo $row['collector'];?> <?php echo $row['collectnumber'];?></td>
@@ -499,14 +501,14 @@ function initMapModal(idocorrencia) {
         // Allow each marker to have an info window    
         google.maps.event.addListener(marker, 'click', (function(marker, i) {
             return function() {
-				abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],'','',markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12]);
+				abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],'','',markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12],markers[i][13]);
 				
             }
         })(marker, i));
 		
         google.maps.event.addListener(marker, 'dragend', (function(marker, i) {
             return function() {
-				abreConfirmacao(markers[i][0],markers[i][1],markers[i][2],markers[i][3],this.position.lat(),this.position.lng(),markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12]);
+				abreConfirmacao(markers[i][0],markers[i][1],markers[i][2],markers[i][3],this.position.lat(),this.position.lng(),markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12],markers[i][13]);
 				//abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],this.position.lat(),this.position.lng(),markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9]);
 				
             }
@@ -521,13 +523,14 @@ function initMapModal(idocorrencia) {
 }
 
 
-function abreModal(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquivo,idstatusocorrence,localizacao, coletor, herbario, tombo)
+function abreModal(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquivo,idstatusocorrence,localizacao, coletor, herbario, tombo, status)
 {
 
    document.getElementById('divtaxon').innerHTML=taxon;
 	html_imagem='<a href=templaterb2.php?colbot=rb&codtestemunho=&arquivo='+arquivo+' target=\"Visualizador\"><img src="http://'+servidor+'/fsi/server?type=image&source='+path+'/'+arquivo+'&width=600&height=200&profile=jpeg&quality=20"></a>';
 	document.getElementById('edidocorrencia').value=idocorrencia;
 	document.getElementById('divimagem').innerHTML=html_imagem;
+	document.getElementById('dadosstatus').innerHTML='Status: '+status;
 	document.getElementById('dadosoriginais').innerHTML='Latitude: '+lat+' Longitude: '+lng+' - '+localizacao;
 	document.getElementById('dadoscoletor').innerHTML='Coletor: '+coletor;
 	document.getElementById('dadosherbario').innerHTML='Herbário: '+herbario + ' - Tombo: ' + tombo;
@@ -539,6 +542,7 @@ function abreModal(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquiv
 		initMapModal(idocorrencia);
 	}, 200);
 }
+
 
     function imprimirDC(tipo)
     {   
@@ -831,7 +835,7 @@ google.maps.event.addDomListener(window, 'load', initMap);
         // Allow each marker to have an info window    
         google.maps.event.addListener(marker, 'click', (function(marker, i) {
             return function() {
-				abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],'','',markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12]);
+				abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],'','',markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12],markers[i][13]);
 				
             }
         })(marker, i));

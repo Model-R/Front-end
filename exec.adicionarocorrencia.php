@@ -36,7 +36,7 @@ $bool_automaticfilter = $automaticfilter === 't'? true: false;
         familia || ' ' || taxoncompleto ilike '%".$especie."%' and ";
 
 	$box=$jabotData;
-	$in = 'extracao_jabot.codtestemunho in (';
+	$in = 'extracao_jabot_geral.codtestemunho in (';
 	while (list ($key,$val) = @each($box)) { 
 		//$result = $Cobertura->excluir($val);
 		$in .= $val.','; 

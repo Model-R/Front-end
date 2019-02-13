@@ -6,9 +6,9 @@ $part2 = substr($arquivo,2,2);
 $part3 = substr($arquivo,4,2);
 $part4 = substr($arquivo,6,2);
 
-// echo (int)$part1.'-'.(int)$part2.'-'.(int)$part3.'-'.(int)$part4.'-'.$arquivo;
+//echo (int)$part1.'/'.(int)$part2.'/'.(int)$part3.'/'.(int)$part4.'/'.$arquivo;
 // echo (int)$part1;
-// exit;
+//exit;
 
 ?>
 <html>
@@ -57,3 +57,4 @@ Model-R
 </noscript>
 </BODY>
 </HTML>
+

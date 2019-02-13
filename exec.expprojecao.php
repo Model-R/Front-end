@@ -14,11 +14,11 @@ $Experimento->conn = $conn;
 $id = $_REQUEST['id'];
 $tab = $_REQUEST['tab'];
 
-$extensao1 = $_REQUEST['edtextensao1_oeste'].';'.$_REQUEST['edtextensao1_leste'].';'.$_REQUEST['edtextensao1_norte'].';'.$_REQUEST['edtextensao1_sul'];
+$extensao1 = $_REQUEST['edtprojecao1_oeste'].';'.$_REQUEST['edtprojecao1_leste'].';'.$_REQUEST['edtprojecao1_norte'].';'.$_REQUEST['edtprojecao1_sul'];
 
-$Experimento->extent_model = $extensao1;
+$Experimento->projection_model = $extensao1;
 
-if ($result = $Experimento->incluirExtensao($id, $extensao1) && $result = $Experimento->incluirProjecao($id, $extensao1))
+if ($result = $Experimento->incluirProjecao($id, $extensao1))
 {
 	header("Location: cadexperimento.php?op=A&MSGCODIGO=84&id=$id&tab=$tab");
 }
@@ -27,4 +27,3 @@ else
 	header("Location: cadexperimento.php?op=A&MSGCODIGO=85&id=$id&tab=$tab");
 }
 ?>
-

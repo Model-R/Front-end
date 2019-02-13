@@ -107,7 +107,7 @@ if ($MSGCODIGO=='18')
 if ($MSGCODIGO=='19')
 {
 		echo "
-		criarNotificacao('Sucesso','Sucesso!','sucess');";
+		criarNotificacao('Sucesso','Sucesso!','success');";
 }
 if ($MSGCODIGO=='20')
 {
@@ -243,6 +243,21 @@ if ($MSGCODIGO=='78')
 {
 		echo "
 		criarNotificacao('Modelagem','Não foi possível realizar a modelagem ! Seleciona uma variável abiótica na aba Pré-tratamento > Dados Abióticos.','erro');";
+}
+if ($MSGCODIGO=='79')
+{
+		echo "
+		criarNotificacao('Sucesso','Nome alterado com sucesso!','success');";
+}
+if ($MSGCODIGO=='80')
+{
+		echo "
+		criarNotificacao('Erro','Não foi possível alterar o nome do experimento!','error');";
+}
+if ($MSGCODIGO=='86')
+{
+		echo "
+		criarNotificacao('Sucesso','Calculo de correlação concluído com sucesso.','success');";
 }
 ?>
 

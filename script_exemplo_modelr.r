@@ -24,6 +24,7 @@ algorithms <- args[12]
 extensionPath <- args[13]
 
 cat('antes')
+if(bufferValue == 'NULL') bufferValue = NULL;
 algorithms
 #extensionPath <- paste0('../../../../../../','mnt/dados/modelr/json/polygon-317.json')
 
@@ -36,6 +37,7 @@ if(getwd() == "/var/www/html/rafael/modelr/v2" || getwd() == "/var/www/html/rafa
 }
 
 coordenadas <- read.table(ocorrenciasCSVPath, sep = ';', header = T);
+coordenadas
 rasters <- read.table(rasterCSVPath, sep = ';', header = F, as.is = T);
 rasters
 #rasters <- read.file(rasterCSVPath, sep = ';', h = F)
@@ -107,13 +109,13 @@ for (especie in especies) {
 	 ## argumentos de setupsdmdata():
 	 #lon = "lon",#caso as colunas estejam nomeadas diferentes dá para botar aqui
 	 #lat = "lat",#idem
-	 buffer = bufferValue,
+	 buffer_type = bufferValue,
 	 seed = 512,
 	 #clean_dupl = T,
 	 #clean_nas = F,
 	 #geo_filt = F,
 	 #geo_filt_dist = NULL,
-	 #plot_sdmdata = T,
+	 plot_sdmdata = T,
 	 n_back = as.numeric(num_points),
 	 partition_type = partitiontype,
 	 cv_n = as.numeric(repetitions),

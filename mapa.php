@@ -239,7 +239,6 @@ function ExportShapeControl(controlDiv, map) {
     controlUI.appendChild(controlText);
 
     controlUI.addEventListener('click', function() {
-		console.log('entrou cortar raster')
         xmlhttp=new XMLHttpRequest();
         xmlhttp.onreadystatechange=function()  {
             if (xmlhttp.readyState==4 && xmlhttp.status==200) {
@@ -259,8 +258,6 @@ function ExportShapeControl(controlDiv, map) {
 				document.getElementById("cancelarCorteRaster").style.display = 'flex';
             }
         }
-        console.log(PolygonArrayString)
-        console.log('cutGeoJson.php?table=polygon&array=' + PolygonArrayString.join(':') + '&expid=' + <?php echo $id;?>)
         xmlhttp.open("GET",'cutGeoJson.php?table=polygon&array=' + PolygonArrayString.join(':') + '&expid=' + <?php echo $id;?>,true);
         xmlhttp.send();
     }); 
@@ -268,9 +265,8 @@ function ExportShapeControl(controlDiv, map) {
 }
 
  document.getElementById("cancelarCorteRaster").onclick = () => {
-	 console.log('entrou cancelar cortar raster')
      mapOverlay.setMap(null);
-
+	
      if(rasterPngPath){
         mapOverlay = new google.maps.GroundOverlay(rasterPngPath,imageBounds,{opacity:1});
     } 
@@ -283,9 +279,6 @@ function ExportShapeControl(controlDiv, map) {
 
      xmlhttp=new XMLHttpRequest();
     xmlhttp.onreadystatechange=function()  {
-        if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-            console.log('limpou corte');
-        }
     }
     xmlhttp.open("GET",'controleCorteRaster.php?op=L&expid= <?php echo $idexperiment; ?>',true);
     xmlhttp.send();
@@ -303,7 +296,6 @@ var isImageCut;
 var rasterPngPath;
 
 function initMapExpResultado() {
-	console.log('initMapExpResultado')
   var map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: -21.6481541, lng: -56.52764},
 	    panControl:true,
@@ -392,13 +384,10 @@ var exportShape = new ExportShapeControl(exportShapeDiv, map);
 exportShapeDiv.index = 1;
 map.controls[google.maps.ControlPosition.TOP_CENTER].push(exportShapeDiv);
 
-console.log('rasterPngPath: ' + rasterPngPath);
-console.log('isImageCut: ' + isImageCut);
-console.log('pngCutPath: ' + pngCutPath);
   imageBounds = new google.maps.LatLngBounds(
 	new google.maps.LatLng(-33.77584, -57.84917),
 	new google.maps.LatLng(-2.775838, -34.84917));
-
+		
 		if(isImageCut){
 			mapOverlay = new google.maps.GroundOverlay(pngCutPath,imageBounds,{opacity:1});
 		} else {
@@ -449,7 +438,6 @@ var drawingManager = new google.maps.drawing.DrawingManager({
 
 google.maps.event.addListener(drawingManager, 'overlaycomplete', function(e) {
     if (e.type != google.maps.drawing.OverlayType.MARKER) {
-        console.log('desenho polygon')
         polygonArray.push(e.overlay);
         createHiddenInput(e.overlay);
         // Switch back to non-drawing mode after drawing a shape.
@@ -649,7 +637,8 @@ $marker = '';
   	var markers = [
         <?php echo $marker;;?>
     ];
-
+	
+	var googleMarkers = [];
     for( i = 0; i < markers.length; i++ ) {
         var position = new google.maps.LatLng(markers[i][1], markers[i][2]); 
 		marker2 = new google.maps.Marker({
@@ -659,8 +648,24 @@ $marker = '';
             icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
             title: markers[i][0]
         });
+		
+		googleMarkers.push(marker2);
        
     }
+	
+	document.getElementById("tooglePontos").onclick = () => {
+		for ( i = 0; i < googleMarkers.length; i++ ) {
+			if(googleMarkers[i].getVisible()) {
+			  googleMarkers[i].setVisible(false);
+			}
+			else {
+			  googleMarkers[i].setVisible(true);
+			}
+		}
+		 console.log('toogle ponto');
+		 console.log(googleMarkers)
+		 console.log(googleMarkers[0].getVisible())
+	};
 	
 }
 
@@ -716,7 +721,6 @@ function cortarRaster(){
 	xmlhttp=new XMLHttpRequest();
 	xmlhttp.onreadystatechange=function()  {
 		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-			console.log('entrou' + xmlhttp.responseText);
 			mapOverlay.setMap(null);
 			mapOverlay = new google.maps.GroundOverlay(
 				'https://model-r.jbrj.gov.br/temp/' + <?php echo $id;?> + '/png_map-' + <?php echo $id;?> + '.png?' + Math.random(),
@@ -732,11 +736,8 @@ function cortarRaster(){
 			document.getElementById("cancelarCorteRaster").style.display = 'flex';
 		}
 	}
-	console.log(PolygonArrayString)
-	console.log('cutGeoJson.php?table=polygon&array=' + PolygonArrayString.join(':') + '&expid=' + <?php echo $id;?>)
 	xmlhttp.open("GET",'cutGeoJson.php?table=polygon&array=' + PolygonArrayString.join(':') + '&expid=' + <?php echo $id;?>,true);
 	xmlhttp.send();
-    console.log(document.getElementById('cmboxcortarraster').value)
 } 
 
 $(document ).ready(function() {
@@ -765,4 +766,85 @@ $('.nav-tabs').on('shown.bs.tab', function () {
     google.maps.event.trigger(window, 'resize', {});
     initMapExpResultado();
 });
+
+// -------------------------- Shape Bioma -----------------
+function criarBiomasOverlay () {
+	var biomasArray = [];
+	//amazonia
+	imageBounds = new google.maps.LatLngBounds(
+		new google.maps.LatLng(-16.30544, -73.98005),
+		new google.maps.LatLng(5.250803, -43.6135));
+		
+	var imagepath = '/v3/shapes/amazonia/imagem-amazonia.png'
+	mapOverlay = new google.maps.GroundOverlay(imagepath,imageBounds,{opacity:1});
+	
+	biomasArray.push({ bioma: 'Amazônia', mapOverlay: mapOverlay});
+	//caatinga
+	imageBounds = new google.maps.LatLngBounds(
+		new google.maps.LatLng(-16.08848, -44.50842),
+		new google.maps.LatLng(-2.808325, -35.17171));
+		
+	var imagepath = '/v3/shapes/caatinga/imagem-caatinga.png'
+	mapOverlay = new google.maps.GroundOverlay(imagepath,imageBounds,{opacity:1});
+	
+	biomasArray.push({ bioma: 'Caatinga', mapOverlay: mapOverlay});
+	//Cerrado
+	imageBounds = new google.maps.LatLngBounds(
+		new google.maps.LatLng(-24.68463, -60.10942),
+		new google.maps.LatLng(-2.340445, -41.52177));
+		
+	var imagepath = '/v3/shapes/cerrado/imagem-cerrado.png'
+	mapOverlay = new google.maps.GroundOverlay(imagepath,imageBounds,{opacity:1});
+	
+	biomasArray.push({ bioma: 'Cerrado', mapOverlay: mapOverlay});
+	//Mata Atlântica
+	imageBounds = new google.maps.LatLngBounds(
+		new google.maps.LatLng(-29.95134, -55.66303),
+		new google.maps.LatLng(-5.153689, -34.82286));
+		
+	var imagepath = '/v3/shapes/mata atlantica/imagem-mata atlantica.png'
+	mapOverlay = new google.maps.GroundOverlay(imagepath,imageBounds,{opacity:1});
+	
+	biomasArray.push({ bioma: 'Mata Atlântica', mapOverlay: mapOverlay});
+	//Pampa
+	imageBounds = new google.maps.LatLngBounds(
+		new google.maps.LatLng(-33.75435, -57.64378),
+		new google.maps.LatLng(-28.08308, -49.71537));
+		
+	var imagepath = '/v3/shapes/pampa/imagem-pampa.png'
+	mapOverlay = new google.maps.GroundOverlay(imagepath,imageBounds,{opacity:1});
+	
+	biomasArray.push({ bioma: 'Pampa', mapOverlay: mapOverlay});
+	//Pantanal
+	imageBounds = new google.maps.LatLngBounds(
+		new google.maps.LatLng(-22.11797, -59.18836),
+		new google.maps.LatLng(-15.52349, -54.92181));
+		
+	var imagepath = '/v3/shapes/pantanal/imagem-pantanal.png'
+	mapOverlay = new google.maps.GroundOverlay(imagepath,imageBounds,{opacity:1});
+	
+	biomasArray.push({ bioma: 'Pantanal', mapOverlay: mapOverlay});
+	return biomasArray;
+	
+}
+
+function mostrarShapeBioma() {
+	
+	var overlayArray = criarBiomasOverlay();
+	var shape = document.getElementById('selectCortarShape').value;
+
+	for(let overlay of overlayArray){
+		if(overlay.bioma !== shape) {
+			console.log(overlay.mapOverlay)
+			overlay.mapOverlay.setMap(null);
+		}
+	}
+	for(let overlay of overlayArray){
+		if(overlay.bioma == shape) {
+			imageOverlay.setMap(null);
+			overlay.mapOverlay.setMap(mapresult)
+			console.log(overlay.mapOverlay)
+		}
+	}
+}
 </script>
