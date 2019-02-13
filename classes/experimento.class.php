@@ -139,6 +139,9 @@ class Experimento
 		extent_model = '".$extent."'
 		where idexperiment='".$id."' ";
 		$resultado = pg_exec($this->conn,$sql);
+		//echo $sql;
+		//echo $resultado;
+		//exit;
 		if ($resultado)
 		{
 			return true;
