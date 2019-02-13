@@ -36,6 +36,20 @@ class Experimento
 
 	var $statusExperiment;
 	
+	function trocarNome($id,$nome)
+	{
+		$sql = "update modelr.experiment set name = '".$nome."' where idexperiment=".$id;
+		$resultado = pg_exec($this->conn,$sql);
+		
+		if ($resultado)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 	function incluirRaster($id,$idraster)
 	{
 		$sql = 'insert into modelr.experiment_use_raster (idexperiment,idraster)
@@ -95,7 +109,17 @@ class Experimento
 			return false;
 		}
 	}
-
+	
+	function incluirResolucao($id,$resolution)
+	{
+		$sql = "update modelr.experiment set 
+		   resolution = ".$resolution."where idexperiment='".$id."' ";
+		$res2 = pg_exec($this->conn,$sql);
+		//print_r($sql);
+		//print_r($res2);
+		//exit;
+	}
+	
 	function incluirAlgoritmo($id,$idalgoritmos)
 	{
 		$sql = 'insert into modelr.experiment_use_algorithm (idexperiment,idalgorithm)
@@ -113,6 +137,22 @@ class Experimento
 	{
 		$sql = "update modelr.experiment set 
 		extent_model = '".$extent."'
+		where idexperiment='".$id."' ";
+		$resultado = pg_exec($this->conn,$sql);
+		if ($resultado)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function incluirProjecao($id, $extent)
+	{
+		$sql = "update modelr.experiment set 
+		extent_projection = '".$extent."'
 		where idexperiment='".$id."' ";
 		// echo $sql;
 		// exit;
@@ -159,7 +199,7 @@ class Experimento
 	}
 
 	function usaRaster($id,$idraster)
-	{
+	{	
 		$sql = 'select * from modelr.experiment_use_raster where idexperiment = '.$id.' and idraster = '.$idraster.';';
 		$res = pg_exec($this->conn,$sql);
 		if (pg_num_rows($res)>0)
@@ -167,12 +207,18 @@ class Experimento
 			return true;
 		}
 		else
-		{
-			if($idraster == 4 || $idraster == 5 || $idraster == 13 || $idraster == 14 || $idraster == 84 || $idraster == 85 || $idraster == 93 || $idraster == 94){
-				return true;
-			}
-			else {
+		{	
+			$sql2 = 'select * from modelr.experiment_use_raster where idexperiment = '.$id.';';
+			$res2 = pg_exec($this->conn,$sql2);
+			if (pg_num_rows($res2)>0){
 				return false;
+			} else {
+				if($idraster == 4 || $idraster == 5 || $idraster == 13 || $idraster == 14 || $idraster == 84 || $idraster == 85 || $idraster == 93 || $idraster == 94){
+					return true;
+				}
+				else {
+					return false;
+				}
 			}
 		}
 		
@@ -326,7 +372,7 @@ class Experimento
 		//echo $sql . "<br>";
 		// 8 status occurrence = OK
 		$resultado = pg_exec($this->conn,$sql);
-		//echo $sql;
+		//echo $resultado;
 		//echo '<br>';
 		//echo '<br>';
 		//exit;
@@ -452,10 +498,6 @@ class Experimento
 		   $this->tss = str_replace(',','.',$this->tss);
 	   }
 	   
-	   if (empty($this->resolution))
-	   {
-			$this->resolution = '10';
-	   }
 	   if (empty($this->repetitions))
 	   {
 			$this->repetitions= '1';
@@ -472,11 +514,10 @@ class Experimento
        idpartitiontype = ".$this->idpartitiontype.",
 	   num_points = ".$this->num_points.",
 	   tss = ".$this->tss.",
-	   resolution = ".$this->resolution.",
 	   repetitions  = ".$this->repetitions.",
-	   trainpercent  = ".$this->trainpercent.",
-	   extent_projection = '".$this->extent_projection."'
+	   trainpercent  = ".$this->trainpercent."
 	   where idexperiment='".$id."' ";
+	   
 	   $resultado = pg_exec($this->conn,$sql);
 	 
 	   if ($resultado){
@@ -524,6 +565,7 @@ class Experimento
 		$this->num_points = $row['num_points'];
 		$this->iduser = $row['iduser'];
 		$this->extent_model = $row['extent_model'];
+		$this->extent_projection = $row['extent_projection'];
 		$this->automaticfilter = $row['automatic_filter'];
 	}
 
@@ -554,7 +596,13 @@ class Experimento
 	
 	function limparCorteRaster($idexperimento)
 	{	
-		$sql = 'update modelr.experiment_result set png_cut_path = null, raster_cut_path = null, "isImageCut" = false where idresulttype=303 and idexperiment = ' . $idexperimento;
+		$sql = 'update modelr.experiment_result set png_cut_path = null, raster_cut_path = null, "imageCutValidated" = false,"isImageCut" = false where idresulttype=303 and idexperiment = ' . $idexperimento;
+		$res = pg_exec($this->conn,$sql);
+	}
+	
+	function validarCorteRaster($idexperimento)
+	{	
+		$sql = 'update modelr.experiment_result set "imageCutValidated" = true where idresulttype=303 and idexperiment = ' . $idexperimento;
 		$res = pg_exec($this->conn,$sql);
 	}
 	
