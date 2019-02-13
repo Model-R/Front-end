@@ -24,7 +24,7 @@ if (isset($_REQUEST['op']))
 
 	$ws = file_get_contents("https://model-r.jbrj.gov.br/ws/?idexperiment=" . $id);
 	$json = json_decode($ws);
-	//print_r($json);
+	print_r($json);
 	//echo 'entrou';
 	//exit;
 	$unhashedid = $json[0]->id;

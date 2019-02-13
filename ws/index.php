@@ -29,14 +29,12 @@ if (isset($_GET['status']))
 
 
 $res = pg_exec($conn,$sql);
-
 $qtd = pg_num_rows($res);
 
 $json_str = '[';
 $c = 0;
 while ($row = pg_fetch_array($res))
 {	
-
 	$c++;
 	$sql2 = 'select * from modelr.occurrence where idexperiment = '.$row['idexperiment'];
 	$res2 = pg_exec($conn,$sql2);
@@ -108,11 +106,11 @@ eua.idexperiment = '.$row['idexperiment'];
 			
 	if ($c<$qtd)
 	{	
-		$json_str.='{"idexperiment":"'.md5($row['idexperiment']).'", "id":"'.$row['idexperiment'].'", "name":"'.$row['name'].'", "description": "'.$row['name'].'", "num_repetitions": "'.$row['repetitions'].'", "num_partition": "'.$row['num_partition'].'", "trainpercent": "'.$row['trainpercent'].'", "extent_model": "'.$row['extent_model'].'", "buffer": "'.$row['buffer'].'", "num_points": "'.$row['num_points'].'",  "tss": "'.$row['tss'].'", "statusexperiment": "'.$row['statusexperiment'].'","partitiontype": "'.$row['partitiontype'].'","resolution": "'.$row['resolution'].'", "occurrences": '.$json_str2.',"raster": '.$json_str3.',"algorithm": '.$json_str4.'},';
+		$json_str.='{"idexperiment":"'.md5($row['idexperiment']).'", "id":"'.$row['idexperiment'].'", "name":"'.$row['name'].'", "description": "'.$row['name'].'", "num_repetitions": "'.$row['repetitions'].'", "num_partition": "'.$row['num_partition'].'", "trainpercent": "'.$row['trainpercent'].'", "extent_model": "'.$row['extent_model'].'", "extent_projection": "'.$row['extent_projection'].'", "buffer": "'.$row['buffer'].'", "num_points": "'.$row['num_points'].'",  "tss": "'.$row['tss'].'", "statusexperiment": "'.$row['statusexperiment'].'","partitiontype": "'.$row['partitiontype'].'","resolution": "'.$row['resolution'].'", "occurrences": '.$json_str2.',"raster": '.$json_str3.',"algorithm": '.$json_str4.'},';
 	}
 	else
 	{
-		$json_str.='{"idexperiment":"'.md5($row['idexperiment']).'", "id":"'.$row['idexperiment'].'", "name":"'.$row['name'].'", "description": "'.$row['name'].'", "num_repetitions": "'.$row['repetitions'].'", "num_partition": "'.$row['num_partition'].'", "trainpercent": "'.$row['trainpercent'].'", "extent_model": "'.$row['extent_model'].'", "buffer": "'.$row['buffer'].'", "num_points": "'.$row['num_points'].'",  "tss": "'.$row['tss'].'", "statusexperiment": "'.$row['statusexperiment'].'","partitiontype": "'.$row['partitiontype'].'","resolution": "'.$row['resolution'].'", "occurrences": '.$json_str2.', "raster": '.$json_str3.',"algorithm": '.$json_str4.'}';
+		$json_str.='{"idexperiment":"'.md5($row['idexperiment']).'", "id":"'.$row['idexperiment'].'", "name":"'.$row['name'].'", "description": "'.$row['name'].'", "num_repetitions": "'.$row['repetitions'].'", "num_partition": "'.$row['num_partition'].'", "trainpercent": "'.$row['trainpercent'].'", "extent_model": "'.$row['extent_model'].'", "extent_projection": "'.$row['extent_projection'].'", "buffer": "'.$row['buffer'].'", "num_points": "'.$row['num_points'].'",  "tss": "'.$row['tss'].'", "statusexperiment": "'.$row['statusexperiment'].'","partitiontype": "'.$row['partitiontype'].'","resolution": "'.$row['resolution'].'", "occurrences": '.$json_str2.', "raster": '.$json_str3.',"algorithm": '.$json_str4.'}';
 	}
 }
 $json_str .=']';
