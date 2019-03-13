@@ -139,9 +139,22 @@ class Experimento
 		extent_model = '".$extent."'
 		where idexperiment='".$id."' ";
 		$resultado = pg_exec($this->conn,$sql);
-		//echo $sql;
-		//echo $resultado;
-		//exit;
+		if ($resultado)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function incluirAutomaticFilter($id, $filter)
+	{
+		$sql = "update modelr.experiment set 
+		automatic_filter = ".$filter."
+		where idexperiment='".$id."' ";
+		$resultado = pg_exec($this->conn,$sql);
 		if ($resultado)
 		{
 			return true;
@@ -407,14 +420,13 @@ class Experimento
 	
 	function incluir()
 	{
- 		$sql = "insert into modelr.experiment (name,description,group_name,iduser,idstatusexperiment,type,automatic_filter,idpartitiontype,num_partition,num_points,tss,buffer,resolution,repetitions,trainpercent
+ 		$sql = "insert into modelr.experiment (name,description,group_name,iduser,idstatusexperiment,type,idpartitiontype,num_partition,num_points,tss,buffer,resolution,repetitions,trainpercent
 		) values (
 		'".$this->name."',
 		'".$this->description."',
 		'".$this->group."',
 		'".$this->iduser."',1,
 		'".$this->type."',
-		'".$this->automaticfilter."',
 		1,
 		3,
 		1000,
