@@ -558,7 +558,7 @@ require 'MSGCODIGO.php';
 		console.log(document.getElementById(id.toString()))
 		var element = document.getElementById(id.toString());
 		var nome = element.innerText || element.textContent;
-		nome = nome.replace(' Editar', '')
+		nome = nome.replace('Editar', '')
 		document.getElementById('edtname').value= nome;
 		expid = id;
 		$('#editNameModal').modal('show');

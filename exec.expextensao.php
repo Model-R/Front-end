@@ -14,7 +14,7 @@ $Experimento->conn = $conn;
 $id = $_REQUEST['id'];
 $tab = $_REQUEST['tab'];
 
-$extensao1 = $_REQUEST['edtextensao1_oeste'].';'.$_REQUEST['edtextensao1_leste'].';'.$_REQUEST['edtextensao1_norte'].';'.$_REQUEST['edtextensao1_sul'];
+$extensao1 = $_REQUEST['edtextensao1_leste'].';'.$_REQUEST['edtextensao1_oeste'].';'.$_REQUEST['edtextensao1_norte'].';'.$_REQUEST['edtextensao1_sul'];
 
 $Experimento->extent_model = $extensao1;
 

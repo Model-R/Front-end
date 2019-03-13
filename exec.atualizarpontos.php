@@ -24,6 +24,7 @@ if(dirname(__FILE__) == '/var/www/html/rafael/modelr/v2' || dirname(__FILE__) ==
 }
 
 print_r($_REQUEST);
+//exit;
 if(empty($_REQUEST['mult'])){ 
 	$mult = false;
 }
@@ -60,8 +61,7 @@ if (($latinf != 'undefined') && (!empty($latinf)))
 {
 	//$Experimento->excluirPonto($idexperimento,$idponto,$idstatus,$latinf,$longinf);
 	foreach($lista as $idponto){
-		echo $idponto;
-		$sql = "update modelr.occurrence set idstatusoccurrence=$idstatus,lat=$latinf, long=$longinf ";
+		$sql = "update modelr.occurrence set idstatusoccurrence=$idstatus,lat2=$latinf, long2=$longinf ";
 		
 		$sql.="	where
 		idoccurrence = $idponto";
@@ -154,7 +154,7 @@ or shape.nm_mun <> minorarea)
 			while ($row2 = pg_fetch_array($res3))
 			{	
 				// troco o status para 4 // normal e inverto a coordenada
-				$sql4 = "update modelr.occurrence set idstatusoccurrence=4, lat = ".$row2['long'].", long = ".$row2['lat']."
+				$sql4 = "update modelr.occurrence set idstatusoccurrence=4, lat2 = ".$row2['long'].", long2 = ".$row2['lat']."
 						where idoccurrence = ".$row2['idoccurrence'];
 				$res4 = pg_exec($conn,$sql4);
 			}
@@ -178,7 +178,7 @@ or shape.nm_mun <> minorarea)
 			while ($row4 = pg_fetch_array($res6))
 			{	
 				// troco o status para 4 // normal e inverto a coordenada
-				$sql7 = "update modelr.occurrence set idstatusoccurrence=4, lat = -1 * ".$row4['lat']."
+				$sql7 = "update modelr.occurrence set idstatusoccurrence=4, lat2 = -1 * ".$row4['lat']."
 						where idoccurrence = ".$row4['idoccurrence'];
 				$res7 = pg_exec($conn,$sql7);
 			}
@@ -202,7 +202,7 @@ or shape.nm_mun <> minorarea)
 			while ($row6 = pg_fetch_array($res9))
 			{	
 				// troco o status para 4 // normal e inverto a coordenada
-				$sql10 = "update modelr.occurrence set idstatusoccurrence=4, long = -1 * ".$row6['long']."
+				$sql10 = "update modelr.occurrence set idstatusoccurrence=4, long2 = -1 * ".$row6['long']."
 						where idoccurrence = ".$row6['idoccurrence'];
 				$res10 = pg_exec($conn,$sql10);
 			}
@@ -229,7 +229,7 @@ or shape.nm_mun <> minorarea)
 				// print_r($row8);
 				// exit;
 				// troco o status para 4 // normal e inverto a coordenada
-				$sql13 = "update modelr.occurrence set idstatusoccurrence=4, lat = -1 * ".$row8['lat'].", long = -1 * ".$row8['long']."
+				$sql13 = "update modelr.occurrence set idstatusoccurrence=4, lat2 = -1 * ".$row8['lat'].", long2 = -1 * ".$row8['long']."
 						where idoccurrence = ".$row8['idoccurrence'];
 				$res13 = pg_exec($conn,$sql13);
 			}
@@ -288,12 +288,12 @@ if($idstatus == '4' || $idstatus == '17'){
 	
 	$ocorrenciasCSVPath = $baseUrl . 'temp/'. $idexperimento . '/ocorrencias.csv';
 	exec("Rscript extent-points.r " . $idexperimento . ' ' . $ocorrenciasCSVPath, $a, $b);
-	$leste = str_replace('xmin',"",$a[1]);
-	$leste = str_replace(' ',"",$leste);
-	$leste = str_replace(':',"",$leste);
-	$oeste = str_replace("xmax","",$a[2]);
-	$oeste = str_replace(" ","",$oeste);
-	$oeste = str_replace(":","",$oeste);
+	$oeste = str_replace('xmin',"",$a[1]);
+	$oeste = str_replace(' ',"",$oeste);
+	$oeste = str_replace(':',"",$oeste);
+	$leste = str_replace("xmax","",$a[2]);
+	$leste = str_replace(" ","",$leste);
+	$leste = str_replace(":","",$leste);
 	$sul = str_replace("ymin","",$a[3]);
 	$sul = str_replace(" ","",$sul);
 	$sul = str_replace(":","",$sul);

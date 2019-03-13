@@ -14,7 +14,7 @@ $Experimento->conn = $conn;
 $id = $_REQUEST['id'];
 $tab = $_REQUEST['tab'];
 
-$extensao1 = $_REQUEST['edtprojecao1_oeste'].';'.$_REQUEST['edtprojecao1_leste'].';'.$_REQUEST['edtprojecao1_norte'].';'.$_REQUEST['edtprojecao1_sul'];
+$extensao1 = $_REQUEST['edtprojecao1_leste'].';'.$_REQUEST['edtprojecao1_oeste'].';'.$_REQUEST['edtprojecao1_norte'].';'.$_REQUEST['edtprojecao1_sul'];
 
 $Experimento->projection_model = $extensao1;
 

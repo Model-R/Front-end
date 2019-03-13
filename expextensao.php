@@ -38,8 +38,8 @@ if(empty($extent_model) || $extent_model == ';;;' || $extent_model == '')
     $extents = explode(';', $extent_model);
     $extensao1_norte = $extents[2];
     $extensao1_sul = $extents[3];
-    $extensao1_leste = $extents[1];
-    $extensao1_oeste = $extents[0];
+    $extensao1_leste = $extents[0];
+    $extensao1_oeste = $extents[1];
 	$has_extent = 'true';
 }
 ?>

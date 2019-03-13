@@ -29,6 +29,8 @@ if ($op=='A')
 	$idexperiment = $Experimento->idexperiment;
 	$name = $Experimento->name ;
 	$description = $Experimento->description ;
+	//$automaticFilter = $Experimento->automaticfilter ;
+	//$bool_automaticfilter = $automaticFilter === 't'? true: false;
 }
 
 ?>
@@ -89,6 +91,27 @@ if ($op=='A')
     </div>
 </div>
 
+<!-- Modal --> 
+<div class="modal fade" id="ConfirmAutomaticFilter" tabindex="-1" role="dialog" aria-labelledby="ConfirmAutomaticFilterLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="ConfirmAutomaticFilterLabel">Adicionar Ocorrências</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p>Todos os filtros serão executados automaticamente. Esta operação pode demorar alguns minutos. Deseja continuar ?</p>
+				<div class="modal-footer ConfirmAutomaticFilterFooter">
+					<button type="button" data-dismiss="modal" id="ConfirmAutomaticFilterButton" class="btn btn-primary">Sim</button>
+					<button class="btn" data-dismiss="modal" aria-hidden="true">Não</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+	
 <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="x_panel">
@@ -155,8 +178,24 @@ if ($op=='A')
                             <input id="edtespecie" value="<?php echo $especie;?>"  name="edtespecie" class="form-control col-md-7 col-xs-12" >
                         <?php } ?>
                         <span class="input-group-btn"><button type="button" onclick="buscar()" class="btn btn-primary" >Buscar</button>
-                        <button type="button" onclick="adicionarOcorrencia()" class="btn btn-success btn"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Adicionar</button></span>
+                        <button type="button" onclick="confirmarFiltrarDados()" class="btn btn-success btn"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Adicionar</button></span>
                     </div>
+					<div class="">
+						<div class="item form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="edtfiltroautomatico"></label>
+							<div class="col-md-6 col-sm-6 col-xs-12">
+								<input type="checkbox" name="edtfiltroautomatico" id="edtfiltroautomatico" checked>Executar filtros automaticamente<br>
+							</div>
+						</div>
+					</div>
+					<div id="erro-busca" style="display:none">
+						<div class="item form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="edtfiltroautomatico"></label>
+							<div class="col-md-6 col-sm-6 col-xs-12" style="color: red;font-weight: 700;">
+								<span>Nenhum resultado foi encontrado !</span>
+							</div>
+						</div>
+					</div>
                 </div>
             </div>
         </form>
@@ -252,7 +291,17 @@ var busca = <?php if($_REQUEST['busca']){
 					echo 'false';
 				}?>;
 				
-console.log(busca + ' buscar');
+function confirmarFiltrarDados()
+{   
+	if(document.getElementById('edtfiltroautomatico').checked){
+		$('#ConfirmAutomaticFilter').modal('show');
+	} else {
+		adicionarOcorrencia();
+	}
+}
+$("#ConfirmAutomaticFilterButton").click(function() {
+	adicionarOcorrencia();
+});
 //exibe('loading','Buscando Ocorrências');
 
 // This example adds a user-editable rectangle to the map.
@@ -338,16 +387,20 @@ function getCORS(url, success) {
 function getTaxonKeyGbif(sp)
 {
 	exibe('loading','Buscando Ocorrências');
+	document.getElementById('erro-busca').style.display = 'none';
 	if(document.getElementById('checkfontegbif').checked==true){
 		var xmlhttp = new XMLHttpRequest();
 		xmlhttp.onreadystatechange = function() {
-		if (this.readyState == 4 && this.status == 200) {
-			//console.log('resultado gbif');
-			//console.log(this.responseText)
-			var myObj = JSON.parse(this.responseText);
-			document.getElementById("demo").innerHTML = myObj.results[0]["key"]; //this.responseText;//myObj.result[key];//count;
-			//gbif(myObj.results[0]["key"]);
-			jabot(myObj.results[0]["key"])
+			if (this.readyState == 4 && this.status == 200) {
+				//console.log('resultado gbif');
+				var myObj = JSON.parse(this.responseText);
+				if(myObj.results.length){
+					document.getElementById("demo").innerHTML = myObj.results[0]["key"]; //this.responseText;//myObj.result[key];//count;
+					//gbif(myObj.results[0]["key"]);
+					jabot(myObj.results[0]["key"])
+				} else {
+					jabot(null);
+				}
 			}
 		};
 		xmlhttp.open("GET", "https://api.gbif.org/v1/species?name="+sp, true);
@@ -363,11 +416,16 @@ function jabot (gbifTaxonKey) {
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			console.log('resultado jabot');
-			console.log(this)
+			console.log(this.responseText)
 			// if(gbifTaxonKey && this.responseText != ']') gbif(gbifTaxonKey, JSON.parse(this.responseText))
 			// else if(gbifTaxonKey && this.responseText == ']') gbif(gbifTaxonKey, [])
 			if(gbifTaxonKey && this.responseText != ']') getAllGbif(gbifTaxonKey, 0, [], JSON.parse(this.responseText))
 			else if(gbifTaxonKey && this.responseText == ']') getAllGbif(gbifTaxonKey, 0, [], [])
+			else if (!gbifTaxonKey && this.responseText == ']'){
+				console.log('erro buscas')
+				exibe('loading','Buscando Ocorrências');
+				document.getElementById('erro-busca').style.display = 'block';
+			}
 			else printJabotOnly(JSON.parse(this.responseText))
 		}
 	};
@@ -520,38 +578,38 @@ function gbif(gbifData, jabotData)
 function getAllGbif (taxonKey, offset, results, jabotData) {
 	
 	console.log('entrou gel all gbif ' + offset)
-	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.onreadystatechange = function() {
-		if (this.readyState == 4 && this.status == 200) {
-			var data = JSON.parse(this.responseText);
-			results = results.concat(data.results);
-			offset += data.limit;
-			if(offset < data.count){
-				getAllGbif (taxonKey, offset, results, jabotData)
-			} else {
-				//imprimir results
-				gbif(results, jabotData)
-			}
-		};
+	if(taxonKey == null){
+		document.getElementById('erro-busca').style.display = 'block';
+		exibe('loading','Buscando Ocorrências');
+	} else {
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				var data = JSON.parse(this.responseText);
+				results = results.concat(data.results);
+				offset += data.limit;
+				if(offset < data.count){
+					getAllGbif (taxonKey, offset, results, jabotData)
+				} else {
+					//imprimir results
+					gbif(results, jabotData)
+				}
+			};
+		}
+		xmlhttp.open("GET", "https://api.gbif.org/v1/occurrence/search?taxonKey="+taxonKey+'&hasCoordinate=true&limit=300&offset='+offset, true);
+		xmlhttp.send();
 	}
-	xmlhttp.open("GET", "https://api.gbif.org/v1/occurrence/search?taxonKey="+taxonKey+'&hasCoordinate=true&limit=300&offset='+offset, true);
-	xmlhttp.send();
 }
 
 function adicionarOcorrencia()
-{
+{	
 	if (contaSelecionados(document.getElementsByName('chtestemunho[]'))>0 && !multipleSpecies)
 	{
-		//console.log(document.getElementsByName('chtestemunho[]'))
 		exibe('loading','Adicionando Ocorrências');
-		document.getElementById('frm2').action='exec.adicionarocorrencia.php';
+		document.getElementById('frm2').action='exec.adicionarocorrencia.php?filtro=' + document.getElementById('edtfiltroautomatico').checked;
 		document.getElementById('frm2').submit();
 	}
     else if(contaSelecionados(document.getElementsByName('chtestemunho[]'))>0 && multipleSpecies){
-        //csv com mais de uma esp�cie
-        //exibe('loading','Adicionando Ocorrências');
-		//document.getElementById('frm2').action='exec.adicionargrupo.php';
-		//document.getElementById('frm2').submit();
 		$('#multSpeciesModal').modal('show');
     }
 	else
@@ -726,4 +784,6 @@ $('#checkfontegbif').on('change', function() {
         document.getElementById('checkfontecsv').checked = false;
     }
 });
+
+
 </script>

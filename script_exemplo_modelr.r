@@ -22,6 +22,7 @@ rasterCSVPath <- args[10]
 ocorrenciasCSVPath <- args[11]
 algorithms <- args[12]
 extensionPath <- args[13]
+projectionPath <- args[14]
 
 cat('antes')
 if(bufferValue == 'NULL') bufferValue = NULL;
@@ -47,9 +48,15 @@ algorithmsArray <- as.list(strsplit(algorithms, ';')[[1]])
 rasters <- paste0(baseUrl,'../../../../../',rasters)
 stack_rasters <- stack(rasters)
 
+proj_data_json = geojsonio::geojson_read(projectionPath, what = "sp")
 data_json = geojsonio::geojson_read(extensionPath, what = "sp")
 stack_rasters <- mask(crop(stack_rasters, data_json), data_json)
-stack_rasters
+
+cat('extension')
+data_json
+cat('projection')
+proj_data_json
+
 especies <- unique(coordenadas$taxon);
 ##-----------------------------------------------##
 # vamos receber várias variáveis: ocorrencias.csv, raster.csv, partitions, buffer, num_points, tss, hash id
@@ -125,7 +132,7 @@ for (especie in especies) {
 	 #predictors1 = variaveis_cortadas,#aqui não vai servir ainda
 	 ## argumentos de do_any()
 	 project_model = F,
-	 mask = mascara,
+	 mask = proj_data_json,
 	 write_png = T,
 	 #argumentos de do_enm():
 	 bioclim = algorithmsArray[[4]] == TRUE,

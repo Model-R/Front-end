@@ -27,8 +27,6 @@ if (($operacao=='I') || ($operacao=='A'))
 	$descricao = $_REQUEST['edtdescricao'];
 	$group = $_REQUEST['edtgrupo'];
 	$tipo = $_REQUEST['edttipo'];
-	if($_REQUEST['edtfiltroautomatico'] == 'on') $filtroautomatico = 'true';
-	else $filtroautomatico = 'false';
 	$idusuario = $_SESSION['s_idusuario'];
 
 	$Experimento->idexperiment= $idexperimento;
@@ -38,7 +36,6 @@ if (($operacao=='I') || ($operacao=='A'))
 	$Experimento->group = $group;
 	$Experimento->iduser = $idusuario;
 	$Experimento->type = $tipo;
-	$Experimento->automaticfilter = $filtroautomatico;
 }
 else
 {

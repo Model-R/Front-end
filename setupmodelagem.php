@@ -234,16 +234,17 @@ if($extent_model == ""){
 	//echo $ExtentModelPath;
 } else {
 	$extent_model = explode(";",$extent_model);
-	$west = $extent_model[0];
-	$east = $extent_model[1];
+	
+	$east = $extent_model[0];
+	$west = $extent_model[1];
 	$north = $extent_model[2];
 	$south = $extent_model[3];
-
+	
 	$result = [];
+	$result[] = [$west,$north];
+	$result[] = [$west,$south];
 	$result[] = [$east,$south];
 	$result[] = [$east,$north];
-	$result[] = [$west,$south];
-	$result[] = [$west,$north];
 	$coordinates[] = [$result];
 	
 	$myObj->type = "MultiPolygon";
@@ -260,6 +261,8 @@ $ProjectionModelPath = $baseUrl . "temp/" . $id . "/projection_model.json";
 $file2 = fopen($ProjectionModelPath, 'w');
 
 $projection_model = $json[0]->extent_projection;
+echo $projection_model;
+echo '<br>';
 
 if($projection_model == ""){
 	$ProjectionModelPath = $baseUrl . 'temp/dados/polygon-brazil.json';
@@ -272,19 +275,18 @@ if($projection_model == ""){
 	$south = $projection_model[3];
 
 	$result = [];
+	$result[] = [$west,$north];
+	$result[] = [$west,$south];
 	$result[] = [$east,$south];
 	$result[] = [$east,$north];
-	$result[] = [$west,$south];
-	$result[] = [$west,$north];
-	$coordinates[] = [$result];
+	$coordinates2[] = [$result];
 	
 	$myObj2->type = "MultiPolygon";
-	$myObj2->coordinates = $coordinates;
+	$myObj2->coordinates = $coordinates2;
 	$myJSON2 = json_encode($myObj2, JSON_PRETTY_PRINT|JSON_NUMERIC_CHECK);
 
 	fwrite($file2, $myJSON2);
 	fclose($file2);
-	//print_r($myJSON2);
 }
 
 #start time
@@ -299,6 +301,8 @@ $algString = implode(";",$arrayAlg);
 // if($returnData[0] < 10){
 	// header("Location: cadexperimento.php?op=A&tab=6&MSGCODIGO=76&id=" . $id);
 // } else {
+	//echo "Rscript script_exemplo_modelr.r $id $hashId $repetitions $partitions $partitiontype $trainpercent '$buffer' $num_points $tss '$rasterCSVPath' '$ocorrenciasCSVPath' '$algString' '$ExtentModelPath' '$ProjectionModelPath'";
+	//exit;
 	exec("Rscript script_exemplo_modelr.r $id $hashId $repetitions $partitions $partitiontype $trainpercent '$buffer' $num_points $tss '$rasterCSVPath' '$ocorrenciasCSVPath' '$algString' '$ExtentModelPath' '$ProjectionModelPath'");
 	if (!file_exists($baseUrl . "temp/result/" . $hashId . "/" . $speciesName . ".csv")) {
 		header("Location: cadexperimento.php?op=A&tab=6&MSGCODIGO=77&id=" . $id);

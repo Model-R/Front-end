@@ -270,8 +270,9 @@ if ($op=='A')
 $sql = "select idoccurrence,idexperiment,iddatasource,taxon,collector,collectnumber,server,
 path,file,occurrence.idstatusoccurrence,pathicon,statusoccurrence,country,majorarea,minorarea,herbario,numtombo,fonte,
 case when lat2 is not null then lat2 else lat end as lat,
-case when long2 is not null then long2
-else long end as long
+case when long2 is not null then long2 else long end as long,
+case when lat2 is not null then lat end as oldlat,
+case when long2 is not null then long end as oldlong
 from modelr.occurrence, modelr.statusoccurrence where 
 occurrence.idstatusoccurrence = statusoccurrence.idstatusoccurrence and
 idexperiment = ".$id;
@@ -307,11 +308,11 @@ while ($row = pg_fetch_array($res))
 	// preparo os quadros de informação para cada ponto
 	$c++;
 	if ($c < $conta) {
-		$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."','".$coletor."','".$herbario."','".$tombo."','".$status."'],";
+		$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."','".$coletor."','".$herbario."','".$tombo."','".$status."', ".$row['oldlat'].",".$row['oldlong']."],";
 	}
 	else
 	{
-		$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."','".$coletor."','".$herbario."','".$tombo."','".$status."'],";
+		$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."','".$coletor."','".$herbario."','".$tombo."','".$status."', ".$row['oldlat'].",".$row['oldlong']."],";
 		$latcenter = $row['lat'];
 		$longcenter = $row['long'];
 	}
@@ -323,7 +324,7 @@ while ($row = pg_fetch_array($res))
 	?>
 								
     <tr class="even pointer points-table-line">
-        <td class="a-center "><input type="checkbox" name="table_records[]" id="table_records[]" value="<?php echo $row['idoccurrence'];?>" ><a data-toggle="tooltip" data-placement="top" title data-original-title="Editar" onclick="abreModal('<?php echo $row['taxon'];?>','<?php echo $row['lat'];?>','<?php echo $row['long'];?>','<?php echo $row['idoccurrence'];?>','<?php echo $row[''];?>','<?php echo $row[''];?>','<?php echo $servidor;?>','<?php echo $path;?>','<?php echo $arquivo;?>','<?php echo $row['idstatusoccurrence'];?>','<?php echo $localizacao;?>','<?php echo $coletor;?>','<?php echo $herbario;?>','<?php echo $tombo;?>','<?php echo $status;?>')">  <span class="glyphicon glyphicon-edit edit-button" aria-hidden="true"></span></a></td><td><?php echo $html_imagem.' ';?></td>
+        <td class="a-center "><input type="checkbox" name="table_records[]" id="table_records[]" value="<?php echo $row['idoccurrence'];?>" ><a data-toggle="tooltip" data-placement="top" title data-original-title="Editar" onclick="abreModal('<?php echo $row['taxon'];?>','<?php echo $row['lat'];?>','<?php echo $row['long'];?>','<?php echo $row['idoccurrence'];?>','<?php echo $row[''];?>','<?php echo $row[''];?>','<?php echo $servidor;?>','<?php echo $path;?>','<?php echo $arquivo;?>','<?php echo $row['idstatusoccurrence'];?>','<?php echo $localizacao;?>','<?php echo $coletor;?>','<?php echo $herbario;?>','<?php echo $tombo;?>','<?php echo $status;?>','<?php echo $row['oldlat'];?>','<?php echo $row['oldlong'];?>')">  <span class="glyphicon glyphicon-edit edit-button" aria-hidden="true"></span></a></td><td><?php echo $html_imagem.' ';?></td>
         <td class="a-right a-right "><b><?php echo $row['fonte'];?></b></br><?php echo $row['herbario'];?></td>
 		<td class="a-right a-right " style="width: 200px;"><?php echo $row['taxon'];?></td>
         <td class="a-right a-right "><?php echo $row['collector'];?> <?php echo $row['collectnumber'];?></td>
@@ -500,15 +501,15 @@ function initMapModal(idocorrencia) {
         
         // Allow each marker to have an info window    
         google.maps.event.addListener(marker, 'click', (function(marker, i) {
-            return function() {
-				abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],'','',markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12],markers[i][13]);
+            return function() {//começo
+				abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],'','',markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12],markers[i][13],markers[i][14],markers[i][15]);
 				
             }
         })(marker, i));
 		
         google.maps.event.addListener(marker, 'dragend', (function(marker, i) {
             return function() {
-				abreConfirmacao(markers[i][0],markers[i][1],markers[i][2],markers[i][3],this.position.lat(),this.position.lng(),markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12],markers[i][13]);
+				abreConfirmacao(markers[i][0],markers[i][1],markers[i][2],markers[i][3],this.position.lat(),this.position.lng(),markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12],markers[i][13],markers[i][14],markers[i][15]);
 				//abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],this.position.lat(),this.position.lng(),markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9]);
 				
             }
@@ -523,7 +524,7 @@ function initMapModal(idocorrencia) {
 }
 
 
-function abreModal(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquivo,idstatusocorrence,localizacao, coletor, herbario, tombo, status)
+function abreModal(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquivo,idstatusocorrence,localizacao, coletor, herbario, tombo, status, oldlat, oldlong)
 {
 
    document.getElementById('divtaxon').innerHTML=taxon;
@@ -531,7 +532,8 @@ function abreModal(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquiv
 	document.getElementById('edidocorrencia').value=idocorrencia;
 	document.getElementById('divimagem').innerHTML=html_imagem;
 	document.getElementById('dadosstatus').innerHTML='Status: '+status;
-	document.getElementById('dadosoriginais').innerHTML='Latitude: '+lat+' Longitude: '+lng+' - '+localizacao;
+	if(status == 'Coordenada Ajustada')  document.getElementById('dadosoriginais').innerHTML='Latitude: '+lat+' (lat original: '+oldlat+') Longitude: '+lng+' (long original: '+oldlong+') - '+localizacao;
+	else document.getElementById('dadosoriginais').innerHTML='Latitude: '+lat+' Longitude: '+lng+' - '+localizacao;
 	document.getElementById('dadoscoletor').innerHTML='Coletor: '+coletor;
 	document.getElementById('dadosherbario').innerHTML='Herbário: '+herbario + ' - Tombo: ' + tombo;
 	document.getElementById('edtlatitude').value=lat;
@@ -570,6 +572,7 @@ function atualizarPontos(idponto,idstatus,latinf,longinf,statusOnly)
 {
 	//alert('?idstatus='+idstatus+'&idponto='+idponto+'&latinf='+latinf+'&longinf='+longinf);
 	exibe('loading','Atualizando Status');
+	console.log('exec.atualizarpontos.php?id='+ <?php echo $id;?> +'&idstatus='+idstatus+'&idponto='+idponto+'&latinf='+latinf+'&longinf='+longinf + '&statusOnly='+statusOnly + '&filtro='+<?php echo $filtro;?> + '')
 	<?php if(empty($filtro)){?>
 		document.getElementById('frm').action='exec.atualizarpontos.php?id='+ <?php echo $id;?> +'&idstatus='+idstatus+'&idponto='+idponto+'&latinf='+latinf+'&longinf='+longinf + '&statusOnly='+statusOnly;
 	<?php } else { ?>
@@ -835,7 +838,7 @@ google.maps.event.addDomListener(window, 'load', initMap);
         // Allow each marker to have an info window    
         google.maps.event.addListener(marker, 'click', (function(marker, i) {
             return function() {
-				abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],'','',markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12],markers[i][13]);
+				abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],'','',markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12],markers[i][13],markers[i][14],markers[i][15]);
 				
             }
         })(marker, i));

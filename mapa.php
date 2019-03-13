@@ -32,10 +32,17 @@ $isImageCut = $isImageCut === 't'? true: false;
 $pngPath = $Experimento->pngPath;
 $tiffPath = $Experimento->tiffPath;
 $rasterPngPath = $Experimento->rasterPngPath;
+$projection = $Experimento->extent_projection;
+$projection = explode(";",$projection);
 
 $rasterPngPath = str_replace("/var/www/html/rafael/modelr","https://model-r.jbrj.gov.br",$rasterPngPath);        
 $novoRaster;
 
+if(dirname(__FILE__) == '/var/www/html/rafael/modelr/v2' || dirname(__FILE__) == '/var/www/html/rafael/modelr/v3'){
+	$baseUrl = '../';
+} else {
+	$baseUrl = '';
+}
 ?>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -253,12 +260,16 @@ function ExportShapeControl(controlDiv, map) {
                 
                 isImageCut = true;
                 pngCutPath = 'https://model-r.jbrj.gov.br/temp/' + <?php echo $id;?> + '/png_map-' + <?php echo $id;?> + '.png';
-                console.log(pngCutPath);
 				imageOverlay = mapOverlay;
 				document.getElementById("cancelarCorteRaster").style.display = 'flex';
+				<?php if($_SESSION['s_idtipousuario'] == '5') { ?>
+					document.getElementById("validarCorteRaster").style.display = 'flex';	
+				<?php } ?>
             }
         }
-        xmlhttp.open("GET",'cutGeoJson.php?table=polygon&array=' + PolygonArrayString.join(':') + '&expid=' + <?php echo $id;?>,true);
+		console.log(PolygonArrayString)
+		console.log('cutGeoJson.php?table=polygon&array=' + JSON.stringify(PolygonArrayString) + '&expid=' + <?php echo $id;?>)
+        xmlhttp.open("GET",'cutGeoJson.php?table=polygon&array=' + JSON.stringify(PolygonArrayString) + '&expid=' + <?php echo $id;?>,true);
         xmlhttp.send();
     }); 
 
@@ -273,14 +284,18 @@ function ExportShapeControl(controlDiv, map) {
 
     isImageCut = false;
      mapOverlay.setMap(mapresult);
-
+	
      imageOverlay = mapOverlay;
 	 document.getElementById("cancelarCorteRaster").style.display = 'none';
+	 if(document.getElementById("validarCorteRaster")){
+		document.getElementById("validarCorteRaster").style.display = 'none';
+	 }
 
      xmlhttp=new XMLHttpRequest();
     xmlhttp.onreadystatechange=function()  {
     }
-    xmlhttp.open("GET",'controleCorteRaster.php?op=L&expid= <?php echo $idexperiment; ?>',true);
+	console.log('controleCorteRaster.php?op=L&expid=<?php echo $idexperiment; ?>')
+    xmlhttp.open("GET",'controleCorteRaster.php?op=L&expid=<?php echo $idexperiment; ?>',true);
     xmlhttp.send();
 };
 
@@ -294,6 +309,7 @@ var pngCutPath;
 var rasterCutPath;
 var isImageCut;
 var rasterPngPath;
+var typePolygonCut;
 
 function initMapExpResultado() {
   var map = new google.maps.Map(document.getElementById('map'), {
@@ -383,10 +399,16 @@ var exportShape = new ExportShapeControl(exportShapeDiv, map);
 
 exportShapeDiv.index = 1;
 map.controls[google.maps.ControlPosition.TOP_CENTER].push(exportShapeDiv);
-
+	//leste oeste norte sul
+	//-64.67653000000001;-30.924622499999998;6.404925371814875;-32.03960046758004
+	//projection
   imageBounds = new google.maps.LatLngBounds(
-	new google.maps.LatLng(-33.77584, -57.84917),
-	new google.maps.LatLng(-2.775838, -34.84917));
+	new google.maps.LatLng(<?php echo $projection[3]?>, <?php echo $projection[1]?>),
+	new google.maps.LatLng(<?php echo $projection[2]?>, <?php echo $projection[0]?>));
+	
+	//imageBounds = new google.maps.LatLngBounds(
+	//new google.maps.LatLng(-30.924622499999998, -64.67653000000001),
+	//new google.maps.LatLng(6.404925371814875, -32.03960046758004));
 		
 		if(isImageCut){
 			mapOverlay = new google.maps.GroundOverlay(pngCutPath,imageBounds,{opacity:1});
@@ -407,7 +429,7 @@ var drawingManager = new google.maps.drawing.DrawingManager({
     drawingControlOptions: {
       position: google.maps.ControlPosition.TOP_CENTER,
       drawingModes: [
-        google.maps.drawing.OverlayType.CIRCLE,
+        //google.maps.drawing.OverlayType.CIRCLE,
         google.maps.drawing.OverlayType.RECTANGLE,
         google.maps.drawing.OverlayType.POLYGON
       ]
@@ -479,12 +501,17 @@ new google.maps.LatLng(6.485, -32.766));
   });
 
 function createHiddenInput (shape) {
-    if(typeOfShape(shape) == 'polygon'){
+	typePolygonCut = typeOfShape(shape);
+    if(typePolygonCut == 'polygon'){
         var vertices = [];
         for(var i = 0; i < shape.getPath().getLength(); i++){
             vertices.push(shape.getPath().getAt(i).toUrlValue(5));
         }
-    } else {
+		PolygonArrayString.push({ type: typePolygonCut, vertices: vertices.join(';')});
+    } else if (typePolygonCut == 'circle'){ 
+		vertices = [shape.center.lat() + ', ' + shape.center.lng()];
+		PolygonArrayString.push({ type: typePolygonCut, vertices: vertices.join(';'), radius: shape.radius});
+	} else {
         var bounds = shape.getBounds();
         var NE = bounds.getNorthEast();
         var SW = bounds.getSouthWest();
@@ -492,11 +519,10 @@ function createHiddenInput (shape) {
         var SE = new google.maps.LatLng(SW.lat(), NE.lng()).toString().replace('(','').replace(')','');
         NE = bounds.getNorthEast().toString().replace('(','').replace(')','');
         SW = bounds.getSouthWest().toString().replace('(','').replace(')','');
-
         var vertices = [SW,NW,NE,SE];
+		PolygonArrayString.push({ type: typePolygonCut, vertices: vertices.join(';') });
     }
-
-    PolygonArrayString.push(vertices.join(';'));
+	
     var input = document.createElement("input");
     input.setAttribute("type", "hidden");
     input.setAttribute("name", "polygon[]");
@@ -662,9 +688,6 @@ $marker = '';
 			  googleMarkers[i].setVisible(true);
 			}
 		}
-		 console.log('toogle ponto');
-		 console.log(googleMarkers)
-		 console.log(googleMarkers[0].getVisible())
 	};
 	
 }
@@ -707,11 +730,13 @@ function deleteHiddenInput (shape) {
             polygons[i].parentNode.removeChild(polygons[i]);
         }
     }
-
-    var index = PolygonArrayString.indexOf(vertices.join(';'));
-    if (index > -1) {
-        PolygonArrayString.splice(index, 1);
-    }
+	
+	for(var i = 0; i < PolygonArrayString.length; i++){
+		var index = PolygonArrayString[i].vertices.indexOf(vertices.join(';'));
+		if (index > -1) {
+			PolygonArrayString.splice(i, 1);
+		}
+	}
 
     shape.setMap(null);
 
@@ -722,6 +747,7 @@ function cortarRaster(){
 	xmlhttp.onreadystatechange=function()  {
 		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
 			mapOverlay.setMap(null);
+			
 			mapOverlay = new google.maps.GroundOverlay(
 				'https://model-r.jbrj.gov.br/temp/' + <?php echo $id;?> + '/png_map-' + <?php echo $id;?> + '.png?' + Math.random(),
 			imageBounds,{opacity:1});
@@ -741,7 +767,7 @@ function cortarRaster(){
 } 
 
 $(document ).ready(function() {
-    pngCutPath = <?php echo "'" . $pngCutPath . "'"; ?>;
+    pngCutPath = <?php echo "'" . $baseUrl . $pngCutPath . "'"; ?>;
     rasterCutPath = <?php echo "'" . $rasterCutPath . "'"; ?>;
     isImageCut = <?php echo "'". $isImageCut . "'" ; ?>;
     rasterPngPath = <?php echo "'". $rasterPngPath . "'"; ?>;
@@ -749,7 +775,6 @@ $(document ).ready(function() {
 });
 
 $('.nav-tabs a[href="#tab_content13"]').click(function(){
-    console.log('tab 13');
     initMapExpResultado();
     setTimeout(function() {
         google.maps.event.trigger(window, 'resize', {});
@@ -835,7 +860,6 @@ function mostrarShapeBioma() {
 
 	for(let overlay of overlayArray){
 		if(overlay.bioma !== shape) {
-			console.log(overlay.mapOverlay)
 			overlay.mapOverlay.setMap(null);
 		}
 	}
@@ -843,7 +867,6 @@ function mostrarShapeBioma() {
 		if(overlay.bioma == shape) {
 			imageOverlay.setMap(null);
 			overlay.mapOverlay.setMap(mapresult)
-			console.log(overlay.mapOverlay)
 		}
 	}
 }

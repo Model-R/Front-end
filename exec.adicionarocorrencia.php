@@ -14,7 +14,7 @@ $especie = $_REQUEST['edtespecie'];
 $fontedados = $_REQUEST['fontebiotico'][0];
 
 $Experimento->getById($idexperimento);
-$automaticfilter = $Experimento->automaticfilter;
+$bool_automaticfilter = $_REQUEST['filtro'];
 $box = $_POST['chtestemunho'];
 $jabotData = [];
 $gbifData = [];
@@ -26,7 +26,8 @@ while (list ($key,$val) = @each($box)) {
 	}
 }
 
-$bool_automaticfilter = $automaticfilter === 't'? true: false;
+$bool_automaticfilter = $bool_automaticfilter === 'true'? true: false;
+$Experimento->incluirAutomaticFilter($idexperimento, $_REQUEST['filtro']);
 
 //if ($fontedados==1)
 //{

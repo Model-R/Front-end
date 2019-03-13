@@ -17,6 +17,12 @@ $Experimento->getPath($expid);
 $isImageCut = $Experimento->isImageCut;
 $isImageCut = $isImageCut === 't'? true: false;
 
+if(dirname(__FILE__) == '/var/www/html/rafael/modelr/v2' || dirname(__FILE__) == '/var/www/html/rafael/modelr/v3'){
+	$baseUrl = '../';
+} else {
+	$baseUrl = '';
+}
+
 if($isImageCut){
 	$pngCutPath = $Experimento->pngCutPath;
     $rasterCutPath = "'" . $Experimento->rasterCutPath . "'";
@@ -27,29 +33,49 @@ if($isImageCut){
 
 $Experimento->alterarPathPngRaster($expid, "'./temp/" . $expid ."/png_map-" . $expid . ".png'", "'./temp/" . $expid ."/raster_crop-" . $expid . ".tif'");
 
-$filePath = '../../../../../../mnt/dados/modelr/json/polygon-' . $expid . '.json';
+$filePath = $baseUrl . '../../../../../../mnt/dados/modelr/json/polygon-' . $expid . '.json';
 $file = fopen($filePath, 'w');
 
-$polygons = explode(':',$_REQUEST['array']);
-$coordinates = [];
-// loop over the rows, outputting them
-foreach($polygons as $p){
-    $vertices = explode(';',$p);
-    $result = [];
-    foreach($vertices as $v){
-        $result[] = [explode(',',$v)[1], explode(',',$v)[0]];
-    }
-    $coordinates[] = [$result];
+$arrayPolygon = json_decode($_REQUEST['array'], true);
+foreach($arrayPolygon as $polygon){
+    $type = $polygon['type'];
+	if($type != 'circle'){
+		$vertices = explode(';',$polygon['vertices']);
+		$result = [];
+		foreach($vertices as $v){
+			$result[] = [explode(',',$v)[1], explode(',',$v)[0]];
+		}
+		$coordinates[] = [$result];
+		
+		$myObj->type = "MultiPolygon";
+		$myObj->coordinates = $coordinates;
+		$myJSON = json_encode($myObj, JSON_PRETTY_PRINT|JSON_NUMERIC_CHECK);
+		fwrite($file, $myJSON);
+		fclose($file);
 
+	} else {
+		$vertices = explode(';',$polygon['vertices']);
+		foreach($vertices as $v){
+			$vertices = explode(';',$polygon['vertices']);
+			$result = [];
+			foreach($vertices as $v){
+				$result[] = [explode(',',$v)[1], explode(',',$v)[0]];
+			}
+			$coordinates[] = [$result];
+		}
+		
+		$myObj->type = "Circle";
+		$myObj->coordinates = $coordinates;
+		$myObj->radius = $polygon['radius'];
+		$myJSON = json_encode($myObj, JSON_PRETTY_PRINT|JSON_NUMERIC_CHECK);
+		fwrite($file, $myJSON);
+		fclose($file);
+	}
+    
 }
 
-$myObj->type = "MultiPolygon";
-$myObj->coordinates = $coordinates;
-$myJSON = json_encode($myObj, JSON_PRETTY_PRINT|JSON_NUMERIC_CHECK);
-fwrite($file, $myJSON);
-fclose($file);
-if (!file_exists("temp/" . $expid )) {
-    mkdir("temp/" . $expid , 0777, true);
+if (!file_exists($baseUrl . "temp/" . $expid )) {
+    mkdir($baseUrl . "temp/" . $expid , 0777, true);
 }
 
 exec("Rscript script_pos.R $expid $filePath $rasterCutPath");

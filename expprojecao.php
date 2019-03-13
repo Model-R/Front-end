@@ -34,16 +34,16 @@ if(empty($projection_model) || $projection_model == ';;;' || $projection_model =
 		$extents = explode(';', $extent_model);
 		$extensao1_norte = $extents[2];
 		$extensao1_sul = $extents[3];
-		$extensao1_leste = $extents[1];
-		$extensao1_oeste = $extents[0];
+		$extensao1_leste = $extents[0];
+		$extensao1_oeste = $extents[1];
 		$has_extent = 'true';
 	}
 } else {
     $extents = explode(';', $projection_model);
     $extensao1_norte = $extents[2];
     $extensao1_sul = $extents[3];
-    $extensao1_leste = $extents[1];
-    $extensao1_oeste = $extents[0];
+    $extensao1_leste = $extents[0];
+    $extensao1_oeste = $extents[1];
 	$has_extent = 'true';
 }
 ?>

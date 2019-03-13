@@ -93,6 +93,8 @@ $id=$_REQUEST['id'];
 	$num_points = $json[0]->num_points;
 	#tss
 	$tss = $json[0]->tss;
+	#resolution
+	$resolution = $json[0]->resolution;
 	
 	$occurrenceList = $json[0]->occurrences;
 	$organizedArray = [$json[0]->occurrences[0]->taxon];
@@ -115,28 +117,6 @@ $id=$_REQUEST['id'];
 			array_push($algorithmList,$algorithm->algorithm);
 		}
 	}
-	
-	// foreach($organizedArray as $item){
-		// $count = 0;
-		// foreach($occurrenceList as $o){
-			// if($o->taxon == $item){
-				// if($o->idstatusoccurrence == 4 || $o->idstatusoccurrence == 17){
-					// $count = $count + 1;
-				// }
-			// }
-		// }
-		
-		// echo '<tr>';
-	   // echo '<td style="word-wrap: break-word;overflow-wrap: break-word;">'.$item.'</td>';
-	   // echo '<td style="word-wrap: break-word;overflow-wrap: break-word;">'.$count.'</td>';
-	   // echo '<td style="word-wrap: break-word;overflow-wrap: break-word;">'.implode(", ",$rasterList).'</td>';
-	   // echo '<td style="word-wrap: break-word;overflow-wrap: break-word;">'.implode(", ",$algorithmList).'</td>';
-	   // echo '<td style="word-wrap: break-word;overflow-wrap: break-word;">'.$particao.'</td>';
-	   // echo '<td style="word-wrap: break-word;overflow-wrap: break-word;">'.$num_points.'</td>';
-	   // echo '<td style="word-wrap: break-word;overflow-wrap: break-word;">'.$tss.'</td>';
-	   // echo '<td style="word-wrap: break-word;overflow-wrap: break-word;">'.$buffer.'</td>';
-	   // echo '</tr>';
-	// }
 
 ?>
 
@@ -175,6 +155,16 @@ $id=$_REQUEST['id'];
 			<div class="panel panel-default">
 				<div class="panel-body">
 					<p><?php echo implode(", ",$rasterList); ?></p>
+				</div>
+			</div>
+			
+		</fieldset>	
+		<fieldset class="col-md-6 metadados-fieldset">     	
+			<legend>Resolução</legend>
+			
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<p><?php echo $resolution; ?></p>
 				</div>
 			</div>
 			

@@ -144,7 +144,7 @@ $(function(){
 							<div class="x_panel">
 								<div class="x_title">
 									<h2>Experimento: <?php echo $nome_experimeto;?></h2>
-									<a href="consexperimento.php"><small>Lista de Experimentos</small></a>
+									<a style="font-size: 16px" href="consexperimento.php"><span class="glyphicon glyphicon-home" aria-hidden="true"></span><small> Lista de Experimentos</small></a>
 									<div class="clearfix">
 									</div>
 								</div>
@@ -197,14 +197,6 @@ $(function(){
 																	<div class="radio-maritimo"><input type="radio" name="edttipo" id="edttipomaritimo" value="marinho"/> Marinho</div>
 																</form>
 															</div>
-														</div>
-													</div>
-												</div>
-												<div class="">
-													<div class="item form-group">
-													<label class="control-label col-md-3 col-sm-3 col-xs-12" for="edtfiltroautomatico"></label>
-														<div class="col-md-6 col-sm-6 col-xs-12">
-															<input type="checkbox" name="edtfiltroautomatico" id="edtfiltroautomatico" checked>Executar filtros automaticamente<br>
 														</div>
 													</div>
 												</div>
