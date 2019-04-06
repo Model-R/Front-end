@@ -1,0 +1,4 @@
+"kappa";"spec_sens";"no_omission";"prevalence";"equal_sens_spec";"sensitivity";"AUC";"TSS";"algoritmo";"partition";
+"Ocotea catharinensis Mez 1 BioClim";0.18171818;-1e-04;-1e-04;0.18171818;0.18171818;0.905189620758483;0.80938123752495;"BioClim";1
+"Ocotea catharinensis Mez 1 BioClim";0.18171818;-1e-04;-1e-04;0.18171818;0.18171818;0.905189620758483;0.80938123752495;"BioClim";2
+"Ocotea catharinensis Mez 1 BioClim";0.18171818;-1e-04;-1e-04;0.18171818;0.18171818;0.905189620758483;0.80938123752495;"BioClim";3

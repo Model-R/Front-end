@@ -1,0 +1,3 @@
+"kappa";"spec_sens";"no_omission";"prevalence";"equal_sens_spec";"sensitivity";"AUC";"TSS";"algoritmo";"partition"
+"Zygia latifolia (L.) Fawc. & Rendle 1 BioClim";0.09080909;-1e-04;-1e-04;0.09080909;0.09080909;0.612774451097804;0.231536926147704;"BioClim";1
+"Zygia latifolia (L.) Fawc. & Rendle 1 BioClim";0.09080909;-1e-04;-1e-04;0.09080909;0.09080909;0.612774451097804;0.231536926147704;"BioClim";2

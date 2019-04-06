@@ -1,0 +1,65 @@
+<?php session_start();
+error_reporting(E_ALL);
+ini_set('display_errors','1');
+//print_r($_REQUEST);
+//exit;
+
+require_once('classes/experimento.class.php');
+require_once('classes/conexao.class.php');
+$conexao = new Conexao;
+$conn = $conexao->Conectar();
+$Experimento = new Experimento();
+$Experimento->conn = $conn;
+
+$idexperimento = $_REQUEST['id'];
+
+
+$idponto = $_REQUEST['idponto'];
+$idstatus = $_REQUEST['idstatus'];
+$latinf = $_REQUEST['latinf'];
+$longinf = $_REQUEST['longinf'];
+
+if (($idponto != 'undefined') && (!empty($idponto)))
+{
+	
+	$Experimento->excluirPonto($idexperimento,$idponto,$idstatus,$latinf,$longinf);
+		
+}
+else
+{
+	$lista = $_REQUEST['table_records'];
+	foreach($lista as $idponto){
+		
+				
+			$sql = "update modelr.occurrence set idstatusoccurrence=$idstatus ";
+			
+			$sql.="	where
+			idoccurrence = $idponto";
+			$res = pg_exec($conn,$sql);
+//			echo $sql;
+//			exit;
+		
+//		echo $sql.'<br>';
+//		$Experimento->excluirPonto($idexperimento,$idponto,$idstatus);
+
+	}
+	// FORA DO LIMITE DO BRASIL
+	if ($idstatus=='10')
+	{
+		$sql = "update modelr.occurrence set idstatusoccurrence=10 where
+			idexperiment = ".$idexperimento." and
+			idoccurrence in (
+			select idoccurrence from modelr.occurrence o,
+ base_geografica.\"shp_limite_brasil_250MIL\" shape
+where
+not contains(GeomFromEWKT(shape.geom),GeomFromEWKT('SRID=4326;POINT(' || o.long || ' ' || o.lat || ')')) 
+			)";
+		$res = pg_exec($conn,$sql);
+	}
+	
+}
+header("Location: cadexperimento.php?op=A&MSGCODIGO=19&tab=2&pag=2&id=$idexperimento");
+?>
+
+
+
