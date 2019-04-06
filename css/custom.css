@@ -1467,7 +1467,7 @@ table.jambo_table tbody tr.selected td {
 table tr {
     font-size: 13px;
     font-weight: 500;
-    /*border-bottom: 2px solid;*/
+    border-bottom: 2px solid;
     /* color: #73879c; */
 }
 
@@ -6491,7 +6491,7 @@ ul.notifications {
 
 .files-options > div{
     display: flex;
-    /*width: 500px;*/
+    width: 500px;
     justify-content: space-evenly;
     align-items: center;
 }

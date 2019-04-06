@@ -1,0 +1,10 @@
+﻿.tab-modal-body {
+	font-size: 18px;
+	font-family: Georgia;
+	color: #084404;
+}
+
+.tab-modal-dialog {
+	max-width: 700px !important;
+	margin: 30px auto;
+}
