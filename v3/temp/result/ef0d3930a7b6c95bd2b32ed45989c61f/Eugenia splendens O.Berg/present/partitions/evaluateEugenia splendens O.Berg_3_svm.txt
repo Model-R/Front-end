@@ -1,2 +1,0 @@
-"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
-"Eugenia splendens O.Berg 3 svm" 0.09762009 0.02748256 0.00159153 0.01884205 0.00376467 0.00163226 0.866938775510204 0.7 "svm" 3

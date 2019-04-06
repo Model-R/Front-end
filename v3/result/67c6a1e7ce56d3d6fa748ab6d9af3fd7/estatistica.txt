@@ -1,4 +1,0 @@
-"kappa";"spec_sens";"no_omission";"prevalence";"equal_sens_spec";"sensitivity";"AUC";"TSS";"algoritmo";"partition"
-"Prepusa hookeriana Gardner 1 BioClim";0.3999;0.3999;0.1999;0.3999;0.4;0.944444444444444;0.888888888888889;"BioClim";1
-"Prepusa hookeriana Gardner 1 maxent";0.77578439;0.77578439;0.06484217;0.77578439;0.77588439;0.944444444444444;0.888888888888889;"maxent";1
-"Prepusa hookeriana Gardner 2 BioClim";0.3999;0.3999;-1e-04;0.3999;0.4;1;1;"BioClim";2

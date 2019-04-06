@@ -1,2 +1,0 @@
-"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
-"Abarema langsdorffii (Benth.) Barneby & J.W.Grimes 1 BioClim" 0.23178406 0.11584203 -1e-04 0.17381304 0.08685652 0.02888551 0.660051325919589 0.235585970915312 "BioClim" 1

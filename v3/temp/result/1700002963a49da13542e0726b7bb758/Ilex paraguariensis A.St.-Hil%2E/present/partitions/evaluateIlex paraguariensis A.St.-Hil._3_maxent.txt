@@ -1,2 +1,0 @@
-"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
-"Ilex paraguariensis A.St.-Hil. 3 maxent" 0.61977317 0.61977317 0.61980374 0.4243664 0.67354305 0.61991783 0.41981981981982 0.27027027027027 "maxent" 3

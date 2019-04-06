@@ -1,2 +1,0 @@
-"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
-"Eugenia aurata O.Berg 3 glm" 0.08055913 0.00868649 0.00874869 0.02138802 0.01491285 0.00895229 0.510076130765786 0.22257053291536 "glm" 3

@@ -1,2 +1,0 @@
-"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
-"Ocotea divaricata (Nees) Mez 2 maxent" 0.73428102 0.61590173 0.61590173 0.54087819 0.64442964 0.61627408 0.370873786407767 0.145631067961165 "maxent" 2

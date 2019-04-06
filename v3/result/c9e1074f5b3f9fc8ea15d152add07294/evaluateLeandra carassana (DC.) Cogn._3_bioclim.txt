@@ -1,2 +1,0 @@
-"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
-"Leandra carassana (DC.) Cogn. 3 BioClim" 0.21808182 0.10899091 -1e-04 0.14535455 0.10899091 0.07262727 0.725327123530716 0.338434242625859 "BioClim" 3

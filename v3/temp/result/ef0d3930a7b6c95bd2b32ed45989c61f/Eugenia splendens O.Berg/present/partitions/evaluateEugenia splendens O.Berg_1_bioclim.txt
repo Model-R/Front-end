@@ -1,2 +1,0 @@
-"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
-"Eugenia splendens O.Berg 1 BioClim" -1e-04 -1e-04 -1e-04 -1e-04 0.15374615 0.15374615 0.463320463320463 0 "BioClim" 1

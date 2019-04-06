@@ -1,2 +1,0 @@
-"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
-"Prepusa hookeriana Gardner 6 BioClim" 0.1999 0.1999 0.1999 0.1999 0.1999 0.2 0.944444444444444 0.888888888888889 "BioClim" 6

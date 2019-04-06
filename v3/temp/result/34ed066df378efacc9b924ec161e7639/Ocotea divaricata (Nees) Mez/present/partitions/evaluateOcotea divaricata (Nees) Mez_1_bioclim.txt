@@ -1,2 +1,0 @@
-"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
-"Ocotea divaricata (Nees) Mez 1 BioClim" 0.44434444 0.22212222 -1e-04 -1e-04 0.11101111 0.11101111 0.807506053268765 0.553874092009685 "BioClim" 1

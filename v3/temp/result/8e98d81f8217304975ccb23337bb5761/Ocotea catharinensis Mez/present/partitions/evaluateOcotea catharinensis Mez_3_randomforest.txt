@@ -1,2 +1,0 @@
-"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
-"Ocotea catharinensis Mez 3 rf" 0.0455 0.0455 -1e-04 0.01313333 9e-04 3e-04 0.739448051948052 0.441558441558441 "rf" 3

@@ -1,2 +1,0 @@
-"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
-"Eugenia aurata O.Berg 3 rf" 0.16053333 0.01478415 -4.76e-06 0.02148571 0.01478415 3.793e-05 0.704209583519928 0.388266905508285 "rf" 3

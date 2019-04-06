@@ -1,2 +1,0 @@
-"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
-"Ocotea divaricata (Nees) Mez 2 rf" 0.1513 0.1513 -1e-04 0.01036667 0.00280476 0.00023844 0.679664570230608 0.381132075471698 "rf" 2
