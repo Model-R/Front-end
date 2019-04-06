@@ -44,12 +44,17 @@ if ($op=='A')
             <h4 class="modal-title" >Instruções CSV</h4>
         </div>
         <!-- dialog body -->
-        <div class="modal-body"> 
+        <div class="modal-body" style="font-size: 16;"> 
             <p>
                 O CSV deve seguir o seguinte modelo:
                 <br><br>
-                [espécie],[estado],[município],[coletor],[número de coleta],[longitude],[latitude]
+                [sp*],[lat*],[long*],[num_coleta],[estado],[municipio],[coletor]
                 <br><br>
+				<img src='imagens/exemplo csv entrada modelr.PNG' style="width: 100%;">
+				<br><br>
+				Caso o campo não exista, basta não colocá-lo no CSV.
+				Os campos podem estar em qualquer ordem.
+				<br><br>
                 Todos os dados podem ser separados por vírgula(,), dois pontos(:) ou ponto e vírgula(;).
                 Não é necessário marcar o final da linha. 
                 <br><br>
@@ -60,6 +65,8 @@ if ($op=='A')
                 Longitude: Valor decimal (ex.: -11.6358334);
                 <br><br>
                 Latitude: Valor decimal (ex.: -41.0013889);
+				<br><br>
+				<b>*Campos obrigatórios</b>
             </p>
         </div>
         <!-- dialog buttons -->
@@ -636,6 +643,8 @@ function handleFileSelect(evt) {
 		document.getElementById("checkfontecsv").checked = true;
 		document.getElementById("filename").innerHTML = f.name;
 		document.getElementById("csv-separator").style.display = 'flex';
+		console.log('inside get file')
+		console.log(arr)
 		file = arr;
         };
       })(f);
@@ -647,44 +656,61 @@ function handleFileSelect(evt) {
 function printCSV(lines){
 	var body = '';
 	var separator = document.getElementById("csv-select").options[document.getElementById("csv-select").selectedIndex].value;
-
-    checkIsMultipleSpecies(lines, separator);
-	for (i = 0; i < lines.length-1; i++) {
-
-		var values = lines[i].split(separator);
-		//alert(i);
-		//[espécie],[estado],[município],[coletor],[número de coleta],[longitude],[latitude]
-		taxon = values[0];
-		estado = values[1];
-		municipio = values[2];
-		coletor = values[3];
-		numcoleta = values[4];
-		longitude = values[5] || 0;
-		latitude = values[6] || 0;
-		
-		var idexperimento = document.getElementById('id').value;
-		//split * 
-		var Jval = idexperimento + '*2*'+latitude+'*'+longitude+'*'+taxon+'*'+ coletor+'*'+numcoleta+'*****'+estado+'*'+municipio+'**'; 
-		 
-		body += '<tr class="even pointer"><td class="a-center "><input name="chtestemunho[]" id="chtestemunho[]" value="'+Jval+'" type="checkbox" ></td>';
-		body +='<td class=" ">'+taxon+'</td>';
-		body +='<td class=" ">'+coletor+'</td>';
-		body +='<td class=" ">'+numcoleta+'</td>';
-		body +='<td class=" ">'+estado+'</td>';
-		body +='<td class=" ">'+municipio+'</td>';
-		body +='<td class=" ">'+latitude+', '+longitude+'</td>';
-
+	
+	var spindex, latindex, longindex, estadoindex, municipioindex, coletorindex, numcoletaindex;
+	spindex = latindex = longindex = estadoindex = municipioindex = coletorindex = numcoletaindex = -1;
+	var csv_headers = lines[0].split(separator);
+	for (i = 0; i < csv_headers.length; i++) {
+		if(csv_headers[i] == 'sp') spindex = i;
+		else if(csv_headers[i] == 'lat') latindex = i;
+		else if(csv_headers[i] == 'long') longindex = i;
+		else if(csv_headers[i] == 'estado') estadoindex = i;
+		else if(csv_headers[i] == 'municipio') municipioindex = i;
+		else if(csv_headers[i] == 'coletor') coletorindex = i;
+		else if(csv_headers[i] == 'num_coleta') numcoletaindex = i;
 	}
 	
-	var table = '';
-	table += '<table class="table table-csv table-striped responsive-utilities jambo_table bulk_action"><thead><tr class="headings"><th><input type="checkbox" id="chkboxtodos2" name="chkboxtodos2" onclick="selecionaTodos2(true);">';
-	table += '</th><th class="column-title">Taxon </th><th>Coletor</th><th>Número de Coleta</th><th>Estado</th><th>Município</th><th class="column-title">Coordenadas</th>';
-	table += '<a class="antoo" style="color:#fff; font-weight:500;">Total de Registros selecionados: ( <span class="action-cnt"> </span> ) </a>';
-	table += '</th></tr></thead>';
-	table += '<tbody>'+body+'</tbody></table>';
-	table += '';
-	
-	document.getElementById("div_resultadobusca").innerHTML = table;
+	if(spindex == -1 || latindex == -1 || longindex == -1){
+		criarNotificacao('Atenção','Os campos sp, lat e log do csv são obrigatórios','warning');
+	} else {
+		checkIsMultipleSpecies(lines.slice(1), separator);
+		for (i = 1; i < lines.length; i++) { //ignore csv headers 
+			var values = lines[i].split(separator);
+			//alert(i);
+			//[espécie],[estado],[município],[coletor],[número de coleta],[longitude],[latitude]
+			taxon = values[spindex];
+			estado = values[estadoindex] || '';
+			municipio = values[municipioindex] || '';
+			coletor = values[coletorindex] || '';
+			numcoleta = values[numcoletaindex] || null;
+			longitude = values[longindex] || 0;
+			latitude = values[latindex] || 0;
+			
+			var idexperimento = document.getElementById('id').value;
+			//split * 
+			var Jval = idexperimento + '*2*'+latitude+'*'+longitude+'*'+taxon+'*'+ coletor+'*'+numcoleta+'*****'+estado+'*'+municipio+'**'; 
+			 
+			body += '<tr class="even pointer"><td class="a-center "><input name="chtestemunho[]" id="chtestemunho[]" value="'+Jval+'" type="checkbox" ></td>';
+			body +='<td class=" ">'+taxon+'</td>';
+			body +='<td class=" ">'+coletor+'</td>';
+			body +='<td class=" ">'+numcoleta+'</td>';
+			body +='<td class=" ">'+estado+'</td>';
+			body +='<td class=" ">'+municipio+'</td>';
+			body +='<td class=" ">'+latitude+', '+longitude+'</td>';
+
+		}
+		
+		var table = '';
+		table += '<table class="table table-csv table-striped responsive-utilities jambo_table bulk_action"><thead><tr class="headings"><th><input type="checkbox" id="chkboxtodos2" name="chkboxtodos2" onclick="selecionaTodos2(true);">';
+		table += '</th><th class="column-title">Taxon </th><th>Coletor</th><th>Número de Coleta</th><th>Estado</th><th>Município</th><th class="column-title">Coordenadas</th>';
+		table += '<a class="antoo" style="color:#fff; font-weight:500;">Total de Registros selecionados: ( <span class="action-cnt"> </span> ) </a>';
+		table += '</th></tr></thead>';
+		table += '<tbody>'+body+'</tbody></table>';
+		table += '';
+		
+		document.getElementById("div_resultadobusca").innerHTML = table;
+	}
+	exibe('loading','Buscando Ocorrências');
 }
 
   document.getElementById('upload').addEventListener('change', handleFileSelect, false);

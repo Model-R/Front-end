@@ -10,7 +10,7 @@
     </select> 
 
     <button type="button" class="btn btn-info" onClick='cortarRaster()' data-toggle="tooltip" data-placement="top" title data-original-title="Cortar Raster" style="">Salvar</button>-->
-	<select class="form-control" id="selectCortarShape" onchange="mostrarShapeBioma()" style="width: 250px; margin-right: 10px">
+	<!--<select class="form-control" id="selectCortarShape" onchange="mostrarShapeBioma()" style="width: 250px; margin-right: 10px">
       <option selected disabled>Selecionar Bioma</option>
 	  <option>Amazônia</option>
       <option>Caatinga</option>
@@ -18,7 +18,7 @@
       <option>Mata Atlântica</option>
       <option>Pampa</option>
 	  <option>Pantanal</option>
-    </select>
+    </select>-->
 	<button type="button" class="btn btn-info" id="tooglePontos" onClick='tooglePontos()' data-toggle="tooltip" data-placement="top" title data-original-title="Toogle Pontos">Mostrar/Esconder Pontos</button>
 	<button type="button" class="btn btn-danger" id="cancelarCorteRaster" onClick='cancelarCorteRaster()' data-toggle="tooltip" data-placement="top" title data-original-title="Cancelar Corte" style="display: <?php if ($isImageCut) echo ' flex'; else echo 'none'?>;">Cancelar Corte</button>
 	<?php if($_SESSION['s_idtipousuario'] == '5') { ?>

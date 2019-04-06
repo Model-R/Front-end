@@ -108,7 +108,7 @@ if ($op=='A')
 						
 						<div class="col-md-8 col-sm-8 col-xs-8">
 							<b>Dados inferidos</b><br>
-							<?php echo $StatusOccurrence->listaCombo('cmboxstatusoccurrence',$idstatusoccurrence,'N','class="form-control"','1,4,6,8,17');?>
+							<?php echo $StatusOccurrence->listaCombo('cmboxstatusoccurrence',$idstatusoccurrence,'N','class="form-control"','12,4,6,8,10,11,12,13,17,18,19,20');?>
 							<div class="row">
 								<div class="col-md-6 col-sm-6 col-xs-6">
 									Latitude:<input type="text" name="edtlatitude" id="edtlatitude" class="form-control"><br>
@@ -532,13 +532,14 @@ function abreModal(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquiv
 	document.getElementById('edidocorrencia').value=idocorrencia;
 	document.getElementById('divimagem').innerHTML=html_imagem;
 	document.getElementById('dadosstatus').innerHTML='Status: '+status;
-	if(status == 'Coordenada Ajustada')  document.getElementById('dadosoriginais').innerHTML='Latitude: '+lat+' (lat original: '+oldlat+') Longitude: '+lng+' (long original: '+oldlong+') - '+localizacao;
+	if(status == 'Coordenada Ajustada')  document.getElementById('dadosoriginais').innerHTML='Latitude: '+lat+' ( lat original: '+oldlat+') Longitude: '+lng+' ( long original: '+oldlong+') - '+localizacao;
 	else document.getElementById('dadosoriginais').innerHTML='Latitude: '+lat+' Longitude: '+lng+' - '+localizacao;
 	document.getElementById('dadoscoletor').innerHTML='Coletor: '+coletor;
 	document.getElementById('dadosherbario').innerHTML='Herbário: '+herbario + ' - Tombo: ' + tombo;
 	document.getElementById('edtlatitude').value=lat;
 	document.getElementById('edtlongitude').value=lng;
 	document.getElementById('cmboxstatusoccurrence').value=idstatusocorrence;
+	console.log('idstatusocorrence ' + idstatusocorrence);
 	$('#pointModal').modal('show');
 	setTimeout(() => { 
 		initMapModal(idocorrencia);
