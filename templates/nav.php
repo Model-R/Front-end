@@ -30,7 +30,7 @@
 
     <nav>
         <div class="title">
-            <img src="img/jardim botanico.jpg" alt="jardim botanico">
+            <img src="image/jardim botanico.jpg" alt="jardim botanico">
             <a href="index.php">Model R</a>
         </div>
         <ul>

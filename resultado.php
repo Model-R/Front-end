@@ -124,7 +124,7 @@ $tss = $Experimento->tss;
 					font-weight: bold;  
 					color: black;  
 					z-index: 3;">  
-				<br><img alt="Loading..." src="imagens/ajax-loader.gif" width="150">  
+				<br><img alt="Loading..." src="images/ajax-loader.gif" width="150">  
 				<br>Processando...  
 				<br> 
 			</div> 
