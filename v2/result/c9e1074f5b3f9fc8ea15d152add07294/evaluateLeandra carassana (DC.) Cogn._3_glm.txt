@@ -1,2 +1,0 @@
-"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
-"Leandra carassana (DC.) Cogn. 3 glm" 0.17218796 0.1288966 0.04603099 0.14058671 0.1324143 0.05678248 0.873142603681526 0.660235085384786 "glm" 3
