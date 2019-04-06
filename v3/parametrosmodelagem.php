@@ -88,6 +88,7 @@ if (empty($resolution))
 
     <!-- Custom styling plus plugins -->
     <link href="css/custom.css" rel="stylesheet">
+	<link href="css/modelagem.css" rel="stylesheet">
     <link href="css/icheck/flat/green.css" rel="stylesheet">
 
 
@@ -120,7 +121,11 @@ if (empty($resolution))
 	
 </head>
 
-<div class="row">
+<div id="msg-erro-modelagem">
+	<span id="text-msg-erro-modelagem">Não foi possível realizar a Modelagem.</span>
+</div>
+
+<div class="row" id="modelagem-row">
 	<div class="col-md-12 col-sm-12 col-xs-12">
 		<div class="x_panel">
 			<div class="x_title">
@@ -196,7 +201,7 @@ if (empty($resolution))
 								</label>
 								<div class="col-md-6 col-sm-6 col-xs-6">
 									<div class="radio-group-buffer">
-										<div><input onchange="document.getElementById('lblbuffer').value=this.value" type="radio" name="edtbuffer[]" id="checkbufferfalse" value="FALSE" <?php if ($_REQUEST['edtbuffer'][0]=='false') echo "checked";?> />Nenhuma</div>
+										<div><input onchange="document.getElementById('lblbuffer').value=this.value" type="radio" name="edtbuffer[]" id="checkbufferfalse" value="NULL" <?php if ($_REQUEST['edtbuffer'][0]=='NULL') echo "checked";?> />Nenhuma</div>
 										<div><input onchange="document.getElementById('lblbuffer').value=this.value" type="radio" name="edtbuffer[]" id="checkbuffermedim" value="mean" <?php if ($_REQUEST['edtbuffer'][0]=='mean') echo "checked";?>/>Média</div>
 										<div><input onchange="document.getElementById('lblbuffer').value=this.value" type="radio" name="edtbuffer[]" id="checkbuffermedian" value="median" <?php if ($_REQUEST['edtbuffer'][0]=='median') echo "checked";?>/>Mediana</div>
 										<div><input onchange="document.getElementById('lblbuffer').value=this.value" type="radio" name="edtbuffer[]" id="checkbuffermax" value="max" <?php if ($_REQUEST['edtbuffer'][0]=='max') echo "checked";?>/>Máxima</div>
@@ -206,7 +211,7 @@ if (empty($resolution))
 									<input id="lblbuffer" onchange="parseEdtBuffer()" value="<?php echo $buffer;?>"  name="lblbuffer" class="form-control col-md-2 col-xs-12" data-toggle="tooltip" data-placement="top" title="Valor entre mínima,média,mediana e máxima">
 								</div>
 							</div>
-							<div class="item form-group" id="resolution_item">
+							<!--<div class="item form-group" id="resolution_item">
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="resolution">Resolução
 								</label>
 								<div class="col-md-6 col-sm-6 col-xs-6">
@@ -219,7 +224,7 @@ if (empty($resolution))
 								<div class="col-md-2 col-sm-2 col-xs-2">
 									<input id="lblresolution" onchange="document.getElementById('edtresolution').value= this.value " value="<?php echo $resolution;?>"  name="lblresolution" class="form-control col-md-2 col-xs-12" data-toggle="tooltip" data-placement="top" title="Valor entre 2.5,5,10">
 								</div>
-							</div>
+							</div>-->
 					</div>
 					<div class="col-md-5 col-sm-5 col-xs-5">
 						<div class="x_panel">
@@ -234,8 +239,13 @@ if (empty($resolution))
 							 while ($row = pg_fetch_array($res))
 							 {
 								 ?>
+								 <?php if($row['idalgorithm'] == 1 || $row['idalgorithm'] == 4 || $row['idalgorithm'] == 7) {?>
+									<input <?php if ($Experimento->usaAlgoritmo($id,$row['idalgorithm'])) echo "checked";?> type="checkbox" name="algoritmo[]" id="checkalgoritmo<?php echo $row['idalgorithm'];?>" value="<?php echo $row['idalgorithm'];?>" data-parsley-mincheck="2" required class="flat" /> <?php echo $row['algorithm'];?>
+										<br />
+								 <?php } else { ?>
 									   <input <?php if ($Experimento->usaAlgoritmo($id,$row['idalgorithm'])) echo "checked";?> type="checkbox" name="algoritmo[]" id="checkalgoritmo<?php echo $row['idalgorithm'];?>" value="<?php echo $row['idalgorithm'];?>" data-parsley-mincheck="2" required class="flat" /> <?php echo $row['algorithm'];?>
 										<br />
+								 <?php } ?>
 								 
 							 <?php } ?>
 								<!-- end pop-over -->
@@ -250,18 +260,24 @@ if (empty($resolution))
 		<div class="form-group">
 				<div class="send-button">
 					<button id="send" type="button" onclick="enviarDadosModelagem(6)" class="btn btn-success">Salvar</button>
-					<?php
-						if ($liberado && $_SESSION['s_idtipousuario'] != '5') {?>
-							<button type="button" class="btn btn-success" onClick='liberarExperimento(6)'>Liberar Experimeto para Modelagem</button>
-						<?php
-						}
-					?>
+					<?php if ($liberado) { 
+						    if($_SESSION['s_idtipousuario'] == '2') {?>
+								<button type="button" class="btn btn-success" onClick='liberarExperimento(6)'>Liberar Experimeto para Modelagem</button>
+								<button type="button" class="btn btn-success" onClick='executarModelagem(6)'>Executar Modelagem</button>							
+							<?php } 
+							if($_SESSION['s_idtipousuario'] == '3') {?>
+								<button type="button" class="btn btn-success" onClick='liberarExperimento(6)'>Liberar Experimeto para Modelagem</button>
+							<?php } 
+							if($_SESSION['s_idtipousuario'] == '6') {?>
+								<button type="button" class="btn btn-success" onClick='executarModelagem(6)'>Executar Modelagem</button>							
+							<?php } ?>
+					<?php } ?>
 				</div>
 			</div>
 			<?php
 				if ($liberado == false) {?>
 					<div style="display: flex; justify-content: center; margin-top: 50px;">
-						<span> * Marque um ponto como "Conferido (Liberado para Modelagem)" para habilitar o botão de Liberar Experimento</span>
+						<span style="font-size: 16px;color: red;"> * Marque um ponto como "Conferido (Liberado para Modelagem)" para habilitar o botão de Liberar Experimento</span>
 					</div>
 				<?php
 				}
@@ -307,6 +323,25 @@ if (empty($resolution))
 
 <?php require 'MSGCODIGO.php';?>
 <?php $MSGCODIGO = $_REQUEST['MSGCODIGO'];?>
+
+var msgcodigo = <?php if($MSGCODIGO){
+						echo $MSGCODIGO;
+				} else {
+					echo 0;
+				}?>;
+
+if(msgcodigo == 76) {
+	document.getElementById('text-msg-erro-modelagem').innerHTML = 'Não foi possível realizar a Modelagem. Menos de 10 Ocorrências.'
+	document.getElementById('modelagem-row').className += " erro-modelagem";
+	document.getElementById('msg-erro-modelagem').style.display = 'block';
+}
+				
+if(msgcodigo == 77) {
+	document.getElementById('text-msg-erro-modelagem').innerHTML = 'Não foi possível realizar a Modelagem.'
+	document.getElementById('modelagem-row').className += " erro-modelagem";
+	document.getElementById('msg-erro-modelagem').style.display = 'block';
+}
+
 
 function enviarDadosModelagem(tab)
 {
@@ -359,15 +394,16 @@ function parseEdtBuffer(){
 }
 
 function liberarExperimento(tab){
-	if(<?php echo $_SESSION['s_idtipousuario'];?> == 6 ){
-		exibe('loading', 'Processando ...')
-		document.getElementById('frm').action='setupmodelagem.php?expid=' + <?php echo $id;?>;
-		document.getElementById('frm').submit();
-	} else {
-		document.getElementById('frm').action='exec.experimento.php?page=dc&op=LE&id=' + <?php echo $id;?>;
-		document.getElementById('frm').submit();
-	} 
+	document.getElementById('frm').action='exec.experimento.php?page=dc&op=LE&id=' + <?php echo $id;?>;
+	document.getElementById('frm').submit();
 }
+
+function executarModelagem(tab){
+	exibe('loading', 'Processando ...')
+	document.getElementById('frmdadosmodelgem').action='setupmodelagem.php?expid=' + <?php echo $id;?>;
+	document.getElementById('frmdadosmodelgem').submit();
+}
+
 
 var tipopartionamento
 $("#cmboxtipoparticionamento").change(function(){

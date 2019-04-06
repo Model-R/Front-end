@@ -103,17 +103,16 @@ if ($operacao=='LD')
 }
 
 if ($operacao=='E')
-{
+{	
     $id = $_REQUEST['id'];
     if (!empty($id)){
-		//echo '!empty ' . $id;
+		echo '!empty ' . $id;
  		$result = $Experimento->excluir($id);
 	}
 	else
 	{
 		$box=$_POST['id_experiment'];
 		while (list ($key,$val) = @each($box)) {
-			//echo ' list ' . $val; 
    			$result = $Experimento->excluir($val);
 		}
 	}
@@ -142,6 +141,18 @@ if ($operacao=='LE')
 	} else {
 		header("Location: cadexperimento.php?op=A&tab=4&MSGCODIGO=78&id=" . $_REQUEST['id']);
 	}	
+}
+
+if ($operacao == 'CN') { //change name
+	$nome = $_REQUEST['nome'];
+	if ($result = $Experimento->trocarNome($idexperimento, $nome))
+	{
+	 header("Location: consexperimento.php?MSGCODIGO=79");
+	}
+	else
+	{
+	 header("Location: cadexperimento.php?MSGCODIGO=80");
+	}
 }
 
 

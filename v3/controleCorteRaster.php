@@ -18,6 +18,10 @@ if($op == 'L'){
     $Experimento->limparCorteRaster($expid);
 }
 
+if($op == 'V'){
+    $Experimento->validarCorteRaster($expid);
+}
+
 if($op == 'T'){
 	//trocar mapa selecionado
 	$png = $_REQUEST['png'];

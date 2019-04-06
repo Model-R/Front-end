@@ -9,8 +9,9 @@ if ($_SESSION['donoDaSessao'] != $tokenUsuario)
 <html lang="en">
 <head>
 <?php 
-        require_once('classes/conexao.class.php');
+      require_once('classes/conexao.class.php');
 	  require_once('classes/paginacao2.0.class.php');
+	  require_once('classes/experimento.class.php');
 //	  require_once('classes/categoira.class.php');
 	  $FORM_ACTION = 'experimento';
 	  $tipofiltro = $_REQUEST['cmboxtipofiltro'];
@@ -69,8 +70,9 @@ if ($_SESSION['donoDaSessao'] != $tokenUsuario)
 //				$disabled = 'disabled';
 				$disabled = ''; // alterado apenas para a apresentação
 			}
+			
             $html = '<td class="a-center "><input type="checkbox" class="flat" name="id_experiment[]" id="id_experiment" value="'.$row["idexperiment"].'" ></td>
-                                    <td class=" ">'.$row['2'].'</td>
+                                    <td class=" " id="'.$row["idexperiment"].'">'.$row['2'].' <a onClick="abreEditarNome('.$row["idexperiment"].')" style="border: 1px solid;float: right;padding: 5px;text-decoration: none;cursor: pointer;color: #3f5367;">Editar</a></td>
                                     <td class=" ">'.$row['group_name'].'</td>
                                     <td class=" ">'.$row['description'].'</td>';
 			if ($_SESSION['s_idtipousuario']==2)
@@ -263,6 +265,8 @@ if (($ordenapor=='GRUPO'))
 
 <body class="nav-md">
 
+<?php include_once 'templates/passoapasso.php'?>
+
 <div id="myModal" class="modal fade">
   <div class="modal-dialog"> 
     <div class="modal-content"> 
@@ -300,6 +304,30 @@ if (($ordenapor=='GRUPO'))
     </div>
 </div>
 
+<div class="modal fade" id="editNameModal" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editNameLabel">Editar nome experimento</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form name="editNameForm" id="editNameForm" method="post" action="">
+                    <div class="form-group">
+                        <label for="recipient-name" class="form-control-label">Nome:</label>
+                        <input type="text" class="form-control" name="edtname" id="edtname">
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="editarNome()">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
     <div class="container body">
 
 
@@ -330,12 +358,7 @@ if (($ordenapor=='GRUPO'))
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="x_panel">
                                 <div class="x_title_consexperimentos">
-                                    <h2> Experimentos 
-                                        <!-- <div data-toggle="tooltip" data-placement="right" title data-original-title="Instruções">
-                                             <span class="glyphicon glyphicon-modal-window" data-toggle="modal" data-target="#instructionModal"></span>
-                                            <span class="glyphicon glyphicon-modal-window instruction-icon"></span>
-                                        </div> -->
-                                    </h2>
+                                    <h2> Experimentos </h2>
                                     <div class="print-options">
                                         <a  class="btn btn-default btn-sm" onClick="imprimirExp('PDF');" data-toggle="tooltip" data-placement="top" title="Exportar tabela em PDF"><?php echo " PDF ";?></a>
                                         <a  class="btn btn-default btn-sm" onClick="imprimirExp('CSV');"data-toggle="tooltip" data-placement="top" title="Exportar tabela em CSV"><?php echo " CSV";?></a>
@@ -344,28 +367,7 @@ if (($ordenapor=='GRUPO'))
                                     <?php 
                                         include_once 'templates/consexperimento.instrucao.php';
                                     ?>
-                                    <!--<ul class="nav navbar-right panel_toolbox">
-                                                                            <li role="presentation" class="dropdown">
-                                        <a id="drop4" href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
-                                Ação
-                                <span class="caret"></span>
-                            </a>
-                                         <ul id="menu6" class="dropdown-menu animated fadeInDown" role="menu">
-										
-                                            <li role="presentation"><a role="menuitem" tabindex="-1" onClick='showExcluir()'>Excluir</a>
-                                            </li>
-                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="cadexperimento.php?op=I&idproject=<?php echo $idproject;?>">Novo</a>
-                                            </li>
-                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="imprimir('pdf')">Imprimir</a>
-                                            </li>
-                                            <li role="presentation" class="divider"></li>
-                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="imprimir('xls')">Gerar XLS</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    </ul>
-									-->
-                                    <!-- <div class="clearfix"></div> -->
+         
                                 </div>
 								<form class="form-inline" name="frm" id="frm" method="post">
 								<input type="hidden" name="sql" id="sql" value="<?php echo $Paginacao->sql;?>">
@@ -393,8 +395,8 @@ if (($ordenapor=='GRUPO'))
                                             <button type="button" class="btn btn-success" onClick='filterApply()' data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar experimentos">Filtrar</button>
                                         </div>
                                         <div class="row-action">
-                                            <!-- <button type="button" class="btn btn-success" onClick='liberarExperimento()' data-toggle="tooltip" data-placement="top" title data-original-title="Liberar experimento para Modelagem">Liberar</button> -->
-                                            <button type="button" class="btn btn-info" onClick='novo()' data-toggle="tooltip" data-placement="top" title data-original-title="Criar novo experimento">Novo</button>
+                                            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#passoapassoModal" data-toggle="tooltip" data-placement="top" title data-original-title="Passo a Passo do experimento">Fluxo Experimento</button>
+                                            <button type="button" class="btn btn-success" onClick='novo()' data-toggle="tooltip" data-placement="top" title data-original-title="Criar novo experimento">Novo</button>
                                             <button type="button" class="btn btn-danger" onClick='showExcluir()' data-toggle="tooltip" data-placement="top" title data-original-title="Excluir experimento">Excluir</button>
                                         </div>
                                     </div>
@@ -466,6 +468,7 @@ require 'MSGCODIGO.php';
 ?>
 		
 	var limparExperimento;
+	var expid;
     $('#ConfirmCleanModal').modal({ show: false});
 
     function confirmarLimparDados(idexperimento)
@@ -537,7 +540,7 @@ require 'MSGCODIGO.php';
 	}
 	
 	function excluir()
-	{
+	{	
 		$('#myModal').modal('hide');
 		document.getElementById('frm').action='exec.<?php echo strtolower($FORM_ACTION);?>.php?op=E';
         console.log('exec.<?php echo strtolower($FORM_ACTION);?>.php?op=E')
@@ -548,7 +551,24 @@ require 'MSGCODIGO.php';
 	{   
 		document.getElementById('frm').action='exec.<?php echo strtolower($FORM_ACTION);?>.php?op=LE';
   		document.getElementById('frm').submit();
+	}
+
+	function abreEditarNome(id)
+	{	
+		console.log(document.getElementById(id.toString()))
+		var element = document.getElementById(id.toString());
+		var nome = element.innerText || element.textContent;
+		nome = nome.replace('Editar', '')
+		document.getElementById('edtname').value= nome;
+		expid = id;
+		$('#editNameModal').modal('show');
 	}	
+	
+	function editarNome () {
+		var nome = document.getElementById('edtname').value;
+		document.getElementById('frm').action='exec.experimento.php?id='+expid+'&nome='+nome+'&op=CN';
+		document.getElementById('frm').submit();
+	}
 
 	</script>
 

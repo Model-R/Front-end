@@ -16,6 +16,7 @@ $conn = $conexao->Conectar();
 $Experimento = new Experimento();
 $Experimento->conn = $conn;
 $idexperimento = $_REQUEST['id'];
+$filtro = $_REQUEST['filtro'];
 
 if($_REQUEST['type'] == 'duplicatas'){
 	$Experimento->marcarduplicatas($idexperimento);
@@ -24,7 +25,7 @@ else if ($_REQUEST['type'] == 'duplicados') {
 	$Experimento->marcarduplicados($idexperimento);
 }
 
- header("Location: cadexperimento.php?op=A&tab=10&MSGCODIGO=72&id=$idexperimento");
+ header("Location: cadexperimento.php?op=A&tab=10&MSGCODIGO=72&id=$idexperimento&filtro=$filtro");
 ?>
 
 

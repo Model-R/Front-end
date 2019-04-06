@@ -12,11 +12,18 @@ Licence URI: http://www.os-templates.com/template-terms
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <link href="layout/styles/layout.css" rel="stylesheet" type="text/css" media="all">
+<link href="layout/styles/Main.css" rel="stylesheet" type="text/css" media="all">
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <body id="top">
 <?php
     include_once 'templates/login.php';
     include_once 'templates/pass.php';	
+	include_once 'templates/pretratamento.php';
+	include_once 'templates/modelagem.php';
+	include_once 'templates/posprocessamento.php';
 ?>
 <!-- ################################################################################################ -->
 <!-- ################################################################################################ -->
@@ -64,21 +71,21 @@ Licence URI: http://www.os-templates.com/template-terms
 			a autocorrelação dos dados e ferramentas para verificação e remoção de multicoinearidade na seleção 
 			das variáveis preditoras.
 		</p>
-        <!--<p class="nospace"><a class="btn" href="#">Saiba Mais &raquo;</a></p>-->
+        <p class="nospace" data-toggle="modal" data-target="#pretratamentoModal"><a class="btn" href="#">Saiba Mais &raquo;</a></p>
       </article>
       <article class="one_third"><i class="fa fa-gears"></i>
         <h3 class="heading">Modelagem</h3>
         <p class="topic-description">
 			Etapa de criação dos modelos utilizando algoritmos, os dados limpos na etapa de pré-processamento e as variáveis preditoras selecionadas.
 		</p>
-        <!--<p class="nospace"><a class="btn" href="#">Saiba Mais &raquo;</a></p>-->
+        <p class="nospace" data-toggle="modal" data-target="#modelagemModal"><a class="btn" href="#">Saiba Mais &raquo;</a></p>
       </article>
       <article class="one_third"><i class="fa fa-globe"></i>
         <h3 class="heading">Pós-processamento</h3>
         <p class="topic-description">
 			Etapa de recorte dos modelos de nicho para aproximação do modelo de distribuição de espécie.
 		</p>
-        <!--<p class="nospace"><a class="btn" href="#">Saiba Mais &raquo;</a></p>-->
+        <p class="nospace" data-toggle="modal" data-target="#posprocessamentoModal"><a class="btn" href="#">Saiba Mais &raquo;</a></p>
       </article>
       <!-- ################################################################################################ -->
     </div>
@@ -87,61 +94,17 @@ Licence URI: http://www.os-templates.com/template-terms
 <!-- ################################################################################################ -->
 <!-- ################################################################################################ -->
 <!-- ################################################################################################ -->
-<div class="wrapper row5 bgded" style="background-image:url('images/demo/backgrounds/1.png');">
-  <!--<div class="overlay">
-    <footer id="footer" class="clear"> 
-      <div class="one_quarter first">
-        <h6 class="title">Lorem ipsum dolor</h6>
-        <address class="btmspace-15">
-        Company Name<br>
-        Street Name &amp; Number<br>
-        Town<br>
-        Postcode/Zip
-        </address>
-        <ul class="nospace">
-          <li class="btmspace-10"><span class="fa fa-phone"></span> +00 (123) 456 7890</li>
-          <li><span class="fa fa-envelope-o"></span> info@domain.com</li>
-        </ul>
-      </div>
-      <div class="one_quarter">
-        <h6 class="title">Quick Links</h6>
-        <ul class="nospace linklist">
-          <li><a href="#">Home Page</a></li>
-          <li><a href="#">Blog</a></li>
-          <li><a href="#">Gallery</a></li>
-          <li><a href="#">Portfolio</a></li>
-          <li><a href="#">Contact Us</a></li>
-        </ul>
-      </div>
-      <div class="one_quarter">
-        <h6 class="title">From The Blog</h6>
-        <article>
-          <h2 class="nospace"><a href="#">Lorem ipsum dolor</a></h2>
-          <time class="smallfont" datetime="2045-04-06">Friday, 6<sup>th</sup> April 2045</time>
-          <p>Vestibulumaccumsan egestibulum eu justo convallis augue estas aenean elit intesque sed.</p>
-        </article>
-      </div>
-      <div class="one_quarter">
-        <h6 class="title">Grab Our Newsletter</h6>
-        <form method="post" action="#">
-          <fieldset>
-            <legend>Newsletter:</legend>
-            <input class="btmspace-15" type="text" value="" placeholder="Name">
-            <input class="btmspace-15" type="text" value="" placeholder="Email">
-            <button type="submit" value="submit">Submit</button>
-          </fieldset>
-        </form>
-      </div>
-    </footer>
-  </div> -->
-</div>
+<!--<div class="wrapper row5 bgded" style="background-image:url('images/demo/backgrounds/1.png');"></div>-->
 <!-- ################################################################################################ -->
 <!-- ################################################################################################ -->
 <!-- ################################################################################################ -->
+<?php
+    include_once 'layout/templates/footer.php';
+?>
 <div class="wrapper row6">
   <div id="copyright" class="clear"> 
     <!-- ################################################################################################ -->
-    <p class="fl_left">Copyright &copy; 2015 - All Rights Reserved - <a href="#">Domain Name</a></p>
+    <p class="fl_left">Copyright &copy; 2018 Jardim Botânico do Rio de Janeiro - Todos os direitos reservados.</a></p>
     <p class="fl_right">Template by <a target="_blank" href="http://www.os-templates.com/" title="Free Website Templates">OS Templates</a></p>
     <!-- ################################################################################################ -->
   </div>

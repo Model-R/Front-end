@@ -32,10 +32,17 @@ $isImageCut = $isImageCut === 't'? true: false;
 $pngPath = $Experimento->pngPath;
 $tiffPath = $Experimento->tiffPath;
 $rasterPngPath = $Experimento->rasterPngPath;
+$projection = $Experimento->extent_projection;
+$projection = explode(";",$projection);
 
 $rasterPngPath = str_replace("/var/www/html/rafael/modelr","https://model-r.jbrj.gov.br",$rasterPngPath);        
 $novoRaster;
 
+if(dirname(__FILE__) == '/var/www/html/rafael/modelr/v2' || dirname(__FILE__) == '/var/www/html/rafael/modelr/v3'){
+	$baseUrl = '../';
+} else {
+	$baseUrl = '';
+}
 ?>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -239,7 +246,6 @@ function ExportShapeControl(controlDiv, map) {
     controlUI.appendChild(controlText);
 
     controlUI.addEventListener('click', function() {
-		console.log('entrou cortar raster')
         xmlhttp=new XMLHttpRequest();
         xmlhttp.onreadystatechange=function()  {
             if (xmlhttp.readyState==4 && xmlhttp.status==200) {
@@ -254,40 +260,42 @@ function ExportShapeControl(controlDiv, map) {
                 
                 isImageCut = true;
                 pngCutPath = 'https://model-r.jbrj.gov.br/temp/' + <?php echo $id;?> + '/png_map-' + <?php echo $id;?> + '.png';
-                console.log(pngCutPath);
 				imageOverlay = mapOverlay;
 				document.getElementById("cancelarCorteRaster").style.display = 'flex';
+				<?php if($_SESSION['s_idtipousuario'] == '5') { ?>
+					document.getElementById("validarCorteRaster").style.display = 'flex';	
+				<?php } ?>
             }
         }
-        console.log(PolygonArrayString)
-        console.log('cutGeoJson.php?table=polygon&array=' + PolygonArrayString.join(':') + '&expid=' + <?php echo $id;?>)
-        xmlhttp.open("GET",'cutGeoJson.php?table=polygon&array=' + PolygonArrayString.join(':') + '&expid=' + <?php echo $id;?>,true);
+		console.log(PolygonArrayString)
+		console.log('cutGeoJson.php?table=polygon&array=' + JSON.stringify(PolygonArrayString) + '&expid=' + <?php echo $id;?>)
+        xmlhttp.open("GET",'cutGeoJson.php?table=polygon&array=' + JSON.stringify(PolygonArrayString) + '&expid=' + <?php echo $id;?>,true);
         xmlhttp.send();
     }); 
 
 }
 
  document.getElementById("cancelarCorteRaster").onclick = () => {
-	 console.log('entrou cancelar cortar raster')
      mapOverlay.setMap(null);
-
+	
      if(rasterPngPath){
         mapOverlay = new google.maps.GroundOverlay(rasterPngPath,imageBounds,{opacity:1});
     } 
 
     isImageCut = false;
      mapOverlay.setMap(mapresult);
-
+	
      imageOverlay = mapOverlay;
 	 document.getElementById("cancelarCorteRaster").style.display = 'none';
+	 if(document.getElementById("validarCorteRaster")){
+		document.getElementById("validarCorteRaster").style.display = 'none';
+	 }
 
      xmlhttp=new XMLHttpRequest();
     xmlhttp.onreadystatechange=function()  {
-        if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-            console.log('limpou corte');
-        }
     }
-    xmlhttp.open("GET",'controleCorteRaster.php?op=L&expid= <?php echo $idexperiment; ?>',true);
+	console.log('controleCorteRaster.php?op=L&expid=<?php echo $idexperiment; ?>')
+    xmlhttp.open("GET",'controleCorteRaster.php?op=L&expid=<?php echo $idexperiment; ?>',true);
     xmlhttp.send();
 };
 
@@ -301,9 +309,9 @@ var pngCutPath;
 var rasterCutPath;
 var isImageCut;
 var rasterPngPath;
+var typePolygonCut;
 
 function initMapExpResultado() {
-	console.log('initMapExpResultado')
   var map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: -21.6481541, lng: -56.52764},
 	    panControl:true,
@@ -391,14 +399,17 @@ var exportShape = new ExportShapeControl(exportShapeDiv, map);
 
 exportShapeDiv.index = 1;
 map.controls[google.maps.ControlPosition.TOP_CENTER].push(exportShapeDiv);
-
-console.log('rasterPngPath: ' + rasterPngPath);
-console.log('isImageCut: ' + isImageCut);
-console.log('pngCutPath: ' + pngCutPath);
+	//leste oeste norte sul
+	//-64.67653000000001;-30.924622499999998;6.404925371814875;-32.03960046758004
+	//projection
   imageBounds = new google.maps.LatLngBounds(
-	new google.maps.LatLng(-33.77584, -57.84917),
-	new google.maps.LatLng(-2.775838, -34.84917));
-
+	new google.maps.LatLng(<?php echo $projection[3]?>, <?php echo $projection[1]?>),
+	new google.maps.LatLng(<?php echo $projection[2]?>, <?php echo $projection[0]?>));
+	
+	//imageBounds = new google.maps.LatLngBounds(
+	//new google.maps.LatLng(-30.924622499999998, -64.67653000000001),
+	//new google.maps.LatLng(6.404925371814875, -32.03960046758004));
+		
 		if(isImageCut){
 			mapOverlay = new google.maps.GroundOverlay(pngCutPath,imageBounds,{opacity:1});
 		} else {
@@ -418,7 +429,7 @@ var drawingManager = new google.maps.drawing.DrawingManager({
     drawingControlOptions: {
       position: google.maps.ControlPosition.TOP_CENTER,
       drawingModes: [
-        google.maps.drawing.OverlayType.CIRCLE,
+        //google.maps.drawing.OverlayType.CIRCLE,
         google.maps.drawing.OverlayType.RECTANGLE,
         google.maps.drawing.OverlayType.POLYGON
       ]
@@ -449,7 +460,6 @@ var drawingManager = new google.maps.drawing.DrawingManager({
 
 google.maps.event.addListener(drawingManager, 'overlaycomplete', function(e) {
     if (e.type != google.maps.drawing.OverlayType.MARKER) {
-        console.log('desenho polygon')
         polygonArray.push(e.overlay);
         createHiddenInput(e.overlay);
         // Switch back to non-drawing mode after drawing a shape.
@@ -491,12 +501,17 @@ new google.maps.LatLng(6.485, -32.766));
   });
 
 function createHiddenInput (shape) {
-    if(typeOfShape(shape) == 'polygon'){
+	typePolygonCut = typeOfShape(shape);
+    if(typePolygonCut == 'polygon'){
         var vertices = [];
         for(var i = 0; i < shape.getPath().getLength(); i++){
             vertices.push(shape.getPath().getAt(i).toUrlValue(5));
         }
-    } else {
+		PolygonArrayString.push({ type: typePolygonCut, vertices: vertices.join(';')});
+    } else if (typePolygonCut == 'circle'){ 
+		vertices = [shape.center.lat() + ', ' + shape.center.lng()];
+		PolygonArrayString.push({ type: typePolygonCut, vertices: vertices.join(';'), radius: shape.radius});
+	} else {
         var bounds = shape.getBounds();
         var NE = bounds.getNorthEast();
         var SW = bounds.getSouthWest();
@@ -504,11 +519,10 @@ function createHiddenInput (shape) {
         var SE = new google.maps.LatLng(SW.lat(), NE.lng()).toString().replace('(','').replace(')','');
         NE = bounds.getNorthEast().toString().replace('(','').replace(')','');
         SW = bounds.getSouthWest().toString().replace('(','').replace(')','');
-
         var vertices = [SW,NW,NE,SE];
+		PolygonArrayString.push({ type: typePolygonCut, vertices: vertices.join(';') });
     }
-
-    PolygonArrayString.push(vertices.join(';'));
+	
     var input = document.createElement("input");
     input.setAttribute("type", "hidden");
     input.setAttribute("name", "polygon[]");
@@ -649,7 +663,8 @@ $marker = '';
   	var markers = [
         <?php echo $marker;;?>
     ];
-
+	
+	var googleMarkers = [];
     for( i = 0; i < markers.length; i++ ) {
         var position = new google.maps.LatLng(markers[i][1], markers[i][2]); 
 		marker2 = new google.maps.Marker({
@@ -659,8 +674,21 @@ $marker = '';
             icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
             title: markers[i][0]
         });
+		
+		googleMarkers.push(marker2);
        
     }
+	
+	document.getElementById("tooglePontos").onclick = () => {
+		for ( i = 0; i < googleMarkers.length; i++ ) {
+			if(googleMarkers[i].getVisible()) {
+			  googleMarkers[i].setVisible(false);
+			}
+			else {
+			  googleMarkers[i].setVisible(true);
+			}
+		}
+	};
 	
 }
 
@@ -702,11 +730,13 @@ function deleteHiddenInput (shape) {
             polygons[i].parentNode.removeChild(polygons[i]);
         }
     }
-
-    var index = PolygonArrayString.indexOf(vertices.join(';'));
-    if (index > -1) {
-        PolygonArrayString.splice(index, 1);
-    }
+	
+	for(var i = 0; i < PolygonArrayString.length; i++){
+		var index = PolygonArrayString[i].vertices.indexOf(vertices.join(';'));
+		if (index > -1) {
+			PolygonArrayString.splice(i, 1);
+		}
+	}
 
     shape.setMap(null);
 
@@ -716,8 +746,8 @@ function cortarRaster(){
 	xmlhttp=new XMLHttpRequest();
 	xmlhttp.onreadystatechange=function()  {
 		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-			console.log('entrou' + xmlhttp.responseText);
 			mapOverlay.setMap(null);
+			
 			mapOverlay = new google.maps.GroundOverlay(
 				'https://model-r.jbrj.gov.br/temp/' + <?php echo $id;?> + '/png_map-' + <?php echo $id;?> + '.png?' + Math.random(),
 			imageBounds,{opacity:1});
@@ -732,15 +762,12 @@ function cortarRaster(){
 			document.getElementById("cancelarCorteRaster").style.display = 'flex';
 		}
 	}
-	console.log(PolygonArrayString)
-	console.log('cutGeoJson.php?table=polygon&array=' + PolygonArrayString.join(':') + '&expid=' + <?php echo $id;?>)
 	xmlhttp.open("GET",'cutGeoJson.php?table=polygon&array=' + PolygonArrayString.join(':') + '&expid=' + <?php echo $id;?>,true);
 	xmlhttp.send();
-    console.log(document.getElementById('cmboxcortarraster').value)
 } 
 
 $(document ).ready(function() {
-    pngCutPath = <?php echo "'" . $pngCutPath . "'"; ?>;
+    pngCutPath = <?php echo "'" . $baseUrl . $pngCutPath . "'"; ?>;
     rasterCutPath = <?php echo "'" . $rasterCutPath . "'"; ?>;
     isImageCut = <?php echo "'". $isImageCut . "'" ; ?>;
     rasterPngPath = <?php echo "'". $rasterPngPath . "'"; ?>;
@@ -748,7 +775,6 @@ $(document ).ready(function() {
 });
 
 $('.nav-tabs a[href="#tab_content13"]').click(function(){
-    console.log('tab 13');
     initMapExpResultado();
     setTimeout(function() {
         google.maps.event.trigger(window, 'resize', {});
@@ -765,4 +791,83 @@ $('.nav-tabs').on('shown.bs.tab', function () {
     google.maps.event.trigger(window, 'resize', {});
     initMapExpResultado();
 });
+
+// -------------------------- Shape Bioma -----------------
+function criarBiomasOverlay () {
+	var biomasArray = [];
+	//amazonia
+	imageBounds = new google.maps.LatLngBounds(
+		new google.maps.LatLng(-16.30544, -73.98005),
+		new google.maps.LatLng(5.250803, -43.6135));
+		
+	var imagepath = '/v3/shapes/amazonia/imagem-amazonia.png'
+	mapOverlay = new google.maps.GroundOverlay(imagepath,imageBounds,{opacity:1});
+	
+	biomasArray.push({ bioma: 'Amazônia', mapOverlay: mapOverlay});
+	//caatinga
+	imageBounds = new google.maps.LatLngBounds(
+		new google.maps.LatLng(-16.08848, -44.50842),
+		new google.maps.LatLng(-2.808325, -35.17171));
+		
+	var imagepath = '/v3/shapes/caatinga/imagem-caatinga.png'
+	mapOverlay = new google.maps.GroundOverlay(imagepath,imageBounds,{opacity:1});
+	
+	biomasArray.push({ bioma: 'Caatinga', mapOverlay: mapOverlay});
+	//Cerrado
+	imageBounds = new google.maps.LatLngBounds(
+		new google.maps.LatLng(-24.68463, -60.10942),
+		new google.maps.LatLng(-2.340445, -41.52177));
+		
+	var imagepath = '/v3/shapes/cerrado/imagem-cerrado.png'
+	mapOverlay = new google.maps.GroundOverlay(imagepath,imageBounds,{opacity:1});
+	
+	biomasArray.push({ bioma: 'Cerrado', mapOverlay: mapOverlay});
+	//Mata Atlântica
+	imageBounds = new google.maps.LatLngBounds(
+		new google.maps.LatLng(-29.95134, -55.66303),
+		new google.maps.LatLng(-5.153689, -34.82286));
+		
+	var imagepath = '/v3/shapes/mata atlantica/imagem-mata atlantica.png'
+	mapOverlay = new google.maps.GroundOverlay(imagepath,imageBounds,{opacity:1});
+	
+	biomasArray.push({ bioma: 'Mata Atlântica', mapOverlay: mapOverlay});
+	//Pampa
+	imageBounds = new google.maps.LatLngBounds(
+		new google.maps.LatLng(-33.75435, -57.64378),
+		new google.maps.LatLng(-28.08308, -49.71537));
+		
+	var imagepath = '/v3/shapes/pampa/imagem-pampa.png'
+	mapOverlay = new google.maps.GroundOverlay(imagepath,imageBounds,{opacity:1});
+	
+	biomasArray.push({ bioma: 'Pampa', mapOverlay: mapOverlay});
+	//Pantanal
+	imageBounds = new google.maps.LatLngBounds(
+		new google.maps.LatLng(-22.11797, -59.18836),
+		new google.maps.LatLng(-15.52349, -54.92181));
+		
+	var imagepath = '/v3/shapes/pantanal/imagem-pantanal.png'
+	mapOverlay = new google.maps.GroundOverlay(imagepath,imageBounds,{opacity:1});
+	
+	biomasArray.push({ bioma: 'Pantanal', mapOverlay: mapOverlay});
+	return biomasArray;
+	
+}
+
+function mostrarShapeBioma() {
+	
+	var overlayArray = criarBiomasOverlay();
+	var shape = document.getElementById('selectCortarShape').value;
+
+	for(let overlay of overlayArray){
+		if(overlay.bioma !== shape) {
+			overlay.mapOverlay.setMap(null);
+		}
+	}
+	for(let overlay of overlayArray){
+		if(overlay.bioma == shape) {
+			imageOverlay.setMap(null);
+			overlay.mapOverlay.setMap(mapresult)
+		}
+	}
+}
 </script>

@@ -1,4 +1,4 @@
-﻿<link href="css/sectab.css" rel="stylesheet" type="text/css" media="all">
+﻿<link href="css/secTab.css" rel="stylesheet" type="text/css" media="all">
 
 <div class="x_content">
 	<div class="tab_container" role="tab_container" data-example-id="togglable-tabs">

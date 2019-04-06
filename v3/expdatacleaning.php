@@ -25,6 +25,11 @@ $StatusOccurrence = new StatusOccurrence();
 $StatusOccurrence->conn = $conn;
 
 $filtro = $_REQUEST['filtro']; 
+if(empty($filtro)){
+	$nome_filtro = '';
+} else {
+	$nome_filtro = $filtro;
+}
 
 $op=$_REQUEST['op'];
 $id=$_REQUEST['id'];
@@ -91,6 +96,7 @@ if ($op=='A')
 				<div class="modal-body">
 					<h4><div id="divtaxon"></div></h4>
 					<p>Dados originais<br>
+					<div id="dadosstatus"></div><br>
 					<div id="dadosoriginais"></div><br>
 					<div id="dadoscoletor"></div><br>
 					<div id="dadosherbario"></div><br>
@@ -102,7 +108,7 @@ if ($op=='A')
 						
 						<div class="col-md-8 col-sm-8 col-xs-8">
 							<b>Dados inferidos</b><br>
-							<?php echo $StatusOccurrence->listaCombo('cmboxstatusoccurrence',$idstatusoccurrence,'N','class="form-control"','1,4,6,8,17');?>
+							<?php echo $StatusOccurrence->listaCombo('cmboxstatusoccurrence',$idstatusoccurrence,'N','class="form-control"','12,4,6,8,10,11,12,13,17,18,19,20');?>
 							<div class="row">
 								<div class="col-md-6 col-sm-6 col-xs-6">
 									Latitude:<input type="text" name="edtlatitude" id="edtlatitude" class="form-control"><br>
@@ -193,9 +199,13 @@ if ($op=='A')
     if ($automaticfilter == false){?>
     <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
-            <button id="send3" type="button" onclick="atualizarPontos('',13,'','',false)" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos com ambas as coordenadas 0">Coordenada com zero</button>
-			<button id="send1" type="button" onclick="atualizarPontos('',10,'','',false)" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos fora do Brasil">Fora limite Brasil</button>
-            <button id="send4" type="button" onclick="marcarDuplicatas()" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar duplicatas">Duplicatas</button>
+            <button id="send3" type="button" onclick="atualizarPontos('',13,'','',false)" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title 
+				data-original-title="Filtro responsável por verificar as ocorrências que possuem coordenadas com valor igual a 0.">Coordenada com zero</button>
+			<button id="send1" type="button" onclick="atualizarPontos('',10,'','',false)" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title 
+				data-original-title="Filtro responsável por verificar as ocorrências que se encontram fora do limite territorial brasileiro">Fora limite Brasil</button>
+            <button id="send4" type="button" onclick="marcarDuplicatas()" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title 
+				data-original-title="Filtro responsável por verificar casos de duplicatas. Uma duplicata ocorre quando duas ocorrências distintas possuem 
+									valores iguais para os campos taxon, coletor, número de coleta, latitude e longitude.">Duplicatas</button>
             <button id="send4" type="button" onclick="marcarPontosDuplicados()" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar duplicatas">Duplicadas</button>
 			<button id="send2" type="button" onclick="atualizarPontos('',2,'','',false)" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Filtrar pontos fora do município coletado">Fora Município coleta</button>
 			<button id="send3" type="button" onclick="atualizarPontos('',99,'','',false)" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title data-original-title="Executar todos os filtros">Executar Todos</button>
@@ -220,7 +230,7 @@ if ($op=='A')
     <div class="clearfix"></div>
     <div class="row">
         <div class="col-md-6 col-sm-6 col-xs-12">
-            <?php echo $StatusOccurrence->listaCombo('cmboxstatusoccurrencefiltro',$idstatusoccurrencefiltro,'N','class="form-control"','',$id);?>
+            <?php echo $StatusOccurrence->listaCombo('cmboxstatusoccurrencefiltro',$idstatusoccurrencefiltro,'N','class="form-control"','',$id,$nome_filtro);?>
         </div>
         <div class="col-md-6 col-sm-6 col-xs-12 points-table-options">
             <div>
@@ -260,8 +270,9 @@ if ($op=='A')
 $sql = "select idoccurrence,idexperiment,iddatasource,taxon,collector,collectnumber,server,
 path,file,occurrence.idstatusoccurrence,pathicon,statusoccurrence,country,majorarea,minorarea,herbario,numtombo,fonte,
 case when lat2 is not null then lat2 else lat end as lat,
-case when long2 is not null then long2
-else long end as long
+case when long2 is not null then long2 else long end as long,
+case when lat2 is not null then lat end as oldlat,
+case when long2 is not null then long end as oldlong
 from modelr.occurrence, modelr.statusoccurrence where 
 occurrence.idstatusoccurrence = statusoccurrence.idstatusoccurrence and
 idexperiment = ".$id;
@@ -290,17 +301,18 @@ while ($row = pg_fetch_array($res))
 	$tombo =  $row['numtombo'];
 	$localizacao = $row['country'].', '.$row['majorarea'].' - '.$row['minorarea'];
 	$coletor = $row['collector'].' '.$row['collectnumber'];
+	$status = $row['statusoccurrence'];
 	
 	$html_imagem='<a href=templaterb2.php?colbot=rb&codtestemunho='.$row['codtestemunho'].'&arquivo='.$arquivo.' target=\"Visualizador\"><img src="http://'.$servidor.'/fsi/server?type=image&source='.$path.'/'.$arquivo.'&width=300&height=70&profile=jpeg&quality=20"></a>';
 	
 	// preparo os quadros de informação para cada ponto
 	$c++;
 	if ($c < $conta) {
-		$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."','".$coletor."','".$herbario."','".$tombo."'],";
+		$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."','".$coletor."','".$herbario."','".$tombo."','".$status."', ".$row['oldlat'].",".$row['oldlong']."],";
 	}
 	else
 	{
-		$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."','".$coletor."','".$herbario."','".$tombo."']";
+		$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."','".$coletor."','".$herbario."','".$tombo."','".$status."', ".$row['oldlat'].",".$row['oldlong']."],";
 		$latcenter = $row['lat'];
 		$longcenter = $row['long'];
 	}
@@ -312,7 +324,7 @@ while ($row = pg_fetch_array($res))
 	?>
 								
     <tr class="even pointer points-table-line">
-        <td class="a-center "><input type="checkbox" name="table_records[]" id="table_records[]" value="<?php echo $row['idoccurrence'];?>" ><a data-toggle="tooltip" data-placement="top" title data-original-title="Editar" onclick="abreModal('<?php echo $row['taxon'];?>','<?php echo $row['lat'];?>','<?php echo $row['long'];?>','<?php echo $row['idoccurrence'];?>','<?php echo $row[''];?>','<?php echo $row[''];?>','<?php echo $servidor;?>','<?php echo $path;?>','<?php echo $arquivo;?>','<?php echo $row['idstatusoccurrence'];?>','<?php echo $localizacao;?>','<?php echo $coletor;?>','<?php echo $herbario;?>','<?php echo $tombo;?>')">  <span class="glyphicon glyphicon-edit edit-button" aria-hidden="true"></span></a></td><td><?php echo $html_imagem.' ';?></td>
+        <td class="a-center "><input type="checkbox" name="table_records[]" id="table_records[]" value="<?php echo $row['idoccurrence'];?>" ><a data-toggle="tooltip" data-placement="top" title data-original-title="Editar" onclick="abreModal('<?php echo $row['taxon'];?>','<?php echo $row['lat'];?>','<?php echo $row['long'];?>','<?php echo $row['idoccurrence'];?>','<?php echo $row[''];?>','<?php echo $row[''];?>','<?php echo $servidor;?>','<?php echo $path;?>','<?php echo $arquivo;?>','<?php echo $row['idstatusoccurrence'];?>','<?php echo $localizacao;?>','<?php echo $coletor;?>','<?php echo $herbario;?>','<?php echo $tombo;?>','<?php echo $status;?>','<?php echo $row['oldlat'];?>','<?php echo $row['oldlong'];?>')">  <span class="glyphicon glyphicon-edit edit-button" aria-hidden="true"></span></a></td><td><?php echo $html_imagem.' ';?></td>
         <td class="a-right a-right "><b><?php echo $row['fonte'];?></b></br><?php echo $row['herbario'];?></td>
 		<td class="a-right a-right " style="width: 200px;"><?php echo $row['taxon'];?></td>
         <td class="a-right a-right "><?php echo $row['collector'];?> <?php echo $row['collectnumber'];?></td>
@@ -362,7 +374,7 @@ while ($row = pg_fetch_array($res))
 	
 	<script src="js/loading.js"></script>	
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhi_DlmaFvRu7eP357bOzl29fyZXKIJE0&libraries=drawing&callback=initMap" async defer></script>	
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhi_DlmaFvRu7eP357bOzl29fyZXKIJE0&libraries=drawing"></script>
 
     <!-- PNotify -->
     <script type="text/javascript" src="js/notify/pnotify.core.js"></script>
@@ -370,6 +382,170 @@ while ($row = pg_fetch_array($res))
     <script type="text/javascript" src="js/notify/pnotify.nonblock.js"></script>
 
 <script>
+function initMapModal(idocorrencia) {
+	<?php if (empty($latcenter))
+	{
+		$latcenter = -24.5452;
+		$longcenter = -42.5389;
+	}
+	?>
+	
+    var map4 = new google.maps.Map(document.getElementById('map4'), {
+     center: {lat: <?php echo $latcenter;?>, lng: <?php echo $longcenter;?>},
+	 mapTypeId: 'terrain',
+	 gestureHandling: 'greedy',
+        mapTypeControl: true,
+        mapTypeControlOptions: {
+            mapTypeIds: ['terrain','roadmap', 'satellite']
+        },
+        styles: [
+            {
+                "featureType": "landscape",
+                "stylers": [
+                    {"hue": "#FFA800"},
+                    {"saturation": 0},
+                    {"lightness": 0},
+                    {"gamma": 1}
+                ]
+            },
+            {
+                "featureType": "road.highway",
+                "stylers": [
+                    {"hue": "#53FF00"},
+                    {"saturation": -73},
+                    {"lightness": 40},
+                    {"gamma": 1}
+                ]
+            },
+            {
+                "featureType": "road.arterial",
+                "stylers": [
+                    {"hue": "#FBFF00"},
+                    {"saturation": 0},
+                    {"lightness": 0},
+                    {"gamma": 1}
+                ]
+            },
+            {
+                "featureType": "road.local",
+                "stylers": [
+                    {"hue": "#00FFFD"},
+                    {"saturation": 0},
+                    {"lightness": 30},
+                    {"gamma": 1}
+                ]
+            },
+            {
+                "featureType": "water",
+                "stylers": [
+                    {"hue": "#00BFFF"},
+                    {"saturation": 6},
+                    {"lightness": 8},
+                    {"gamma": 1}
+                ]
+            },
+            {
+                "featureType": "poi",
+                "stylers": [
+                    {"hue": "#679714"},
+                    {"saturation": 33.4},
+                    {"lightness": -25.4},
+                    {"gamma": 1}
+                ]
+            }
+        ],
+    zoom: 2
+  });
+ 
+  	var markers = [
+        <?php echo $marker;?>
+    ];
+                        
+    // Info Window Content
+	
+	var infoWindowContent = [
+		<?php echo $info;?>
+    ];
+
+//        ['<div class="info_content">' +
+ //       '<h3>Caesalpinia Echinata</h3>' +
+  //      '<p><button id="send" type="button" onclick="enviar()" class="btn btn-danger">Excluir</button><button id="send" type="button" onclick="excluirPonto()" class="btn btn-default">Salvar Posição</button></p>' +        '</div>'],
+   //     ['<div class="info_content">' +
+    //    '<h3>Caesalpinia echinata</h3>' +
+     //   '<p><button id="send" type="button" onclick="enviar()" class="btn btn-danger">Excluir</button><button id="send" type="button" onclick="excluirPonto()" class="btn btn-default">Salvar Posição</button></p>' +
+      //  '</div>']
+	
+    // Display multiple markers on a map
+    var infoWindow = new google.maps.InfoWindow(), marker, i;
+    
+    // Loop through our array of markers & place each one on the map  
+
+    for( i = 0; i < markers.length; i++ ) {
+		if(markers[i][3] != idocorrencia) continue; //only print clicked ocurrence
+        var position = new google.maps.LatLng(markers[i][1], markers[i][2]);
+        //bounds.extend(position);
+		var icone = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
+		if (markers[i][7]!='')
+		{
+			icone = 'http://maps.google.com/mapfiles/ms/icons/'+markers[i][7];
+		}
+		
+        marker = new google.maps.Marker({
+            position: position,
+            map: map4,
+			draggable: true,
+            title: markers[i][0],
+			icon: icone,
+			scrollwheel:true
+        });
+        
+        // Allow each marker to have an info window    
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function() {//começo
+				abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],'','',markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12],markers[i][13],markers[i][14],markers[i][15]);
+				
+            }
+        })(marker, i));
+		
+        google.maps.event.addListener(marker, 'dragend', (function(marker, i) {
+            return function() {
+				abreConfirmacao(markers[i][0],markers[i][1],markers[i][2],markers[i][3],this.position.lat(),this.position.lng(),markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12],markers[i][13],markers[i][14],markers[i][15]);
+				//abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],this.position.lat(),this.position.lng(),markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9]);
+				
+            }
+        })(marker, i));
+        // Automatically center the map fitting all markers on the screen
+       // map3.fitBounds(bounds);
+    }
+
+	modalMap = map4;
+
+  
+}
+
+
+function abreModal(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquivo,idstatusocorrence,localizacao, coletor, herbario, tombo, status, oldlat, oldlong)
+{
+
+   document.getElementById('divtaxon').innerHTML=taxon;
+	html_imagem='<a href=templaterb2.php?colbot=rb&codtestemunho=&arquivo='+arquivo+' target=\"Visualizador\"><img src="http://'+servidor+'/fsi/server?type=image&source='+path+'/'+arquivo+'&width=600&height=200&profile=jpeg&quality=20"></a>';
+	document.getElementById('edidocorrencia').value=idocorrencia;
+	document.getElementById('divimagem').innerHTML=html_imagem;
+	document.getElementById('dadosstatus').innerHTML='Status: '+status;
+	if(status == 'Coordenada Ajustada')  document.getElementById('dadosoriginais').innerHTML='Latitude: '+lat+' ( lat original: '+oldlat+') Longitude: '+lng+' ( long original: '+oldlong+') - '+localizacao;
+	else document.getElementById('dadosoriginais').innerHTML='Latitude: '+lat+' Longitude: '+lng+' - '+localizacao;
+	document.getElementById('dadoscoletor').innerHTML='Coletor: '+coletor;
+	document.getElementById('dadosherbario').innerHTML='Herbário: '+herbario + ' - Tombo: ' + tombo;
+	document.getElementById('edtlatitude').value=lat;
+	document.getElementById('edtlongitude').value=lng;
+	document.getElementById('cmboxstatusoccurrence').value=idstatusocorrence;
+	console.log('idstatusocorrence ' + idstatusocorrence);
+	$('#pointModal').modal('show');
+	setTimeout(() => { 
+		initMapModal(idocorrencia);
+	}, 200);
+}
+
 
     function imprimirDC(tipo)
     {   
@@ -388,7 +564,157 @@ while ($row = pg_fetch_array($res))
         }
     }
 
-    function initMap() {
+var tabMap;
+var modalMap;
+
+var ids = [];
+
+function atualizarPontos(idponto,idstatus,latinf,longinf,statusOnly)
+{
+	//alert('?idstatus='+idstatus+'&idponto='+idponto+'&latinf='+latinf+'&longinf='+longinf);
+	exibe('loading','Atualizando Status');
+	console.log('exec.atualizarpontos.php?id='+ <?php echo $id;?> +'&idstatus='+idstatus+'&idponto='+idponto+'&latinf='+latinf+'&longinf='+longinf + '&statusOnly='+statusOnly + '&filtro='+<?php echo $filtro;?> + '')
+	<?php if(empty($filtro)){?>
+		document.getElementById('frm').action='exec.atualizarpontos.php?id='+ <?php echo $id;?> +'&idstatus='+idstatus+'&idponto='+idponto+'&latinf='+latinf+'&longinf='+longinf + '&statusOnly='+statusOnly;
+	<?php } else { ?>
+		document.getElementById('frm').action='exec.atualizarpontos.php?id='+ <?php echo $id;?> +'&idstatus='+idstatus+'&idponto='+idponto+'&latinf='+latinf+'&longinf='+longinf + '&statusOnly='+statusOnly + '&filtro='+<?php echo $filtro;?> + '';
+	<?php } ?>
+	document.getElementById('frm').submit();
+}
+
+function atualizarMultiplosPontos(idponto,idstatus,latinf,longinf)
+{
+	//alert('exec.atualizarpontos.php?idstatus='+idstatus+'&idponto='+ids.join(',')+'&latinf='+latinf+'&longinf='+longinf);
+	
+	exibe('loading','Atualizando Status');
+	document.getElementById('frm').action='exec.atualizarpontos.php?id='+ <?php echo $id;?> +'&idstatus='+idstatus+'&idponto='+ids.join(',')+'&mult=true';
+	document.getElementById('frm').submit();
+}
+
+function abreModelMultiplosPontos()
+{  
+    var docs = document.getElementsByName('table_records[]');
+	if (contaSelecionados(docs)>0)
+	{
+        for(var i = 0; i < docs.length; i++){
+            if (docs[i].checked){
+                ids.push(docs[i].value);
+            }
+        }
+		$('#myModalstatusoccurrence').modal('show');
+	}
+	else
+	{
+		criarNotificacao('Atenção','Selecione os registros que deseja alterar o status','warning');
+	}
+}
+
+function abreConfirmacao(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquivo,idstatusocorrence,localizacao)
+{
+	
+	html_imagem='<a href=templaterb2.php?colbot=rb&codtestemunho=&arquivo='+arquivo+' target=\"Visualizador\"><img src="http://'+servidor+'/fsi/server?type=image&source='+path+'/'+arquivo+'&width=600&height=200&profile=jpeg&quality=20"></a>';
+
+	document.getElementById('edidocorrenciaconfirmacao').value=idocorrencia;
+	document.getElementById('edtlatitudeconfirmacao').value=latinf;
+	document.getElementById('edtlongitudeconfirmacao').value=lnginf;
+	document.getElementById('cmboxstatusoccurrenceconfirmacao').value='6';
+	$('#confirmationModal').modal('show');
+}
+
+function filtrar(idstatusoccurrence)
+{
+	//exibe('loading','Filtrando');
+	console.log(document.getElementById('frm'))
+	// document.getElementById('frm').action='cadexperimento.php?tab=3&filtro='+idstatusoccurrence;
+    document.getElementById('frm').action='cadexperimento.php?op='+'<?php echo $op;?>'+'&tab=10&id='+'<?php echo $id;?>' + '&filtro='+idstatusoccurrence;
+	document.getElementById('frm').submit();
+}
+
+function excluirPontosDuplicados()
+{
+	exibe('loading','Excluindo pontos duplicados');
+	document.getElementById('frm').action='exec.excluirpontosduplicados.php';
+	document.getElementById('frm').submit();
+}
+
+function marcarDuplicatas()
+{
+	exibe('loading','');
+	<?php if(empty($filtro)){?>
+		document.getElementById('frm').action='exec.marcarpontosduplicados.php?id=' + <?php echo $id;?> + '&type=duplicatas';
+	<?php } else { ?>
+		document.getElementById('frm').action='exec.marcarpontosduplicados.php?id=' + <?php echo $id;?> + '&type=duplicatas&filtro='+<?php echo $filtro;?>;
+	<?php } ?>
+	document.getElementById('frm').submit();
+}
+
+function marcarPontosDuplicados()
+{
+	exibe('loading','');
+	<?php if(empty($filtro)){?>
+		document.getElementById('frm').action='exec.marcarpontosduplicados.php?id=' + <?php echo $id;?> + '&type=duplicados';
+	<?php } else { ?>
+		document.getElementById('frm').action='exec.marcarpontosduplicados.php?id=' + <?php echo $id;?> + '&type=duplicados&filtro='+<?php echo $filtro;?>;
+	<?php } ?>
+	document.getElementById('frm').submit();
+}
+
+$('.nav-tabs a[href="#tab_content3"]').click(function(){
+    $(this).tab('show');
+    initMap();
+    setTimeout(function(){ 
+        google.maps.event.trigger(tabMap, "resize");
+        tabMap.setCenter({lat: <?php echo $latcenter;?>, lng: <?php echo $longcenter;?>});
+    }, 200);
+})
+
+$('.nav-tabs a[href="#tab_content3"]').click(function(){
+    $(this).tab('show');
+	//filtrar('');
+})	
+
+$('#pointModal').on('shown', function () {
+		google.maps.event.trigger(modalMap, "resize");
+    });
+
+function liberarExperimentoReflora(){
+    //document.getElementById('frm').action='exec.experimento.php?page=dc&op=LE&id=' + <?php echo $id?>;
+	exibe('loading');
+  	document.getElementById('frm').action='setupmodelagem.php?expid=' + <?php echo $id?>;
+	document.getElementById('frm').submit();
+	
+	// xmlhttp=new XMLHttpRequest();
+	// xmlhttp.onreadystatechange=function()  {
+	// 	if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+	// 		console.log('Terminou');
+    //         console.log('entrou' + xmlhttp.responseText);
+    //         exibe('loading');
+    //         window.location.href = url;
+	// 	}
+	// }
+	// xmlhttp.open("GET",'setupmodelagem.php?expid=' + <?php echo $id?>,true);
+	// xmlhttp.send();
+		
+}
+
+$('#ConfirmCleanModalDataCleaning').modal({ show: false});
+
+function confirmarLimparDados()
+{   
+	$('#ConfirmCleanModalDataCleaning').modal('show');
+}
+$("#cleanButtonDataCleaning").click(function() {
+	document.getElementById('frm').action='exec.experimento.php?id='+<?php echo $id; ?>+'&op=LDDC';
+	document.getElementById('frm').submit();
+});
+
+</script>
+
+<script>
+
+google.maps.event.addDomListener(window, 'load', initMap);
+
+	function initMap() {
 	<?php 
 		$latcenter = -24.5452;
 		$longcenter = -42.5389;
@@ -513,7 +839,7 @@ while ($row = pg_fetch_array($res))
         // Allow each marker to have an info window    
         google.maps.event.addListener(marker, 'click', (function(marker, i) {
             return function() {
-				abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],'','',markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12]);
+				abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],'','',markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12],markers[i][13],markers[i][14],markers[i][15]);
 				
             }
         })(marker, i));
@@ -526,298 +852,4 @@ while ($row = pg_fetch_array($res))
 	initMapModal()//start map inside modal
   
 }
-
-var tabMap;
-var modalMap;
-
-function initMapModal(idocorrencia) {
-	<?php if (empty($latcenter))
-	{
-		$latcenter = -24.5452;
-		$longcenter = -42.5389;
-	}
-	?>
-	
-    var map4 = new google.maps.Map(document.getElementById('map4'), {
-     center: {lat: <?php echo $latcenter;?>, lng: <?php echo $longcenter;?>},
-	 mapTypeId: 'terrain',
-	 gestureHandling: 'greedy',
-        mapTypeControl: true,
-        mapTypeControlOptions: {
-            mapTypeIds: ['terrain','roadmap', 'satellite']
-        },
-        styles: [
-            {
-                "featureType": "landscape",
-                "stylers": [
-                    {"hue": "#FFA800"},
-                    {"saturation": 0},
-                    {"lightness": 0},
-                    {"gamma": 1}
-                ]
-            },
-            {
-                "featureType": "road.highway",
-                "stylers": [
-                    {"hue": "#53FF00"},
-                    {"saturation": -73},
-                    {"lightness": 40},
-                    {"gamma": 1}
-                ]
-            },
-            {
-                "featureType": "road.arterial",
-                "stylers": [
-                    {"hue": "#FBFF00"},
-                    {"saturation": 0},
-                    {"lightness": 0},
-                    {"gamma": 1}
-                ]
-            },
-            {
-                "featureType": "road.local",
-                "stylers": [
-                    {"hue": "#00FFFD"},
-                    {"saturation": 0},
-                    {"lightness": 30},
-                    {"gamma": 1}
-                ]
-            },
-            {
-                "featureType": "water",
-                "stylers": [
-                    {"hue": "#00BFFF"},
-                    {"saturation": 6},
-                    {"lightness": 8},
-                    {"gamma": 1}
-                ]
-            },
-            {
-                "featureType": "poi",
-                "stylers": [
-                    {"hue": "#679714"},
-                    {"saturation": 33.4},
-                    {"lightness": -25.4},
-                    {"gamma": 1}
-                ]
-            }
-        ],
-    zoom: 2
-  });
- 
-  	var markers = [
-        <?php echo $marker;?>
-    ];
-                        
-    // Info Window Content
-	
-	var infoWindowContent = [
-		<?php echo $info;?>
-    ];
-
-//        ['<div class="info_content">' +
- //       '<h3>Caesalpinia Echinata</h3>' +
-  //      '<p><button id="send" type="button" onclick="enviar()" class="btn btn-danger">Excluir</button><button id="send" type="button" onclick="excluirPonto()" class="btn btn-default">Salvar Posição</button></p>' +        '</div>'],
-   //     ['<div class="info_content">' +
-    //    '<h3>Caesalpinia echinata</h3>' +
-     //   '<p><button id="send" type="button" onclick="enviar()" class="btn btn-danger">Excluir</button><button id="send" type="button" onclick="excluirPonto()" class="btn btn-default">Salvar Posição</button></p>' +
-      //  '</div>']
-	
-    // Display multiple markers on a map
-    var infoWindow = new google.maps.InfoWindow(), marker, i;
-    
-    // Loop through our array of markers & place each one on the map  
-
-    for( i = 0; i < markers.length; i++ ) {
-		if(markers[i][3] != idocorrencia) continue; //only print clicked ocurrence
-        var position = new google.maps.LatLng(markers[i][1], markers[i][2]);
-        //bounds.extend(position);
-		var icone = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
-		if (markers[i][7]!='')
-		{
-			icone = 'http://maps.google.com/mapfiles/ms/icons/'+markers[i][7];
-		}
-		
-        marker = new google.maps.Marker({
-            position: position,
-            map: map4,
-			draggable: true,
-            title: markers[i][0],
-			icon: icone,
-			scrollwheel:true
-        });
-        
-        // Allow each marker to have an info window    
-        google.maps.event.addListener(marker, 'click', (function(marker, i) {
-            return function() {
-				abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],'','',markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12]);
-				
-            }
-        })(marker, i));
-		
-        google.maps.event.addListener(marker, 'dragend', (function(marker, i) {
-            return function() {
-				abreConfirmacao(markers[i][0],markers[i][1],markers[i][2],markers[i][3],this.position.lat(),this.position.lng(),markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12]);
-				//abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],this.position.lat(),this.position.lng(),markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9]);
-				
-            }
-        })(marker, i));
-        // Automatically center the map fitting all markers on the screen
-       // map3.fitBounds(bounds);
-    }
-
-	modalMap = map4;
-
-  
-}
-
-var ids = [];
-
-function atualizarPontos(idponto,idstatus,latinf,longinf,statusOnly)
-{
-	//alert('?idstatus='+idstatus+'&idponto='+idponto+'&latinf='+latinf+'&longinf='+longinf);
-
-	exibe('loading','Atualizando Status');
-	document.getElementById('frm').action='exec.atualizarpontos.php?id='+ <?php echo $id;?> +'&idstatus='+idstatus+'&idponto='+idponto+'&latinf='+latinf+'&longinf='+longinf + '&statusOnly='+statusOnly;
-    document.getElementById('frm').submit();
-}
-
-function atualizarMultiplosPontos(idponto,idstatus,latinf,longinf)
-{
-	//alert('exec.atualizarpontos.php?idstatus='+idstatus+'&idponto='+ids.join(',')+'&latinf='+latinf+'&longinf='+longinf);
-	
-	exibe('loading','Atualizando Status');
-	document.getElementById('frm').action='exec.atualizarpontos.php?id='+ <?php echo $id;?> +'&idstatus='+idstatus+'&idponto='+ids.join(',')+'&mult=true';
-	document.getElementById('frm').submit();
-}
-
-function abreModelMultiplosPontos()
-{  
-    var docs = document.getElementsByName('table_records[]');
-	if (contaSelecionados(docs)>0)
-	{
-        for(var i = 0; i < docs.length; i++){
-            if (docs[i].checked){
-                ids.push(docs[i].value);
-            }
-        }
-		$('#myModalstatusoccurrence').modal('show');
-	}
-	else
-	{
-		criarNotificacao('Atenção','Selecione os registros que deseja alterar o status','warning');
-	}
-}
-
-function abreModal(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquivo,idstatusocorrence,localizacao, coletor, herbario, tombo)
-{
-
-   document.getElementById('divtaxon').innerHTML=taxon;
-	html_imagem='<a href=templaterb2.php?colbot=rb&codtestemunho=&arquivo='+arquivo+' target=\"Visualizador\"><img src="http://'+servidor+'/fsi/server?type=image&source='+path+'/'+arquivo+'&width=600&height=200&profile=jpeg&quality=20"></a>';
-	document.getElementById('edidocorrencia').value=idocorrencia;
-	document.getElementById('divimagem').innerHTML=html_imagem;
-	document.getElementById('dadosoriginais').innerHTML='Latitude: '+lat+' Longitude: '+lng+' - '+localizacao;
-	document.getElementById('dadoscoletor').innerHTML='Coletor: '+coletor;
-	document.getElementById('dadosherbario').innerHTML='Herbário: '+herbario + ' - Tombo: ' + tombo;
-	document.getElementById('edtlatitude').value=lat;
-	document.getElementById('edtlongitude').value=lng;
-	document.getElementById('cmboxstatusoccurrence').value=idstatusocorrence;
-	$('#pointModal').modal('show');
-	setTimeout(() => { 
-		initMapModal(idocorrencia);
-	}, 200);
-}
-
-function abreConfirmacao(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquivo,idstatusocorrence,localizacao)
-{
-	
-	html_imagem='<a href=templaterb2.php?colbot=rb&codtestemunho=&arquivo='+arquivo+' target=\"Visualizador\"><img src="http://'+servidor+'/fsi/server?type=image&source='+path+'/'+arquivo+'&width=600&height=200&profile=jpeg&quality=20"></a>';
-
-	document.getElementById('edidocorrenciaconfirmacao').value=idocorrencia;
-	document.getElementById('edtlatitudeconfirmacao').value=latinf;
-	document.getElementById('edtlongitudeconfirmacao').value=lnginf;
-	document.getElementById('cmboxstatusoccurrenceconfirmacao').value='6';
-	$('#confirmationModal').modal('show');
-}
-
-function filtrar(idstatusoccurrence)
-{
-	//exibe('loading','Filtrando');
-	console.log(document.getElementById('frm'))
-	// document.getElementById('frm').action='cadexperimento.php?tab=3&filtro='+idstatusoccurrence;
-    document.getElementById('frm').action='cadexperimento.php?op='+'<?php echo $op;?>'+'&tab=10&id='+'<?php echo $id;?>' + '&filtro='+idstatusoccurrence;
-	document.getElementById('frm').submit();
-}
-
-function excluirPontosDuplicados()
-{
-	exibe('loading','Excluindo pontos duplicados');
-	document.getElementById('frm').action='exec.excluirpontosduplicados.php';
-	document.getElementById('frm').submit();
-}
-
-function marcarDuplicatas()
-{
-	exibe('loading','');
-	document.getElementById('frm').action='exec.marcarpontosduplicados.php?id=' + <?php echo $id;?> + '&type=duplicatas';
-	document.getElementById('frm').submit();
-}
-
-function marcarPontosDuplicados()
-{
-	exibe('loading','');
-	document.getElementById('frm').action='exec.marcarpontosduplicados.php?id=' + <?php echo $id;?> + '&type=duplicados';
-	document.getElementById('frm').submit();
-}
-
-$('.nav-tabs a[href="#tab_content3"]').click(function(){
-    $(this).tab('show');
-    initMap();
-    setTimeout(function(){ 
-        google.maps.event.trigger(tabMap, "resize");
-        tabMap.setCenter({lat: <?php echo $latcenter;?>, lng: <?php echo $longcenter;?>});
-    }, 200);
-})
-
-$('.nav-tabs a[href="#tab_content3"]').click(function(){
-    $(this).tab('show');
-	//filtrar('');
-})	
-
-$('#pointModal').on('shown', function () {
-		google.maps.event.trigger(modalMap, "resize");
-    });
-
-function liberarExperimentoReflora(){
-    //document.getElementById('frm').action='exec.experimento.php?page=dc&op=LE&id=' + <?php echo $id?>;
-	exibe('loading');
-  	document.getElementById('frm').action='setupmodelagem.php?expid=' + <?php echo $id?>;
-	document.getElementById('frm').submit();
-	
-	// xmlhttp=new XMLHttpRequest();
-	// xmlhttp.onreadystatechange=function()  {
-	// 	if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-	// 		console.log('Terminou');
-    //         console.log('entrou' + xmlhttp.responseText);
-    //         exibe('loading');
-    //         window.location.href = url;
-	// 	}
-	// }
-	// xmlhttp.open("GET",'setupmodelagem.php?expid=' + <?php echo $id?>,true);
-	// xmlhttp.send();
-		
-}
-
-$('#ConfirmCleanModalDataCleaning').modal({ show: false});
-
-function confirmarLimparDados()
-{   
-	$('#ConfirmCleanModalDataCleaning').modal('show');
-}
-$("#cleanButtonDataCleaning").click(function() {
-	document.getElementById('frm').action='exec.experimento.php?id='+<?php echo $id; ?>+'&op=LDDC';
-	document.getElementById('frm').submit();
-});
-	
-
 </script>

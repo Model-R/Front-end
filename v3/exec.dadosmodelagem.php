@@ -19,7 +19,7 @@ $numpontos = $_REQUEST['edtnumpontos'];
 $buffer = $_REQUEST['edtbuffer'];
 $tss = $_REQUEST['edttss'];
 $numparticoes = $_REQUEST['edtnumparticoes'];
-$resolution = $_REQUEST['edtresolution'];
+//$resolution = $_REQUEST['edtresolution'];
 $repetitions = $_REQUEST['edtnumrepetitions'];
 $trainpercent = $_REQUEST['edttrainpercent'];
 
@@ -28,9 +28,10 @@ $Experimento->num_partition = $numparticoes;//integer,
 $Experimento->num_points = $numpontos ;//integer,
 $Experimento->buffer = "'" . $buffer[0] . "'" ;//string
 $Experimento->tss = $tss;
-$Experimento->resolution = "'" . $resolution[0] . "'";
+//$Experimento->resolution = "'" . $resolution[0] . "'";
 $Experimento->repetitions = $repetitions;
 $Experimento->trainpercent = $trainpercent;
+
 
 if(!empty($_REQUEST['algoritmo'])){
 	$result = $Experimento->limparAlgoritmo($id);

@@ -28,17 +28,19 @@ $Experimento->getById($id);
 $extent_model = $Experimento->extent_model;
 
 if(empty($extent_model) || $extent_model == ';;;' || $extent_model == '')
-{
-    $extensao1_norte = '-2.60';
-    $extensao1_sul = '-34.03';
-    $extensao1_leste = '-34.70';
-    $extensao1_oeste = '-57.19';
+{	
+	$extensao1_norte = 0;
+    $extensao1_sul = 0;
+    $extensao1_leste = 0;
+    $extensao1_oeste = 0;
+    $has_extent = 'false';
 } else {
     $extents = explode(';', $extent_model);
     $extensao1_norte = $extents[2];
     $extensao1_sul = $extents[3];
-    $extensao1_leste = $extents[1];
-    $extensao1_oeste = $extents[0];
+    $extensao1_leste = $extents[0];
+    $extensao1_oeste = $extents[1];
+	$has_extent = 'true';
 }
 ?>
 <head>
@@ -269,26 +271,27 @@ function initMapModelagem() {
 // [START region_rectangle]
   var bounds1 = {
     north: <?php echo $extensao1_norte;?>,
-    south: <?php echo $extensao1_sul ;?>,
-    east: <?php echo $extensao1_leste ;?>,
-    west: <?php echo $extensao1_oeste ;?>
+    south: <?php echo $extensao1_sul;?>,
+    east: <?php echo $extensao1_leste;?>,
+    west: <?php echo $extensao1_oeste;?>
   };
+	 
+  if(<?php echo $has_extent;?>){
+	// Define a rectangle and set its editable property to true.
+	  var rectangle = new google.maps.Rectangle({
+		bounds: bounds1,
+		editable: true,
+		draggable: true
+	  });
 
-  // Define a rectangle and set its editable property to true.
-  var rectangle = new google.maps.Rectangle({
-    bounds: bounds1,
-    editable: true,
-	draggable: true
-  });
-
-  // [END region_rectangle]
-  rectangle.setMap(mapMod);
-  
-  rectangle.addListener('bounds_changed', showNewRect);
-  
-  rectangleExtension = rectangle;
-  
-   function showNewRect(event) {
+	  // [END region_rectangle]
+	  rectangle.setMap(mapMod);
+	  
+	  rectangle.addListener('bounds_changed', showNewRect);
+	  
+	  rectangleExtension = rectangle;
+	  
+	  function showNewRect(event) {
         var ne = rectangle.getBounds().getNorthEast();
         var sw = rectangle.getBounds().getSouthWest();
 
@@ -298,6 +301,7 @@ function initMapModelagem() {
         document.getElementById('edtextensao1_leste').value=ne.lng();
 		
       }
+  }
  
 <?php 
 	$sql = "select idoccurrence,idexperiment,iddatasource,taxon,collector,collectnumber,server,
@@ -343,6 +347,7 @@ $marker = '';
             position: position,
             map: mapMod,
 			draggable: false,
+			icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
             title: markers[i][0]
         });
         
@@ -385,21 +390,25 @@ function getShapeExtent () {
 }
 
 function enviarExtensao(tab)
-{
+{	
+	//console.log('exec.expextensao.php?tab='+tab+'&id=' + '<?php echo $id?>')
 	document.getElementById('frmextensao').action='exec.expextensao.php?tab='+tab+'&id=' + '<?php echo $id?>';
 	document.getElementById('frmextensao').submit();
 }
 
 $(document ).ready(function() {
+	console.log('entrp 1')
 	initMapModelagem();	
 });
 
 $('.nav-tabs a[href="#tab_content12"]').click(function(){
+	console.log('entrp 2')
 	google.maps.event.trigger(window, 'resize', {});
 	initMapModelagem();
 })
 
 $('.nav-tabs').on('shown.bs.tab', function () {
+	console.log('entrp 3')
 	google.maps.event.trigger(window, 'resize', {});
 	initMapModelagem();
 });

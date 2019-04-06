@@ -65,7 +65,7 @@ class StatusOccurrence
 	   	$this->usefull = $row['usefull'];
 	}
 	
-	function listaCombo($nomecombo,$id,$refresh='N',$classe,$filtro='',$expid)
+	function listaCombo($nomecombo,$id,$refresh='N',$classe,$filtro='',$expid,$nome_filtro = '')
 	{	
 
 		$sqlList = "select distinct idstatusoccurrence from modelr.occurrence where idexperiment = " . $expid;
@@ -100,10 +100,18 @@ class StatusOccurrence
 		
 		//echo $sql;
 		$html = "<select name='".$nomecombo."' id = '".$nomecombo."' ".$s."  ".$classe.">";
-		$html .= "<option value='' selected disabled>Todos os Registros</option>";
+		if(empty($nome_filtro)){
+			$html .= "<option value='' selected>Todos os Registros</option>";
+		} else {
+			$html .= "<option value=''>Todos os Registros</option>";
+		}
 		while ($row = pg_fetch_array($res))
 		{
-	      $html.="<option value='".$row['idstatusoccurrence']."'>".$row['statusoccurrence']."</option> ";
+			if($row['idstatusoccurrence'] == $nome_filtro){
+				$html.="<option selected value='".$row['idstatusoccurrence']."'>".$row['statusoccurrence']."</option> ";
+			} else {
+				$html.="<option value='".$row['idstatusoccurrence']."'>".$row['statusoccurrence']."</option> ";
+			}
 		}
 		$html .= '</select>';
 		return $html;	

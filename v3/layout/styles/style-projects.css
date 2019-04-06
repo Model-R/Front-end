@@ -65,6 +65,7 @@ footer {
     width: 100%;
     padding: 10px;
     color: #0a3511;
+	cursor: pointer;
 }
 
 #projects a:hover {

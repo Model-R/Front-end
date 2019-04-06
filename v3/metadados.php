@@ -33,7 +33,8 @@ $id=$_REQUEST['id'];
     <!-- Custom styling plus plugins -->
     <link href="css/custom.css" rel="stylesheet">
     <link href="css/icheck/flat/green.css" rel="stylesheet">
-
+	
+	<link href="css/metadados.css" rel="stylesheet" type="text/css" media="all">
 
     <script src="js/jquery.min.js"></script>
 
@@ -66,7 +67,7 @@ $id=$_REQUEST['id'];
 		<div class="x_title">
 			<h2>Metadados<small></small><a  class="btn btn-default btn-sm" onClick="imprimir();" data-toggle="tooltip" data-placement="top" title="Baixar CSV" style="margin-top: 4px;">CSV</a></h2>
 			<div class="clearfix"></div>
-			<table class="table table-striped" style="table-layout: fixed;width: 100%;">
+<!--			<table class="table table-striped" style="table-layout: fixed;width: 100%;">
    
     <tbody>
 	<thead>
@@ -92,6 +93,8 @@ $id=$_REQUEST['id'];
 	$num_points = $json[0]->num_points;
 	#tss
 	$tss = $json[0]->tss;
+	#resolution
+	$resolution = $json[0]->resolution;
 	
 	$occurrenceList = $json[0]->occurrences;
 	$organizedArray = [$json[0]->occurrences[0]->taxon];
@@ -114,33 +117,117 @@ $id=$_REQUEST['id'];
 			array_push($algorithmList,$algorithm->algorithm);
 		}
 	}
-	
-	foreach($organizedArray as $item){
-		$count = 0;
-		foreach($occurrenceList as $o){
-			if($o->taxon == $item){
-				if($o->idstatusoccurrence == 4 || $o->idstatusoccurrence == 17){
-					$count = $count + 1;
-				}
-			}
-		}
-		
-		echo '<tr>';
-	   echo '<td style="word-wrap: break-word;overflow-wrap: break-word;">'.$item.'</td>';
-	   echo '<td style="word-wrap: break-word;overflow-wrap: break-word;">'.$count.'</td>';
-	   echo '<td style="word-wrap: break-word;overflow-wrap: break-word;">'.implode(", ",$rasterList).'</td>';
-	   echo '<td style="word-wrap: break-word;overflow-wrap: break-word;">'.implode(", ",$algorithmList).'</td>';
-	   echo '<td style="word-wrap: break-word;overflow-wrap: break-word;">'.$particao.'</td>';
-	   echo '<td style="word-wrap: break-word;overflow-wrap: break-word;">'.$num_points.'</td>';
-	   echo '<td style="word-wrap: break-word;overflow-wrap: break-word;">'.$tss.'</td>';
-	   echo '<td style="word-wrap: break-word;overflow-wrap: break-word;">'.$buffer.'</td>';
-	   echo '</tr>';
-	}
 
 ?>
 
     </tbody>
-  </table>
+  </table>-->
+  
+<div class="panel panel-default">
+    
+	<?php 
+		foreach($organizedArray as $item){
+			$count = 0;
+			foreach($occurrenceList as $o){
+				if($o->taxon == $item){
+					if($o->idstatusoccurrence == 4 || $o->idstatusoccurrence == 17){
+						$count = $count + 1;
+					}
+				}
+			}
+	?>
+	<div class="panel-heading metadados-title" ><?php echo $item; ?></div>
+	<div class="panel-body">
+	
+		<fieldset class="col-md-6 metadados-fieldset">    	
+			<legend>Número de registros liberados</legend>
+			
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<p><?php echo $count; ?></p>
+				</div>
+			</div>
+			
+		</fieldset>
+		<fieldset class="col-md-6 metadados-fieldset">     	
+			<legend>Variáveis</legend>
+			
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<p><?php echo implode(", ",$rasterList); ?></p>
+				</div>
+			</div>
+			
+		</fieldset>	
+		<fieldset class="col-md-6 metadados-fieldset">     	
+			<legend>Resolução</legend>
+			
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<p><?php echo $resolution; ?></p>
+				</div>
+			</div>
+			
+		</fieldset>	
+		<fieldset class="col-md-6 metadados-fieldset">     	
+			<legend>Algoritmos</legend>
+			
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<p><?php echo implode(", ",$algorithmList); ?></p>
+				</div>
+			</div>
+			
+		</fieldset>
+		<fieldset class="col-md-6 metadados-fieldset">    	
+			<legend>Partitions</legend>
+			
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<p><?php echo $particao; ?></p>
+				</div>
+			</div>
+			
+		</fieldset>	
+		<fieldset class="col-md-6 metadados-fieldset">    	
+			<legend>Número de pseudo ausência</legend>
+			
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<p><?php echo $num_points; ?></p>
+				</div>
+			</div>
+			
+		</fieldset>
+		<fieldset class="col-md-6 metadados-fieldset">    	
+			<legend>Threshold cutoff</legend>
+			
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<p><?php echo $tss; ?></p>
+				</div>
+			</div>
+			
+		</fieldset>	
+		<fieldset class="col-md-6 metadados-fieldset">    	
+			<legend>Buffer</legend>
+			
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<p><?php echo $buffer; ?></p>
+				</div>
+			</div>
+			
+		</fieldset>
+		
+		<div class="clearfix"></div>
+	</div>
+	
+	<?php 
+		}
+	?>
+                
+</div>
         </div>
             </div>
                 </div>

@@ -1,9 +1,9 @@
 <?php session_start();
-$tokenUsuario = md5('seg'.$_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']);
-if ($_SESSION['donoDaSessao'] != $tokenUsuario)
-{
-	header('Location: index.php');
-}
+//$tokenUsuario = md5('seg'.$_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']);
+//if ($_SESSION['donoDaSessao'] != $tokenUsuario)
+//{
+//	header('Location: index.php');
+//}
 // error_reporting(E_ALL);
 // ini_set('display_errors','1');
 ?><html lang="pt-BR">
@@ -16,23 +16,30 @@ require_once('classes/conexao.class.php');
 
 $tab=$_REQUEST['tab'];
 	
-if($tab == 4 || $tab == 5){
-	$stab = $tab; $tab = 1;		
+if($tab == 4 || $tab == 5){ //tab 4 e 5 não existem mais (tab Dados Bióticos e tab Dados Abióticos)
+	//$stab = $tab; $tab = 1;
+	$stab = 9; $tab = 1;
 }
-if($tab == 6 || $tab == 7){
+if($tab == 6){
 	$stab = $tab; $tab = 2;		
+}
+if($tab == 7){ //tab 7 não existe mais (tab Dados Resultados)
+	$stab = 13; $tab = 2;		
 }
 if($tab == 8){
 	$stab = $tab; $tab = 3;		
 }
 if($tab == 9 || $tab == 10){
-	$ttab = $tab; $tab = 1; $stab = 4;	
+	//$ttab = $tab; 
+	$stab = $tab; $tab = 1;	
 }
-if($tab == 11 || $tab == 12){
-	$ttab = $tab; $tab = 1; $stab = 5;		
+if($tab == 11 || $tab == 12 || $tab == 18){
+	//$ttab = $tab; 
+	$stab = $tab; $tab = 1;		
 }
 if($tab == 13 || $tab == 14 || $tab == 15 || $tab == 16 || $tab == 17){
-	$ttab = $tab; $tab = 2; $stab = 7;		
+	//$ttab = $tab; 
+	$stab = $tab; $tab = 2;		
 }
 
 $clConexao = new Conexao;
@@ -49,7 +56,9 @@ if (empty($tab))
 }
 
 $Experimento->getStatus($id);
+$Experimento->getById($id);
 $statusExperiment = $Experimento->statusExperiment;
+$nome_experimeto = $Experimento->name;
 ?>
 
 <head>
@@ -134,7 +143,8 @@ $(function(){
 						<div class="col-md-12 col-sm-12 col-xs-12">
 							<div class="x_panel">
 								<div class="x_title">
-									<h2><a href="consexperimento.php">Experimento <small>Cadastro experimento</small></a></h2>
+									<h2>Experimento: <?php echo $nome_experimeto;?></h2>
+									<a style="font-size: 16px" href="consexperimento.php"><span class="glyphicon glyphicon-home" aria-hidden="true"></span><small> Lista de Experimentos</small></a>
 									<div class="clearfix">
 									</div>
 								</div>
@@ -187,14 +197,6 @@ $(function(){
 																	<div class="radio-maritimo"><input type="radio" name="edttipo" id="edttipomaritimo" value="marinho"/> Marinho</div>
 																</form>
 															</div>
-														</div>
-													</div>
-												</div>
-												<div class="">
-													<div class="item form-group">
-													<label class="control-label col-md-3 col-sm-3 col-xs-12" for="edtfiltroautomatico"></label>
-														<div class="col-md-6 col-sm-6 col-xs-12">
-															<input type="checkbox" name="edtfiltroautomatico" id="edtfiltroautomatico" checked>Executar filtros automaticamente<br>
 														</div>
 													</div>
 												</div>
@@ -307,7 +309,7 @@ $MSGCODIGO = $_REQUEST['MSGCODIGO'];
 
     <script>
         function enviarExp(){
-            exibe('loading');
+            exibe('loading', 'Criando Experimento');
             if ((document.getElementById('edtexperimento').value==''))
             {
                 criarNotificacao('Atenção','Verifique o preenchimento','warning');

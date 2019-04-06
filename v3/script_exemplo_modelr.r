@@ -22,8 +22,10 @@ rasterCSVPath <- args[10]
 ocorrenciasCSVPath <- args[11]
 algorithms <- args[12]
 extensionPath <- args[13]
+projectionPath <- args[14]
 
 cat('antes')
+if(bufferValue == 'NULL') bufferValue = NULL;
 algorithms
 #extensionPath <- paste0('../../../../../../','mnt/dados/modelr/json/polygon-317.json')
 
@@ -36,6 +38,7 @@ if(getwd() == "/var/www/html/rafael/modelr/v2" || getwd() == "/var/www/html/rafa
 }
 
 coordenadas <- read.table(ocorrenciasCSVPath, sep = ';', header = T);
+coordenadas
 rasters <- read.table(rasterCSVPath, sep = ';', header = F, as.is = T);
 rasters
 #rasters <- read.file(rasterCSVPath, sep = ';', h = F)
@@ -45,9 +48,15 @@ algorithmsArray <- as.list(strsplit(algorithms, ';')[[1]])
 rasters <- paste0(baseUrl,'../../../../../',rasters)
 stack_rasters <- stack(rasters)
 
+proj_data_json = geojsonio::geojson_read(projectionPath, what = "sp")
 data_json = geojsonio::geojson_read(extensionPath, what = "sp")
 stack_rasters <- mask(crop(stack_rasters, data_json), data_json)
-stack_rasters
+
+cat('extension')
+data_json
+cat('projection')
+proj_data_json
+
 especies <- unique(coordenadas$taxon);
 ##-----------------------------------------------##
 # vamos receber várias variáveis: ocorrencias.csv, raster.csv, partitions, buffer, num_points, tss, hash id
@@ -107,13 +116,13 @@ for (especie in especies) {
 	 ## argumentos de setupsdmdata():
 	 #lon = "lon",#caso as colunas estejam nomeadas diferentes dá para botar aqui
 	 #lat = "lat",#idem
-	 buffer = bufferValue,
+	 buffer_type = bufferValue,
 	 seed = 512,
 	 #clean_dupl = T,
 	 #clean_nas = F,
 	 #geo_filt = F,
 	 #geo_filt_dist = NULL,
-	 #plot_sdmdata = T,
+	 plot_sdmdata = T,
 	 n_back = as.numeric(num_points),
 	 partition_type = partitiontype,
 	 cv_n = as.numeric(repetitions),
@@ -123,7 +132,7 @@ for (especie in especies) {
 	 #predictors1 = variaveis_cortadas,#aqui não vai servir ainda
 	 ## argumentos de do_any()
 	 project_model = F,
-	 mask = mascara,
+	 mask = proj_data_json,
 	 write_png = T,
 	 #argumentos de do_enm():
 	 bioclim = algorithmsArray[[4]] == TRUE,
@@ -132,8 +141,8 @@ for (especie in especies) {
 	 rf = algorithmsArray[[5]] == TRUE,
 	 svm.k = algorithmsArray[[7]] == TRUE,#svm agora é svm.k do pacote kernlab
 	 svm.e = F,#svm2 agora é svm.e do pacote e1071
-	 #domain = algorithmsArray[[6]] == TRUE,
-	 #mahal = algorithmsArray[[1]] == TRUE,
+	 domain = algorithmsArray[[6]] == TRUE,
+	 mahal = algorithmsArray[[1]] == TRUE,
 	 #centroid = ...,#NEW! mas é lento, eu não botaria
 	 #mindist = ...,#NEW! mas é lento, eu não botaria
 	 )

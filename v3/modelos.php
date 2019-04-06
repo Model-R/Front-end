@@ -36,7 +36,11 @@ $rasterPngPath = $Experimento->rasterPngPath;
 $rasterPngPath = str_replace("/var/www/html/rafael/modelr","https://model-r.jbrj.gov.br",$rasterPngPath);        
 $novoRaster;
 
-$imageModelFolder = "temp/result/" . $hash;
+if(dirname(__FILE__) == '/var/www/html/rafael/modelr/v2' || dirname(__FILE__) == '/var/www/html/rafael/modelr/v3'){
+	$imageModelFolder = "../temp/result/" . $hash;
+} else {
+	$imageModelFolder = "temp/result/" . $hash;
+}
 ?>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -121,6 +125,8 @@ while ($row = pg_fetch_array($res))
 					//Notice the parentheses I added:
 					while(($file = readdir($handle)) !== FALSE)
 					{
+						//echo $file;
+						//echo '<br>';
 						$tamanho = strlen($file);
 						list ($arquivo, $ext) = preg_split ('[.]', $file);
 						
