@@ -1,2 +1,0 @@
-"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
-"Vriesea tijucana E.Pereira 1 BioClim" -1e-04 -1e-04 -1e-04 -1e-04 0.3999 0.3999 0.496503496503497 0 "BioClim" 1

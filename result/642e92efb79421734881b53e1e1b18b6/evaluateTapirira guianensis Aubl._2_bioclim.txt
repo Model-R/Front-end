@@ -1,2 +1,0 @@
-"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
-"Tapirira guianensis Aubl. 2 BioClim" 0.23066923 0.07682308 -1e-04 -1e-04 0.07682308 0.07682308 0.823795180722892 0.616465863453815 "BioClim" 2

@@ -1,2 +1,0 @@
-"kappa" "spec_sens" "no_omission" "prevalence" "equal_sens_spec" "sensitivity" "AUC" "TSS" "algoritmo" "partition"
-"Leandra carassana (DC.) Cogn. 3 maxent" 0.87642057 0.50819148 0.05246693 0.13551921 0.50819148 0.13551921 0.856287425149701 0.623198048347749 "maxent" 3
