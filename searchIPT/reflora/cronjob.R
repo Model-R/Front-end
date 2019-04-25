@@ -1,19 +1,43 @@
-#install.packages('devtools')
-#library(devtools)
-#install_github("bnosac/cronR")
+################
+## Start Unix ##
+################
 
-getwd();
+# install.packages('devtools')
+# library(devtools)
+# install_github("bnosac/cronR")
+# library(cronR)
+# 
+# extract_ipt_script <- file.path(getwd(), "extract_ipt.R")
+# cmd <- cron_rscript(extract_ipt_script)
+# 
+# cron_add(command = cmd, frequency = 'weekly', 
+#          id = 'extract_data_from_ipts_weekly', 
+#          description = 'Extracting data from reflora IPTs every week', 
+#          at='2AM',
+#          days_of_week = c(0))
+
+##############
+## End Unix ##
+##############
+
+###################
+## Start Windows ##
+###################
 install.packages("taskscheduleR")
 library(taskscheduleR)
 
 setwd("C:/Users/JBRJ/Marcos")
-myscript <- file.path(getwd(), "extract_ipt.R")
+extract_ipt_script <- file.path(getwd(), "extract_ipt.R")
 
-taskscheduler_delete(taskname = "extract_datat_from_ipts_5min")
+taskscheduler_delete(taskname = "extract_data_from_ipts_weekly")
 
-taskscheduler_create(taskname = "extract_datat_from_ipts_5min", rscript = myscript,
-                     schedule = "MINUTE", starttime = "10:30", modifier = 5)
+taskscheduler_create(taskname = "extract_data_from_ipts_weekly", rscript = extract_ipt_script, 
+                     schedule = "WEEKLY", starttime = "02:00", days = c('SUN'))
 
-## log file is at the place where the helloworld.R script was located
-mylog <- file.path(getwd(), "extract_ipt.log")
-cat(readLines(mylog), sep = "\n")
+###################
+### End Windows ###
+###################
+
+## log file is at the place where the extract_ipt.R script was located
+#mylog <- file.path(getwd(), "extract_ipt.log")
+#cat(readLines(mylog), sep = "\n")

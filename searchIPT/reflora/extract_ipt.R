@@ -4,6 +4,8 @@
 library(stringr)
 library(finch)
 library(dplyr)
+
+folder_path = "C:/Users/JBRJ/Marcos/"
 # extracted_urls = c(
 #   "http://ipt.jbrj.gov.br/reflora/resource?r=alcb_herbarium",
 #   "http://ipt.jbrj.gov.br/reflora/resource?r=ase_herbarium",
@@ -94,10 +96,9 @@ for(url in extracted_urls){
   ocurrences_list[[i]] = select(hm$occurrence.txt, one_of(columns))
   
   i = i + 1
-  #ocurrences_list = c(ocurrences_list, hm$occurrence.txt)
 }
 
-filename = "C:/Users/JBRJ/Marcos/ocurrences_list.Rds"
+filename = paste0(folder_path, "ocurrences_list.Rds")
 saveRDS(ocurrences_list, file = filename)
 
 
