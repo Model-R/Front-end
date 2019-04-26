@@ -99,7 +99,7 @@ for(url in extracted_urls){
 }
 
 head(ocurrences_list[[1]])
-filename = paste0(folder_path, "ocurrences_list.Rds")
+filename = paste0(destination_folder_path, "ocurrences_list.Rds")
 saveRDS(ocurrences_list, file = filename)
 
 
