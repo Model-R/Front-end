@@ -9,13 +9,17 @@ if(dirname(__FILE__) != '/var/www/html/rafael/modelr'){
 	$baseUrl = '';
 }
 
-$expid = $_REQUEST['expid'];
-$sp = $_REQUEST['sp'];
+if (!is_dir($baseUrl . "../modelr-data/ipt")) {
+    mkdir($baseUrl . "../modelr-data/ipt/reflora/searches", 0777, true);
+}
 
-exec("Rscript  searchIPT/reflora/search_inside_ipts.R $expid '$sp'", $a, $b);
-print_r($a);
-echo '<br>--------------------<br>';
-print_r($b);
+// $expid = $_REQUEST['expid'];
+// $sp = $_REQUEST['sp'];
 
-echo $baseUrl . "../modelr-data/ipt/reflora/searches/" . $sp . "_ocurrence_list-exp" . $expid . ".csv";
+// exec("Rscript  searchIPT/reflora/search_inside_ipts.R $expid '$sp'", $a, $b);
+// print_r($a);
+// echo '<br>--------------------<br>';
+// print_r($b);
+
+// echo $baseUrl . "../modelr-data/ipt/reflora/searches/" . $sp . "_ocurrence_list-exp" . $expid . ".csv";
 	
