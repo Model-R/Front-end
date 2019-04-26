@@ -821,13 +821,12 @@ function getHV(sp)
     xmlhttp=new XMLHttpRequest();
 	xmlhttp.onreadystatechange=function()  {
 		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-			console.log('inside request')
-			console.log(xmlhttp.response)
+			var data = xmlhttp.response;
+			console.log(data)
 			exibe('loading','Buscando Ocorrências');
 		}
 	}
 	xmlhttp.open("GET",'searchRefloraIPT.php?expid=' + <?php echo $id;?> + '&sp=' + sp,true);
 	xmlhttp.send();
 }
-
 </script>

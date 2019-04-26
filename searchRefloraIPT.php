@@ -18,5 +18,25 @@ $sp = $_REQUEST['sp'];
 
 exec("Rscript  searchIPT/reflora/search_inside_ipts.R $expid '$sp'", $a, $b);
 
-echo $baseUrl . "../modelr-data/ipt/reflora/searches/" . $sp . "_ocurrence_list-exp" . $expid . ".csv";
-	
+$json = getJsonFromCsv($baseUrl . "../modelr-data/ipt/reflora/searches/" . $sp . "_ocurrence_list-exp" . $expid . ".csv", ',');
+echo $json;
+//echo json_encode('{data: teste}');
+// echo $baseUrl . "../modelr-data/ipt/reflora/searches/" . $sp . "_ocurrence_list-exp" . $expid . ".csv";
+
+function getJsonFromCsv($file,$delimiter) { 
+    if (($handle = fopen($file, 'r')) === false) {
+        die('Error opening file');
+    }
+
+	$headers = fgetcsv($handle, 4000, $delimiter);
+    $csv2json = array();
+    while ($row = fgetcsv($handle, 4000, $delimiter)) {
+	  $csv2json[] = array_combine($headers, $row);
+	  break;
+    }
+
+    fclose($handle);
+    return json_encode($csv2json); 
+}
+
+?>
