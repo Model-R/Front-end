@@ -5,7 +5,7 @@ library(stringr)
 library(finch)
 library(dplyr)
 
-folder_path = "C:/Users/JBRJ/Marcos/"
+destination_folder_path = "../../../../../../../../mnt/dados/modelr/temp/"
 # extracted_urls = c(
 #   "http://ipt.jbrj.gov.br/reflora/resource?r=alcb_herbarium",
 #   "http://ipt.jbrj.gov.br/reflora/resource?r=ase_herbarium",
@@ -98,6 +98,7 @@ for(url in extracted_urls){
   i = i + 1
 }
 
+head(ocurrences_list[[1]])
 filename = paste0(folder_path, "ocurrences_list.Rds")
 saveRDS(ocurrences_list, file = filename)
 

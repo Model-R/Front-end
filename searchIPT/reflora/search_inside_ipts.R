@@ -1,10 +1,14 @@
-folder_path = "C:/Users/JBRJ/Marcos/"
+args <- commandArgs(TRUE)
+experiment_id <- args[1]
+sp <- args[2]
+
+folder_path = "../../../../../../../../mnt/dados/modelr/temp/"
 read_ocurrence_list <- readRDS(paste0(folder_path, "ocurrences_list.Rds"))
 filtered_ocurrences_list = list();
 i = 1;
 
 for(list in read_ocurrence_list){
-  filtered_ocurrences_list[[i]] = filter(list, str_detect(scientificName, "Anemiaceae Anemia"))
+  filtered_ocurrences_list[[i]] = filter(list, str_detect(scientificName, sp))
   i = i + 1
 }
   
@@ -12,4 +16,4 @@ for(list in read_ocurrence_list){
 nrow(filtered_ocurrences_list[[1]])
 nrow(filtered_ocurrences_list[[2]])
 compiled_ocurrence_list = bind_rows(filtered_ocurrences_list)
-write.csv(compiled_ocurrence_list, file = paste0(folder_path, "compiled_ocurrence_list.csv"))
+write.csv(compiled_ocurrence_list, file = file(paste0(folder_path, sp, "_ocurrence_list-exp", experiment_id, ".csv"),encoding="UTF-8"))
