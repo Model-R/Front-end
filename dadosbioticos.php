@@ -136,12 +136,12 @@ if ($op=='A')
             <label class="control-label" for="email">Fonte<span class="required">*</span>
             </label>
             <div class="">
-                <div class="radio-group" style="width:250px;">
+                <div class="radio-group" style="width:300px;">
                     <div><input type="checkbox" name="fontebiotico[]" id="checkfontejabot" value="1" <?php if ($_REQUEST['fontebiotico'][0]=='1') echo "checked";?> /> JABOT</div>
                     <div><input type="checkbox" name="fontebiotico[]" id="checkfontegbif" value="2" <?php if ($_REQUEST['fontebiotico'][0]=='2' ||$_REQUEST['fontebiotico'][1]=='2') echo "checked";?>/> GBIF</div>
                     <!--<div><input type="radio" disabled name="fontebiotico[]" id="checkfontesibbr" value="2" <?php if ($_REQUEST['fontebiotico'][0]=='3') echo "checked";?>/> SiBBr</div>-->
+					<div><input type="checkbox" name="fontebiotico[]" id="checkfontehv" value="3" <?php if ($_REQUEST['fontebiotico'][0]=='4') echo "checked";?>/> HV</div>
                     <div><input disabled type="checkbox" name="fontebiotico[]" id="checkfontesibbr" value="3" <?php if ($_REQUEST['fontebiotico'][0]=='3') echo "checked";?>/> SiBBr</div>
-					<div><input disabled type="checkbox" name="fontebiotico[]" id="checkfontehv" value="3" <?php if ($_REQUEST['fontebiotico'][0]=='4') echo "checked";?>/> HV</div>
 					<div><input <?php if ($_SESSION['s_idtipousuario']==$usuarioreflora){ echo "disabled" ;} ?> type="checkbox" name="fontebiotico[]" id="checkfontecsv" value="3" <?php if ($_REQUEST['fontebiotico'][0]=='3') echo "checked";?>/> CSV</div>
                 </div>
                 <div class="csv-button" <?php if ($_SESSION['s_idtipousuario']==$usuarioreflora){ echo 'style="display:none"' ;} ?>>
