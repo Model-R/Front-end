@@ -5,7 +5,7 @@ args <- commandArgs(TRUE)
 experiment_id <- args[1]
 sp <- args[2]
 
-folder_path = "../../../../../../../../mnt/dados/modelr/ipt/reflora/"
+folder_path = "../../../../../../../../mnt/dados/modelr/ipt/reflora/searches/"
 read_ocurrence_list <- readRDS(paste0(folder_path, "ocurrences_list.Rds"))
 filtered_ocurrences_list = list();
 i = 1;
