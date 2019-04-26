@@ -5,7 +5,15 @@ args <- commandArgs(TRUE)
 experiment_id <- args[1]
 sp <- args[2]
 
-folder_path = "../../../../../../../../mnt/dados/modelr/ipt/reflora/searches/"
+if(getwd() != "/var/www/html/rafael/modelr"){
+	cat('v2')
+	baseUrl <- '../'
+} else {
+	cat('main')
+	baseUrl <- ''
+}
+
+folder_path = baseUrl + "../../../../../../../../mnt/dados/modelr/ipt/reflora/searches/"
 read_ocurrence_list <- readRDS(paste0(folder_path, "ocurrences_list.Rds"))
 filtered_ocurrences_list = list();
 i = 1;
