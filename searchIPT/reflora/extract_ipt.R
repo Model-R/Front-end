@@ -5,7 +5,7 @@ library(stringr)
 library(finch)
 library(dplyr)
 
-destination_folder_path = "../../../../../../../../mnt/dados/modelr/temp/"
+destination_folder_path = "../../../../../../../../mnt/dados/modelr/ipt/reflora/"
 # extracted_urls = c(
 #   "http://ipt.jbrj.gov.br/reflora/resource?r=alcb_herbarium",
 #   "http://ipt.jbrj.gov.br/reflora/resource?r=ase_herbarium",
