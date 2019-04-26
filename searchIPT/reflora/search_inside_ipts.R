@@ -13,8 +13,10 @@ if(getwd() != "/var/www/html/rafael/modelr"){
 	baseUrl <- ''
 }
 
-folder_path = baseUrl + "../../../../../../../../mnt/dados/modelr/ipt/reflora/searches/"
-read_ocurrence_list <- readRDS(paste0(folder_path, "ocurrences_list.Rds"))
+source_folder = paste0(baseUrl, "../modelr-data/")
+folder_path = paste0(baseUrl, "../modelr-data/ipt/reflora/searches/")
+
+read_ocurrence_list <- readRDS(paste0(source_folder, "ocurrences_list.Rds"))
 filtered_ocurrences_list = list();
 i = 1;
 

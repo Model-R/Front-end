@@ -3,6 +3,12 @@ session_start();
 error_reporting(E_ALL);
 ini_set('display_errors','1');
 
+if(dirname(__FILE__) != '/var/www/html/rafael/modelr'){
+	$baseUrl = '../';
+} else {
+	$baseUrl = '';
+}
+
 $expid = $_REQUEST['expid'];
 $sp = $_REQUEST['sp'];
 
@@ -11,5 +17,5 @@ print_r($a);
 echo '<br>--------------------<br>';
 print_r($b);
 
-echo "../../../../../../../../mnt/dados/modelr/ipt/reflora/searches/" . $sp . "_ocurrence_list-exp" . $expid . ".csv";
+echo $baseUrl . "../modelr-data/ipt/reflora/searches/" . $sp . "_ocurrence_list-exp" . $expid . ".csv";
 	

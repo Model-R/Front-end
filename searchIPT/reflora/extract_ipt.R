@@ -13,7 +13,7 @@ if(getwd() != "/var/www/html/rafael/modelr"){
 	baseUrl <- ''
 }
 
-destination_folder_path = baseUrl + "../../../../../../../../mnt/dados/modelr/ipt/reflora/"
+destination_folder_path = paste0(baseUrl, "../modelr-data/")
 # extracted_urls = c(
 #   "http://ipt.jbrj.gov.br/reflora/resource?r=alcb_herbarium",
 #   "http://ipt.jbrj.gov.br/reflora/resource?r=ase_herbarium",
