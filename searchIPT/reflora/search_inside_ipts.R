@@ -1,4 +1,5 @@
 library(stringr)
+library(dplyr)
 
 args <- commandArgs(TRUE)
 experiment_id <- args[1]
@@ -10,7 +11,7 @@ filtered_ocurrences_list = list();
 i = 1;
 
 for(list in read_ocurrence_list){
-  filtered_ocurrences_list[[i]] = filter(list, str_detect(scientificName, sp))
+  filtered_ocurrences_list[[i]] = subset(list, str_detect(scientificName, sp))
   i = i + 1
 }
   
