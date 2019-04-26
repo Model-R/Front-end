@@ -1,3 +1,5 @@
+library(stringr)
+
 args <- commandArgs(TRUE)
 experiment_id <- args[1]
 sp <- args[2]
