@@ -17,9 +17,6 @@ $expid = $_REQUEST['expid'];
 $sp = $_REQUEST['sp'];
 
 exec("Rscript  searchIPT/reflora/search_inside_ipts.R $expid '$sp'", $a, $b);
-print_r($a);
-echo '<br>--------------------<br>';
-print_r($b);
 
 echo $baseUrl . "../modelr-data/ipt/reflora/searches/" . $sp . "_ocurrence_list-exp" . $expid . ".csv";
 	

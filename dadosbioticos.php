@@ -823,6 +823,7 @@ function getHV(sp)
 		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
 			console.log('inside request')
 			console.log(xmlhttp.response)
+			exibe('loading','Buscando Ocorrências');
 		}
 	}
 	xmlhttp.open("GET",'searchRefloraIPT.php?expid=' + <?php echo $id;?> + '&sp=' + sp,true);
