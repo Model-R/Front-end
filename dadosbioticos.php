@@ -818,8 +818,15 @@ $('#checkfontegbif').on('change', function() {
 
 function getHV(sp)
 {
-    console.log('get HV')
-	console.log(sp)
+    xmlhttp=new XMLHttpRequest();
+	xmlhttp.onreadystatechange=function()  {
+		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+			console.log('inside request')
+			console.log(xmlhttp.response)
+		}
+	}
+	xmlhttp.open("GET",'searchRefloraIPT.php?expid=' + <?php echo $id;?> + '&sp=' + sp,true);
+	xmlhttp.send();
 }
 
 </script>
