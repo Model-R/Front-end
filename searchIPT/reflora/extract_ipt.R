@@ -98,11 +98,10 @@ columns = c("id",
 ocurrences_list = list();
 i = 1;
 for(url in extracted_urls){
-  out <- dwca_read(url, read = TRUE)
+  out <- dwca_read(url, read = TRUE, encoding = 'UTF-8')
   
   hm <- out$data
   ocurrences_list[[i]] = select(hm$occurrence.txt, one_of(columns))
-  
   i = i + 1
 }
 

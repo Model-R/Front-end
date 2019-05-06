@@ -664,7 +664,7 @@ function printCSV(lines){
 	for (i = 0; i < csv_headers.length; i++) {
 		if(csv_headers[i] == 'sp') spindex = i;
 		else if(csv_headers[i] == 'lat') latindex = i;
-		else if(csv_headers[i] == 'long') longindex = i;
+		else if(csv_headers[i] == 'lon') longindex = i;
 		else if(csv_headers[i] == 'estado') estadoindex = i;
 		else if(csv_headers[i] == 'municipio') municipioindex = i;
 		else if(csv_headers[i] == 'coletor') coletorindex = i;
@@ -822,11 +822,61 @@ function getHV(sp)
 	xmlhttp.onreadystatechange=function()  {
 		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
 			var data = xmlhttp.response;
-			console.log(data)
-			exibe('loading','Buscando Ocorrências');
+			console.log(JSON.parse(data)[0])
+			printHV(JSON.parse(data))
 		}
 	}
 	xmlhttp.open("GET",'searchRefloraIPT.php?expid=' + <?php echo $id;?> + '&sp=' + sp,true);
 	xmlhttp.send();
+}
+
+function printHV (data) {
+	var body = '';
+	//print gbif
+	exibe('loading','Buscando Ocorrências');
+	for (i = 0; i < data.length; i++) {
+		//alert(i);
+		longitude = data[i].decimalLongitude;
+		latitude = data[i].decimalLatitude;
+
+		taxon = data[i].genus + ' ' + data[i].specificEpithet;
+		tombo = data[i].catalogNumber;
+		coletor = data[i].recordedBy;
+		numcoleta = data[i].recordNumber;
+		pais = data[i].country;
+		estado = data[i].stateProvince;
+		cidade = data[i].municipality;
+		herbario = data[i].collectionCode;
+		
+		//$idexperimento,$idfontedados,$lat,$long,$taxon,$coletor,$numcoleta,$imagemservidor,$imagemcaminho,$imagemarquivo,$pais,$estado,$municipio
+		var idexperimento = document.getElementById('id').value;
+		//split * 
+		var Jval = idexperimento + '*2*'+latitude+'*'+longitude+'*'+taxon+'*'+ coletor+'*'+numcoleta+'****'+ pais+'*'+ estado+'*'+ cidade + '*' + herbario + '*' + tombo; 
+
+			body += '<tr class="even pointer"><td class="a-center "><input name="chtestemunho[]" id="chtestemunho[]" value="'+Jval+'" type="checkbox" ></td>';
+			body +='<td class=" ">'+taxon+'</td>';
+			body +='<td class="a-right a-right ">HV</td>';
+			body +='<td class="a-right a-right ">'+herbario+'</td>';
+			body +='<td class="a-right a-right ">'+tombo+'</td>';
+			body +='<td class="a-right a-right ">'+coletor+' '+numcoleta+'</td>';
+			body +='<td class=" ">'+latitude+', '+longitude+'</td>';
+			body +='<td class=" ">'+pais+', '+estado+' - '+cidade+'</td>';
+	}
+	
+	var table = '';
+	table += '<table class="table table-striped responsive-utilities jambo_table bulk_action"><thead><tr class="headings"><th><input type="checkbox" id="chkboxtodos2" name="chkboxtodos2" onclick="selecionaTodos2(true);">';
+	table += '</th><th class="column-title">Táxon </th><th class="column-title">Origem </th><th class="column-title">Coleção</th><th class="column-title">Tombo </th><th class="column-title">Coletor </th><th class="column-title">Coordenadas </th>';
+	table += '<th class="column-title">Localização</th>';
+	table += '<a class="antoo" style="color:#fff; font-weight:500;">Total de Registros selecionados: ( <span class="action-cnt"> </span> ) </a>';
+	table += '</th></tr></thead>';
+	table += '<tbody><td class="a-center total-busca" colspan=8>Total:' + (data.length)  + '</td>'+body+'</tbody></table>';
+	table += '';
+		
+//			x += '('+myObj.results[i]['decimalLongitude'] + ', '+myObj.results[i]['decimalLongitude']+ ')';
+//		}
+
+//		decimalLongitude":-41.336139,"decimalLatitude
+	
+	document.getElementById("div_resultadobusca").innerHTML = table;
 }
 </script>
