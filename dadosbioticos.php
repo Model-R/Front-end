@@ -140,7 +140,7 @@ if ($op=='A')
                     <div><input type="checkbox" name="fontebiotico[]" id="checkfontejabot" value="1" <?php if ($_REQUEST['fontebiotico'][0]=='1') echo "checked";?> /> JABOT</div>
                     <div><input type="checkbox" name="fontebiotico[]" id="checkfontegbif" value="2" <?php if ($_REQUEST['fontebiotico'][0]=='2' ||$_REQUEST['fontebiotico'][1]=='2') echo "checked";?>/> GBIF</div>
                     <!--<div><input type="radio" disabled name="fontebiotico[]" id="checkfontesibbr" value="2" <?php if ($_REQUEST['fontebiotico'][0]=='3') echo "checked";?>/> SiBBr</div>-->
-					<div><input type="checkbox" name="fontebiotico[]" id="checkfontehv" value="3" <?php if ($_REQUEST['fontebiotico'][0]=='4') echo "checked";?>/> HV</div>
+					<div><input type="checkbox" name="fontebiotico[]" id="checkfontehv" value="4" <?php if ($_REQUEST['fontebiotico'][0]=='4') echo "checked";?>/> HV</div>
                     <div><input disabled type="checkbox" name="fontebiotico[]" id="checkfontesibbr" value="3" <?php if ($_REQUEST['fontebiotico'][0]=='3') echo "checked";?>/> SiBBr</div>
 					<div><input <?php if ($_SESSION['s_idtipousuario']==$usuarioreflora){ echo "disabled" ;} ?> type="checkbox" name="fontebiotico[]" id="checkfontecsv" value="3" <?php if ($_REQUEST['fontebiotico'][0]=='3') echo "checked";?>/> CSV</div>
                 </div>
@@ -849,10 +849,10 @@ function printHV (data) {
 		
 		//$idexperimento,$idfontedados,$lat,$long,$taxon,$coletor,$numcoleta,$imagemservidor,$imagemcaminho,$imagemarquivo,$pais,$estado,$municipio
 		var idexperimento = document.getElementById('id').value;
-		var html_imagem='<a><img src='+data[i].associatedMedia.replace('imagens1','imagens4')+'&width=300&height=100></a>';
 		var imageComponents = extractComponents(data[i].associatedMedia.replace('imagens1','imagens4'));
+		var html_imagem='<a href=templatehv.php?path='+imageComponents.path + '/' + imageComponents.file+' target=\'Visualizador\'><img src='+data[i].associatedMedia.replace('imagens1','imagens4')+'&width=100&height=150></a>';
 		//split * 
-		var Jval = idexperimento + '*2*'+latitude+'*'+longitude+'*'+taxon+'*'+ coletor+'*'+numcoleta+'*'+imageComponents.server+'*'+imageComponents.path+'*'+imageComponents.file+'*'+ pais+'*'+ estado+'*'+ cidade + '*' + herbario + '*' + tombo; 
+		var Jval = idexperimento + '*4*'+latitude+'*'+longitude+'*'+taxon+'*'+ coletor+'*'+numcoleta+'*'+imageComponents.server+'*'+imageComponents.path+'*'+imageComponents.file+'*'+ pais+'*'+ estado+'*'+ cidade + '*' + herbario + '*' + tombo; 
 			body += '<tr class="even pointer"><td class="a-center "><input name="chtestemunho[]" id="chtestemunho[]" value="'+Jval+'" type="checkbox" ></td>';
 			body +='<td class=" ">'+html_imagem+ ' ' + taxon+'</td>';
 			body +='<td class="a-right a-right ">HV</td>';
