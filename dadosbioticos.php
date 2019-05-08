@@ -822,7 +822,6 @@ function getHV(sp)
 	xmlhttp.onreadystatechange=function()  {
 		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
 			var data = xmlhttp.response;
-			console.log(JSON.parse(data)[0])
 			printHV(JSON.parse(data))
 		}
 	}
@@ -850,11 +849,12 @@ function printHV (data) {
 		
 		//$idexperimento,$idfontedados,$lat,$long,$taxon,$coletor,$numcoleta,$imagemservidor,$imagemcaminho,$imagemarquivo,$pais,$estado,$municipio
 		var idexperimento = document.getElementById('id').value;
+		var html_imagem='<a><img src='+data[i].associatedMedia.replace('imagens1','imagens4')+'&width=300&height=100></a>';
+		var imageComponents = extractComponents(data[i].associatedMedia.replace('imagens1','imagens4'));
 		//split * 
-		var Jval = idexperimento + '*2*'+latitude+'*'+longitude+'*'+taxon+'*'+ coletor+'*'+numcoleta+'****'+ pais+'*'+ estado+'*'+ cidade + '*' + herbario + '*' + tombo; 
-
+		var Jval = idexperimento + '*2*'+latitude+'*'+longitude+'*'+taxon+'*'+ coletor+'*'+numcoleta+'*'+imageComponents.server+'*'+imageComponents.path+'*'+imageComponents.file+'*'+ pais+'*'+ estado+'*'+ cidade + '*' + herbario + '*' + tombo; 
 			body += '<tr class="even pointer"><td class="a-center "><input name="chtestemunho[]" id="chtestemunho[]" value="'+Jval+'" type="checkbox" ></td>';
-			body +='<td class=" ">'+taxon+'</td>';
+			body +='<td class=" ">'+html_imagem+ ' ' + taxon+'</td>';
 			body +='<td class="a-right a-right ">HV</td>';
 			body +='<td class="a-right a-right ">'+herbario+'</td>';
 			body +='<td class="a-right a-right ">'+tombo+'</td>';
@@ -878,5 +878,16 @@ function printHV (data) {
 //		decimalLongitude":-41.336139,"decimalLatitude
 	
 	document.getElementById("div_resultadobusca").innerHTML = table;
+}
+
+function extractComponents (url) {
+	//server
+	var server = url.match(new RegExp('http://' + "(.*)" + '/fsi'))[1];
+	var path_file = url.match(new RegExp('source=' + "(.*)"))[1];
+	path_file = path_file.split('/');
+	var path = path_file.slice(0, -1).join('/');
+	var file = path_file.slice(-1)[0]
+
+	return { 'server': server, 'path': path, 'file':file}; 
 }
 </script>
