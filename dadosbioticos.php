@@ -137,10 +137,10 @@ if ($op=='A')
             </label>
             <div class="">
                 <div class="radio-group" style="width:300px;">
-                    <div><input type="checkbox" name="fontebiotico[]" id="checkfontejabot" value="1" <?php if ($_REQUEST['fontebiotico'][0]=='1') echo "checked";?> /> JABOT</div>
-                    <div><input type="checkbox" name="fontebiotico[]" id="checkfontegbif" value="2" <?php if ($_REQUEST['fontebiotico'][0]=='2' ||$_REQUEST['fontebiotico'][1]=='2') echo "checked";?>/> GBIF</div>
+                    <div><input type="checkbox" name="fontebiotico[]" id="checkfontejabot" value="1" <?php if (in_array('1', $_REQUEST['fontebiotico'])) echo "checked";?> /> JABOT</div>
+                    <div><input type="checkbox" name="fontebiotico[]" id="checkfontegbif" value="2" <?php if (in_array('2', $_REQUEST['fontebiotico'])) echo "checked";?>/> GBIF</div>
                     <!--<div><input type="radio" disabled name="fontebiotico[]" id="checkfontesibbr" value="2" <?php if ($_REQUEST['fontebiotico'][0]=='3') echo "checked";?>/> SiBBr</div>-->
-					<div><input type="checkbox" name="fontebiotico[]" id="checkfontehv" value="4" <?php if ($_REQUEST['fontebiotico'][0]=='4') echo "checked";?>/> HV</div>
+					<div><input type="checkbox" name="fontebiotico[]" id="checkfontehv" value="4" <?php if (in_array('4', $_REQUEST['fontebiotico'])) echo "checked";?>/> HV</div>
                     <div><input disabled type="checkbox" name="fontebiotico[]" id="checkfontesibbr" value="3" <?php if ($_REQUEST['fontebiotico'][0]=='3') echo "checked";?>/> SiBBr</div>
 					<div><input <?php if ($_SESSION['s_idtipousuario']==$usuarioreflora){ echo "disabled" ;} ?> type="checkbox" name="fontebiotico[]" id="checkfontecsv" value="3" <?php if ($_REQUEST['fontebiotico'][0]=='3') echo "checked";?>/> CSV</div>
                 </div>
@@ -423,18 +423,13 @@ function jabot (gbifTaxonKey) {
     var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
-			console.log('resultado jabot');
-			console.log(this.responseText)
-			// if(gbifTaxonKey && this.responseText != ']') gbif(gbifTaxonKey, JSON.parse(this.responseText))
-			// else if(gbifTaxonKey && this.responseText == ']') gbif(gbifTaxonKey, [])
 			if(gbifTaxonKey && this.responseText != ']') getAllGbif(gbifTaxonKey, 0, [], JSON.parse(this.responseText))
 			else if(gbifTaxonKey && this.responseText == ']') getAllGbif(gbifTaxonKey, 0, [], [])
 			else if (!gbifTaxonKey && this.responseText == ']'){
-				console.log('erro buscas')
 				exibe('loading','Buscando Ocorrências');
 				document.getElementById('erro-busca').style.display = 'block';
 			}
-			else printJabotOnly(JSON.parse(this.responseText))
+			else printData([], JSON.parse(this.responseText), [])
 		}
 	};
 	
@@ -497,13 +492,14 @@ function printJabotOnly(jabotData){
 }
 
 //function gbif(taxonKey, jabotData)
-function gbif(gbifData, jabotData)
+async function printData(gbifData, jabotData, HVdata = [])
 {		
 
 	var body = '';
+	var especie;
 	//print gbif
-	exibe('loading','Buscando Ocorrências');
 	for (i = 0; i < gbifData.length; i++) {
+		especie = gbifData[0].scientificName;
 		//alert(i);
 		longitude = gbifData[i].decimalLongitude;
 		latitude = gbifData[i].decimalLatitude;
@@ -533,13 +529,13 @@ function gbif(gbifData, jabotData)
 	}
 	
 	//print jabot
-	console.log('jabot')
-	console.log(jabotData[0])
 	for (i = 0; i < jabotData.length; i++) {
 		//alert(i);
 		longitude = jabotData[i].longitude;
 		latitude = jabotData[i].latitude;
-			
+		
+		especie = especie || jabotData[i].taxoncompleto;
+
 		taxon = jabotData[i].taxoncompleto;
 		tombo = jabotData[i].numtombo;
 		coletor = jabotData[i].coletor;
@@ -565,13 +561,54 @@ function gbif(gbifData, jabotData)
 		
 	}
 	
+	if(document.getElementById('checkfontehv').checked==true){
+		HVdata = await getHV(especie);
+		for (i = 0; i < HVdata.length; i++) {
+			//alert(i);
+			try {		
+				longitude = HVdata[i].decimalLongitude;
+				latitude = HVdata[i].decimalLatitude;
+
+				//if (longitude == 'NA' || latitude == 'NA') continue;
+
+				taxon = HVdata[i].genus + ' ' + HVdata[i].specificEpithet;
+				tombo = HVdata[i].catalogNumber;
+				coletor = HVdata[i].recordedBy;
+				numcoleta = HVdata[i].recordNumber;
+				pais = HVdata[i].country;
+				estado = HVdata[i].stateProvince;
+				cidade = HVdata[i].municipality;
+				herbario = HVdata[i].collectionCode;
+				
+				//$idexperimento,$idfontedados,$lat,$long,$taxon,$coletor,$numcoleta,$imagemservidor,$imagemcaminho,$imagemarquivo,$pais,$estado,$municipio
+				var idexperimento = document.getElementById('id').value;
+				var imageComponents = extractComponents(HVdata[i].associatedMedia.replace('imagens1','imagens4'));
+				var html_imagem='<a href=templatehv.php?path='+imageComponents.path + '/' + imageComponents.file+' target=\'Visualizador\'><img src='+HVdata[i].associatedMedia.replace('imagens1','imagens4')+'&width=100&height=150></a>';
+				//split * 
+				var Jval = idexperimento + '*4*'+latitude+'*'+longitude+'*'+taxon+'*'+ coletor+'*'+numcoleta+'*'+imageComponents.server+'*'+imageComponents.path+'*'+imageComponents.file+'*'+ pais+'*'+ estado+'*'+ cidade + '*' + herbario + '*' + tombo; 
+					body += '<tr class="even pointer"><td class="a-center "><input name="chtestemunho[]" id="chtestemunho[]" value="'+Jval+'" type="checkbox" ></td>';
+					body +='<td class=" ">'+html_imagem+ ' ' + taxon+'</td>';
+					body +='<td class="a-right a-right ">HV</td>';
+					body +='<td class="a-right a-right ">'+herbario+'</td>';
+					body +='<td class="a-right a-right ">'+tombo+'</td>';
+					body +='<td class="a-right a-right ">'+coletor+' '+numcoleta+'</td>';
+					body +='<td class=" ">'+latitude+', '+longitude+'</td>';
+					body +='<td class=" ">'+pais+', '+estado+' - '+cidade+'</td>';
+			} catch (error) {
+				console.log(error)
+			}
+		}
+	}
+
+	exibe('loading','Buscando Ocorrências');
+
 	var table = '';
 	table += '<table class="table table-striped responsive-utilities jambo_table bulk_action"><thead><tr class="headings"><th><input type="checkbox" id="chkboxtodos2" name="chkboxtodos2" onclick="selecionaTodos2(true);">';
 	table += '</th><th class="column-title">Táxon </th><th class="column-title">Origem </th><th class="column-title">Coleção</th><th class="column-title">Tombo </th><th class="column-title">Coletor </th><th class="column-title">Coordenadas </th>';
 	table += '<th class="column-title">Localização</th>';
 	table += '<a class="antoo" style="color:#fff; font-weight:500;">Total de Registros selecionados: ( <span class="action-cnt"> </span> ) </a>';
 	table += '</th></tr></thead>';
-	table += '<tbody><td class="a-center total-busca" colspan=8>Total:' + (jabotData.length + gbifData.length)  + '</td>'+body+'</tbody></table>';
+	table += '<tbody><td class="a-center total-busca" colspan=8>Total:' + (jabotData.length + gbifData.length + HVdata.length)  + '</td>'+body+'</tbody></table>';
 	table += '';
 		
 //			x += '('+myObj.results[i]['decimalLongitude'] + ', '+myObj.results[i]['decimalLongitude']+ ')';
@@ -600,7 +637,7 @@ function getAllGbif (taxonKey, offset, results, jabotData) {
 					getAllGbif (taxonKey, offset, results, jabotData)
 				} else {
 					//imprimir results
-					gbif(results, jabotData)
+					printData(results, jabotData)
 				}
 			};
 		}
@@ -756,7 +793,7 @@ $(document).ready(function(){
     //console.log('document ready');
 });
 
-function buscar()
+async function buscar()
 {
 	 exibe('loading','Buscando Ocorrências');
 	 if (document.getElementById('edtespecie').value=='' && document.getElementById('checkfontecsv').checked==false)// && document.getElementById('checkfontecsv').checked==false)
@@ -775,10 +812,11 @@ function buscar()
          }
          else if (document.getElementById('checkfontesibbr').checked==true)
          {
-             getSibbr(texto);
+            getSibbr(texto);
          }
 		 else if (document.getElementById('checkfontehv').checked==true){
-			getHV(texto);
+			var data = await getHV(texto);
+			printHV(data)
 		 }
          else printCSV(file);
      }
@@ -799,7 +837,8 @@ function moreThanOneExperiment () {
 $('#checkfontecsv').on('change', function() {
     if(document.getElementById('checkfontecsv').checked){
         document.getElementById('checkfontejabot').checked = false;
-        document.getElementById('checkfontegbif').checked = false
+        document.getElementById('checkfontegbif').checked = false;
+		document.getElementById('checkfontehv').checked = false
     }
 });
 
@@ -815,18 +854,26 @@ $('#checkfontegbif').on('change', function() {
     }
 });
 
+$('#checkfontehv').on('change', function() {
+    if(document.getElementById('checkfontehv').checked){
+        document.getElementById('checkfontecsv').checked = false;
+    }
+});
+
 
 function getHV(sp)
 {
-    xmlhttp=new XMLHttpRequest();
-	xmlhttp.onreadystatechange=function()  {
-		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-			var data = xmlhttp.response;
-			printHV(JSON.parse(data))
+	return new Promise(function(resolve, reject) {
+		xmlhttp=new XMLHttpRequest();
+		xmlhttp.onreadystatechange=function()  {
+			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+				var data = xmlhttp.response;
+				resolve(JSON.parse(data));
+			}
 		}
-	}
-	xmlhttp.open("GET",'searchRefloraIPT.php?expid=' + <?php echo $id;?> + '&sp=' + sp,true);
-	xmlhttp.send();
+		xmlhttp.open("GET",'searchRefloraIPT.php?expid=' + <?php echo $id;?> + '&sp=' + sp,true);
+		xmlhttp.send();
+	});
 }
 
 function printHV (data) {
