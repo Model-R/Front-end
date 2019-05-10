@@ -832,35 +832,43 @@ function getHV(sp)
 function printHV (data) {
 	var body = '';
 	//print gbif
+	contador = 0;
 	exibe('loading','Buscando Ocorrências');
 	for (i = 0; i < data.length; i++) {
 		//alert(i);
-		longitude = data[i].decimalLongitude;
-		latitude = data[i].decimalLatitude;
+		try {		
+			longitude = data[i].decimalLongitude;
+			latitude = data[i].decimalLatitude;
 
-		taxon = data[i].genus + ' ' + data[i].specificEpithet;
-		tombo = data[i].catalogNumber;
-		coletor = data[i].recordedBy;
-		numcoleta = data[i].recordNumber;
-		pais = data[i].country;
-		estado = data[i].stateProvince;
-		cidade = data[i].municipality;
-		herbario = data[i].collectionCode;
-		
-		//$idexperimento,$idfontedados,$lat,$long,$taxon,$coletor,$numcoleta,$imagemservidor,$imagemcaminho,$imagemarquivo,$pais,$estado,$municipio
-		var idexperimento = document.getElementById('id').value;
-		var imageComponents = extractComponents(data[i].associatedMedia.replace('imagens1','imagens4'));
-		var html_imagem='<a href=templatehv.php?path='+imageComponents.path + '/' + imageComponents.file+' target=\'Visualizador\'><img src='+data[i].associatedMedia.replace('imagens1','imagens4')+'&width=100&height=150></a>';
-		//split * 
-		var Jval = idexperimento + '*4*'+latitude+'*'+longitude+'*'+taxon+'*'+ coletor+'*'+numcoleta+'*'+imageComponents.server+'*'+imageComponents.path+'*'+imageComponents.file+'*'+ pais+'*'+ estado+'*'+ cidade + '*' + herbario + '*' + tombo; 
-			body += '<tr class="even pointer"><td class="a-center "><input name="chtestemunho[]" id="chtestemunho[]" value="'+Jval+'" type="checkbox" ></td>';
-			body +='<td class=" ">'+html_imagem+ ' ' + taxon+'</td>';
-			body +='<td class="a-right a-right ">HV</td>';
-			body +='<td class="a-right a-right ">'+herbario+'</td>';
-			body +='<td class="a-right a-right ">'+tombo+'</td>';
-			body +='<td class="a-right a-right ">'+coletor+' '+numcoleta+'</td>';
-			body +='<td class=" ">'+latitude+', '+longitude+'</td>';
-			body +='<td class=" ">'+pais+', '+estado+' - '+cidade+'</td>';
+			//if (longitude == 'NA' || latitude == 'NA') continue;
+
+			contador = contador + 1;
+			taxon = data[i].genus + ' ' + data[i].specificEpithet;
+			tombo = data[i].catalogNumber;
+			coletor = data[i].recordedBy;
+			numcoleta = data[i].recordNumber;
+			pais = data[i].country;
+			estado = data[i].stateProvince;
+			cidade = data[i].municipality;
+			herbario = data[i].collectionCode;
+			
+			//$idexperimento,$idfontedados,$lat,$long,$taxon,$coletor,$numcoleta,$imagemservidor,$imagemcaminho,$imagemarquivo,$pais,$estado,$municipio
+			var idexperimento = document.getElementById('id').value;
+			var imageComponents = extractComponents(data[i].associatedMedia.replace('imagens1','imagens4'));
+			var html_imagem='<a href=templatehv.php?path='+imageComponents.path + '/' + imageComponents.file+' target=\'Visualizador\'><img src='+data[i].associatedMedia.replace('imagens1','imagens4')+'&width=100&height=150></a>';
+			//split * 
+			var Jval = idexperimento + '*4*'+latitude+'*'+longitude+'*'+taxon+'*'+ coletor+'*'+numcoleta+'*'+imageComponents.server+'*'+imageComponents.path+'*'+imageComponents.file+'*'+ pais+'*'+ estado+'*'+ cidade + '*' + herbario + '*' + tombo; 
+				body += '<tr class="even pointer"><td class="a-center "><input name="chtestemunho[]" id="chtestemunho[]" value="'+Jval+'" type="checkbox" ></td>';
+				body +='<td class=" ">'+html_imagem+ ' ' + taxon+'</td>';
+				body +='<td class="a-right a-right ">HV</td>';
+				body +='<td class="a-right a-right ">'+herbario+'</td>';
+				body +='<td class="a-right a-right ">'+tombo+'</td>';
+				body +='<td class="a-right a-right ">'+coletor+' '+numcoleta+'</td>';
+				body +='<td class=" ">'+latitude+', '+longitude+'</td>';
+				body +='<td class=" ">'+pais+', '+estado+' - '+cidade+'</td>';
+		} catch (error) {
+			console.log(error)
+		}
 	}
 	
 	var table = '';
@@ -869,7 +877,7 @@ function printHV (data) {
 	table += '<th class="column-title">Localização</th>';
 	table += '<a class="antoo" style="color:#fff; font-weight:500;">Total de Registros selecionados: ( <span class="action-cnt"> </span> ) </a>';
 	table += '</th></tr></thead>';
-	table += '<tbody><td class="a-center total-busca" colspan=8>Total:' + (data.length)  + '</td>'+body+'</tbody></table>';
+	table += '<tbody><td class="a-center total-busca" colspan=8>Total:' + (contador)  + '</td>'+body+'</tbody></table>';
 	table += '';
 		
 //			x += '('+myObj.results[i]['decimalLongitude'] + ', '+myObj.results[i]['decimalLongitude']+ ')';
