@@ -720,137 +720,20 @@ $("#cleanButtonDataCleaning").click(function() {
 google.maps.event.addDomListener(window, 'load', initMap);
 
 	function initMap() {
-	<?php 
-		$latcenter = -24.5452;
-		$longcenter = -42.5389;
-	
-	?>
-	
-    var map3 = new google.maps.Map(document.getElementById('map3'), {
-     center: {lat: <?php echo $latcenter;?>, lng: <?php echo $longcenter;?>},
-	 mapTypeId: 'terrain',
-	 gestureHandling: 'greedy',
-        mapTypeControl: true,
-        mapTypeControlOptions: {
-            mapTypeIds: ['terrain','roadmap', 'satellite']
-        },
-        styles: [
-            {
-                "featureType": "landscape",
-                "stylers": [
-                    {"hue": "#FFA800"},
-                    {"saturation": 0},
-                    {"lightness": 0},
-                    {"gamma": 1}
-                ]
-            },
-            {
-                "featureType": "road.highway",
-                "stylers": [
-                    {"hue": "#53FF00"},
-                    {"saturation": -73},
-                    {"lightness": 40},
-                    {"gamma": 1}
-                ]
-            },
-            {
-                "featureType": "road.arterial",
-                "stylers": [
-                    {"hue": "#FBFF00"},
-                    {"saturation": 0},
-                    {"lightness": 0},
-                    {"gamma": 1}
-                ]
-            },
-            {
-                "featureType": "road.local",
-                "stylers": [
-                    {"hue": "#00FFFD"},
-                    {"saturation": 0},
-                    {"lightness": 30},
-                    {"gamma": 1}
-                ]
-            },
-            {
-                "featureType": "water",
-                "stylers": [
-                    {"hue": "#00BFFF"},
-                    {"saturation": 6},
-                    {"lightness": 8},
-                    {"gamma": 1}
-                ]
-            },
-            {
-                "featureType": "poi",
-                "stylers": [
-                    {"hue": "#679714"},
-                    {"saturation": 33.4},
-                    {"lightness": -25.4},
-                    {"gamma": 1}
-                ]
-            }
-        ],
-    zoom: 2
-  });
- 
-  	var markers = [
-        <?php echo $marker;?>
-    ];
-                        
-    // Info Window Content
-	
-	var infoWindowContent = [
-		<?php echo $info;?>
-    ];
-
-	var kmlLayer = new google.maps.KmlLayer({
-    	url: 'http://model-r.jbrj.gov.br/v2/municipios.kml',
-    	suppressInfoWindows: true,
-    	map: map3,
-    	preserveViewport: true
-  	});
-
-
-//        ['<div class="info_content">' +
- //       '<h3>Caesalpinia Echinata</h3>' +
-  //      '<p><button id="send" type="button" onclick="enviar()" class="btn btn-danger">Excluir</button><button id="send" type="button" onclick="excluirPonto()" class="btn btn-default">Salvar Posição</button></p>' +        '</div>'],
-   //     ['<div class="info_content">' +
-    //    '<h3>Caesalpinia echinata</h3>' +
-     //   '<p><button id="send" type="button" onclick="enviar()" class="btn btn-danger">Excluir</button><button id="send" type="button" onclick="excluirPonto()" class="btn btn-default">Salvar Posição</button></p>' +
-      //  '</div>']
-	
-    // Display multiple markers on a map
-    var infoWindow = new google.maps.InfoWindow(), marker, i;
+	<?php $latcenter = -24.5452;$longcenter = -42.5389;?>
+    
+    var leaflet = startMap('map3', [-24.5452, -42.5389], 2)
+    
+  	var markers = [<?php echo $marker;?>];
     
     // Loop through our array of markers & place each one on the map  
     for( i = 0; i < markers.length; i++ ) {
-        var position = new google.maps.LatLng(markers[i][1], markers[i][2]);
-        //bounds.extend(position);
-		var icone = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
-		if (markers[i][7]!='')
-		{
-			icone = 'http://maps.google.com/mapfiles/ms/icons/'+markers[i][7];
-		}
-		
-        marker = new google.maps.Marker({
-            position: position,
-            map: map3,
-			draggable: false,
-            title: markers[i][0],
-			icon: icone,
-			scrollwheel:true
-        });
-        
-        // Allow each marker to have an info window    
-        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+        var marker = printMarker (leaflet, markers[i]);
+        marker.on('click', (function(marker, i) {
             return function() {
 				abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],'','',markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12],markers[i][13],markers[i][14],markers[i][15],markers[i][16]);
-				
             }
         })(marker, i));
-		
-        // Automatically center the map fitting all markers on the screen
-       // map3.fitBounds(bounds);
     }
 
 	tabMap = map3;
