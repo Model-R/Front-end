@@ -188,7 +188,7 @@ if(empty($extent_model) || $extent_model == ';;;' || $extent_model == '')
 <?php require 'MSGCODIGO.php';?>
 <?php $MSGCODIGO = $_REQUEST['MSGCODIGO'];?>
 
-var mainMap;
+var extentMap;
 var rectangleExtension;
 
 function initMapModelagem() {
@@ -199,77 +199,11 @@ function initMapModelagem() {
 	}
 	?>
 
-  var mapMod = new google.maps.Map(document.getElementById('mapMod'), {
-    center: {lat: -24.5452, lng: -42.5389},
-    mapTypeId: 'terrain',
-    gestureHandling: 'greedy',
-        mapTypeControl: true,
-        mapTypeControlOptions: {
-            mapTypeIds: ['terrain','roadmap', 'satellite']
-        },
-        styles: [
-            {
-                "featureType": "landscape",
-                "stylers": [
-                    {"hue": "#FFA800"},
-                    {"saturation": 0},
-                    {"lightness": 0},
-                    {"gamma": 1}
-                ]
-            },
-            {
-                "featureType": "road.highway",
-                "stylers": [
-                    {"hue": "#53FF00"},
-                    {"saturation": -73},
-                    {"lightness": 40},
-                    {"gamma": 1}
-                ]
-            },
-            {
-                "featureType": "road.arterial",
-                "stylers": [
-                    {"hue": "#FBFF00"},
-                    {"saturation": 0},
-                    {"lightness": 0},
-                    {"gamma": 1}
-                ]
-            },
-            {
-                "featureType": "road.local",
-                "stylers": [
-                    {"hue": "#00FFFD"},
-                    {"saturation": 0},
-                    {"lightness": 30},
-                    {"gamma": 1}
-                ]
-            },
-            {
-                "featureType": "water",
-                "stylers": [
-                    {"hue": "#00BFFF"},
-                    {"saturation": 6},
-                    {"lightness": 8},
-                    {"gamma": 1}
-                ]
-            },
-            {
-                "featureType": "poi",
-                "stylers": [
-                    {"hue": "#679714"},
-                    {"saturation": 33.4},
-                    {"lightness": -25.4},
-                    {"gamma": 1}
-                ]
-            }
-        ],
-   // center: {lat: <?php echo $latcenter;?>, lng: <?php echo $longcenter;?>},
-    zoom: 2
-  });
+	if(!extentMap) var mapMod = startMap('mapMod', [-24.5452, -42.5389], 2);
+	else mapMod = extentMap;
 
-  
 // [START region_rectangle]
-  var bounds1 = {
+  var bounds = {
     north: <?php echo $extensao1_norte;?>,
     south: <?php echo $extensao1_sul;?>,
     east: <?php echo $extensao1_leste;?>,
@@ -278,29 +212,31 @@ function initMapModelagem() {
 	 
   if(<?php echo $has_extent;?>){
 	// Define a rectangle and set its editable property to true.
-	  var rectangle = new google.maps.Rectangle({
-		bounds: bounds1,
-		editable: true,
-		draggable: true
-	  });
+	buildRectangle (mapMod, [bounds.south, bounds.west], [bounds.north, bounds.east]);
+	mapMod.on('editable:vertex:dragend', function (e) {
+		var ne = e.layer.getBounds().getNorthEast();
+		var sw = e.layer.getBounds().getSouthWest();
+	
+		document.getElementById('edtextensao1_norte').value=ne.lat;
+		document.getElementById('edtextensao1_sul').value=sw.lat;
+		document.getElementById('edtextensao1_oeste').value=sw.lng;
+		document.getElementById('edtextensao1_leste').value=ne.lng;
+	});
+	  
+	//   rectangle.addListener('bounds_changed', showNewRect);
+	  
+	//   rectangleExtension = rectangle;
+	  
+	//   function showNewRect(event) {
+    //     var ne = rectangle.getBounds().getNorthEast();
+    //     var sw = rectangle.getBounds().getSouthWest();
 
-	  // [END region_rectangle]
-	  rectangle.setMap(mapMod);
-	  
-	  rectangle.addListener('bounds_changed', showNewRect);
-	  
-	  rectangleExtension = rectangle;
-	  
-	  function showNewRect(event) {
-        var ne = rectangle.getBounds().getNorthEast();
-        var sw = rectangle.getBounds().getSouthWest();
-
-        document.getElementById('edtextensao1_norte').value=ne.lat();
-        document.getElementById('edtextensao1_sul').value=sw.lat();
-        document.getElementById('edtextensao1_oeste').value=sw.lng();
-        document.getElementById('edtextensao1_leste').value=ne.lng();
+    //     document.getElementById('edtextensao1_norte').value=ne.lat();
+    //     document.getElementById('edtextensao1_sul').value=sw.lat();
+    //     document.getElementById('edtextensao1_oeste').value=sw.lng();
+    //     document.getElementById('edtextensao1_leste').value=ne.lng();
 		
-      }
+    //   }
   }
  
 <?php 
@@ -342,23 +278,14 @@ $marker = '';
     
     // Loop through our array of markers & place each one on the map  
     for( i = 0; i < markers.length; i++ ) {
-        var position = new google.maps.LatLng(markers[i][1], markers[i][2]);
-		marker2 = new google.maps.Marker({
-            position: position,
-            map: mapMod,
-			draggable: false,
-			icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
-            title: markers[i][0]
-        });
-        
+		var marker = printMarker (mapMod, [markers[i][1], markers[i][2]], 'green-dot.png', false);        
     }
-	mainMap = mapMod;
+	extentMap = mapMod;
 }
 
 function saveShape()
 {
 	//exibe('loading', 'Processando ...');
-	console.log('shape ', document.getElementById('shape').value);
 	//document.getElementById('shape').value
 	//document.getElementById('frmmodelgem').submit();
 	printshape()
@@ -366,8 +293,6 @@ function saveShape()
 
 function printshape()
 {	
-	console.log('entrou print shape')
-	console.log(mapOverlay, 'overlay')
 	if(mapOverlay) mapOverlay.setMap(null);
 	imageBounds = new google.maps.LatLngBounds(
         new google.maps.LatLng(-33.77584, -73.94917),
@@ -382,7 +307,7 @@ function printshape()
 	mapOverlay = new google.maps.GroundOverlay(path,imageBounds,{opacity:0.7});
 		
 	rectangleExtension.setMap(null);
-	mapOverlay.setMap(mainMap);
+	mapOverlay.setMap(extentMap);
 }	
 
 function getShapeExtent () {
@@ -396,20 +321,25 @@ function enviarExtensao(tab)
 	document.getElementById('frmextensao').submit();
 }
 
-$(document ).ready(function() {
-	console.log('entrp 1')
+$(document).ready(function() {
 	initMapModelagem();	
+	extentMap.invalidateSize();
 });
 
-$('.nav-tabs a[href="#tab_content12"]').click(function(){
-	console.log('entrp 2')
-	google.maps.event.trigger(window, 'resize', {});
-	initMapModelagem();
-})
+// $('.nav-tabs a[href="#tab_content12"]').click(function(){
+// 	google.maps.event.trigger(window, 'resize', {});
+// 	initMapModelagem();
+// })
 
-$('.nav-tabs').on('shown.bs.tab', function () {
-	console.log('entrp 3')
-	google.maps.event.trigger(window, 'resize', {});
-	initMapModelagem();
+// $('.nav-tabs').on('shown.bs.tab', function () {
+// 	google.maps.event.trigger(window, 'resize', {});
+// 	initMapModelagem();
+// });
+
+
+$('input[type=radio][name=tabs]').change(function(ev) {
+	if(ev.target.id == 'tab12'){
+		extentMap.invalidateSize();
+	}
 });
 </script>		

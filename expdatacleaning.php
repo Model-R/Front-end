@@ -392,134 +392,28 @@ function initMapModal(idocorrencia) {
 		$latcenter = -24.5452;
 		$longcenter = -42.5389;
 	}
-	?>
-	
-    var map4 = new google.maps.Map(document.getElementById('map4'), {
-     center: {lat: <?php echo $latcenter;?>, lng: <?php echo $longcenter;?>},
-	 mapTypeId: 'terrain',
-	 gestureHandling: 'greedy',
-        mapTypeControl: true,
-        mapTypeControlOptions: {
-            mapTypeIds: ['terrain','roadmap', 'satellite']
-        },
-        styles: [
-            {
-                "featureType": "landscape",
-                "stylers": [
-                    {"hue": "#FFA800"},
-                    {"saturation": 0},
-                    {"lightness": 0},
-                    {"gamma": 1}
-                ]
-            },
-            {
-                "featureType": "road.highway",
-                "stylers": [
-                    {"hue": "#53FF00"},
-                    {"saturation": -73},
-                    {"lightness": 40},
-                    {"gamma": 1}
-                ]
-            },
-            {
-                "featureType": "road.arterial",
-                "stylers": [
-                    {"hue": "#FBFF00"},
-                    {"saturation": 0},
-                    {"lightness": 0},
-                    {"gamma": 1}
-                ]
-            },
-            {
-                "featureType": "road.local",
-                "stylers": [
-                    {"hue": "#00FFFD"},
-                    {"saturation": 0},
-                    {"lightness": 30},
-                    {"gamma": 1}
-                ]
-            },
-            {
-                "featureType": "water",
-                "stylers": [
-                    {"hue": "#00BFFF"},
-                    {"saturation": 6},
-                    {"lightness": 8},
-                    {"gamma": 1}
-                ]
-            },
-            {
-                "featureType": "poi",
-                "stylers": [
-                    {"hue": "#679714"},
-                    {"saturation": 33.4},
-                    {"lightness": -25.4},
-                    {"gamma": 1}
-                ]
-            }
-        ],
-    zoom: 2
-  });
- 
-  	var markers = [
-        <?php echo $marker;?>
-    ];
-                        
-    // Info Window Content
-	
-	var infoWindowContent = [
-		<?php echo $info;?>
-    ];
+    ?>
 
-//        ['<div class="info_content">' +
- //       '<h3>Caesalpinia Echinata</h3>' +
-  //      '<p><button id="send" type="button" onclick="enviar()" class="btn btn-danger">Excluir</button><button id="send" type="button" onclick="excluirPonto()" class="btn btn-default">Salvar Posição</button></p>' +        '</div>'],
-   //     ['<div class="info_content">' +
-    //    '<h3>Caesalpinia echinata</h3>' +
-     //   '<p><button id="send" type="button" onclick="enviar()" class="btn btn-danger">Excluir</button><button id="send" type="button" onclick="excluirPonto()" class="btn btn-default">Salvar Posição</button></p>' +
-      //  '</div>']
+    if(!modalMap) var map4 = startMap('map4', [-24.5452, -42.5389], 2)
+    else map4 = modalMap;
 	
-    // Display multiple markers on a map
-    var infoWindow = new google.maps.InfoWindow(), marker, i;
-    
-    // Loop through our array of markers & place each one on the map  
+	eraseMarkers(map4);
 
+  	var markers = [<?php echo $marker;?>];
     for( i = 0; i < markers.length; i++ ) {
 		if(markers[i][3] != idocorrencia) continue; //only print clicked ocurrence
-        var position = new google.maps.LatLng(markers[i][1], markers[i][2]);
-        //bounds.extend(position);
-		var icone = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
-		if (markers[i][7]!='')
-		{
-			icone = 'http://maps.google.com/mapfiles/ms/icons/'+markers[i][7];
-		}
+        var marker = printMarker (map4, [markers[i][1], markers[i][2]], markers[i][7], true);
+        // marker.on('click', (function(marker, i) {
+        //     return function() {
+		// 		abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],'','',markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12],markers[i][13],markers[i][14],markers[i][15],markers[i][16]);
+        //     }
+        // })(marker, i));
 		
-        marker = new google.maps.Marker({
-            position: position,
-            map: map4,
-			draggable: true,
-            title: markers[i][0],
-			icon: icone,
-			scrollwheel:true
-        });
-        
-        // Allow each marker to have an info window    
-        google.maps.event.addListener(marker, 'click', (function(marker, i) {
-            return function() {//começo
-				abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],'','',markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12],markers[i][13],markers[i][14],markers[i][15],markers[i][16]);
-				
-            }
-        })(marker, i));
-		
-        google.maps.event.addListener(marker, 'dragend', (function(marker, i) {
+        marker.on('dragend', (function(marker, i, e) {
             return function() {
-				abreConfirmacao(markers[i][0],markers[i][1],markers[i][2],markers[i][3],this.position.lat(),this.position.lng(),markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12],markers[i][13],markers[i][14],markers[i][15],markers[i][16]);
-				//abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],this.position.lat(),this.position.lng(),markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9]);
-				
+				abreConfirmacao(markers[i][0],markers[i][1],markers[i][2],markers[i][3],getLat(marker),getLng(marker),markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12],markers[i][13],markers[i][14],markers[i][15],markers[i][16]);
             }
         })(marker, i));
-        // Automatically center the map fitting all markers on the screen
-       // map3.fitBounds(bounds);
     }
 
 	modalMap = map4;
@@ -668,9 +562,11 @@ $('.nav-tabs a[href="#tab_content3"]').click(function(){
     $(this).tab('show');
     initMap();
     setTimeout(function(){ 
-        google.maps.event.trigger(tabMap, "resize");
-        tabMap.setCenter({lat: <?php echo $latcenter;?>, lng: <?php echo $longcenter;?>});
-    }, 200);
+		//google.maps.event.trigger(tabMap, "resize");
+		console.log('resize')
+		tabMap.invalidateSize();
+		tabMap.setCenter({lat: <?php echo $latcenter;?>, lng: <?php echo $longcenter;?>});
+    }, 1000);
 })
 
 $('.nav-tabs a[href="#tab_content3"]').click(function(){
@@ -679,27 +575,15 @@ $('.nav-tabs a[href="#tab_content3"]').click(function(){
 })	
 
 $('#pointModal').on('shown', function () {
-		google.maps.event.trigger(modalMap, "resize");
-    });
+	//google.maps.event.trigger(modalMap, "resize");
+	modalMap.invalidateSize();
+});
 
 function liberarExperimentoReflora(){
     //document.getElementById('frm').action='exec.experimento.php?page=dc&op=LE&id=' + <?php echo $id?>;
 	exibe('loading');
   	document.getElementById('frm').action='setupmodelagem.php?expid=' + <?php echo $id?>;
-	document.getElementById('frm').submit();
-	
-	// xmlhttp=new XMLHttpRequest();
-	// xmlhttp.onreadystatechange=function()  {
-	// 	if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-	// 		console.log('Terminou');
-    //         console.log('entrou' + xmlhttp.responseText);
-    //         exibe('loading');
-    //         window.location.href = url;
-	// 	}
-	// }
-	// xmlhttp.open("GET",'setupmodelagem.php?expid=' + <?php echo $id?>,true);
-	// xmlhttp.send();
-		
+	document.getElementById('frm').submit();	
 }
 
 $('#ConfirmCleanModalDataCleaning').modal({ show: false});
@@ -713,6 +597,12 @@ $("#cleanButtonDataCleaning").click(function() {
 	document.getElementById('frm').submit();
 });
 
+$('input[type=radio][name=tabs]').change(function(ev) {
+	if(ev.target.id == 'tab10'){
+		tabMap.invalidateSize();
+	}
+});
+
 </script>
 
 <script>
@@ -722,22 +612,20 @@ google.maps.event.addDomListener(window, 'load', initMap);
 	function initMap() {
 	<?php $latcenter = -24.5452;$longcenter = -42.5389;?>
     
-    var leaflet = startMap('map3', [-24.5452, -42.5389], 2)
+    var map3 = startMap('map3', [-24.5452, -42.5389], 2)
     
   	var markers = [<?php echo $marker;?>];
     
     // Loop through our array of markers & place each one on the map  
     for( i = 0; i < markers.length; i++ ) {
-        var marker = printMarker (leaflet, markers[i]);
+        var marker = printMarker (map3, [markers[i][1], markers[i][2]], markers[i][7]);
         marker.on('click', (function(marker, i) {
             return function() {
 				abreModal(markers[i][0],markers[i][1],markers[i][2],markers[i][3],'','',markers[i][4],markers[i][5],markers[i][6],markers[i][8],markers[i][9],markers[i][10],markers[i][11],markers[i][12],markers[i][13],markers[i][14],markers[i][15],markers[i][16]);
             }
         })(marker, i));
     }
-
 	tabMap = map3;
-	initMapModal()//start map inside modal
   
 }
 </script>

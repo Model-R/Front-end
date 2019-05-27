@@ -17,7 +17,7 @@ $idstatus = $_REQUEST['idstatus'];
 $latinf = $_REQUEST['latinf'];
 $longinf = $_REQUEST['longinf'];
 
-if(dirname(__FILE__) == '/var/www/html/rafael/modelr/v2' || dirname(__FILE__) == '/var/www/html/rafael/modelr/v3'){
+if(dirname(__FILE__) != '/var/www/html/rafael/modelr'){
 	$baseUrl = '../';
 } else {
 	$baseUrl = '';
