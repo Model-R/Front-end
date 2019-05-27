@@ -51,3 +51,7 @@ function buildRectangle (map, lower, upper) {
     // zoom the map to the rectangle bounds
     map.fitBounds(bounds);
 }
+
+function fitToBounds (map, bounds) {
+    map.fitBounds(bounds);
+}

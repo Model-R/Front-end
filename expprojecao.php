@@ -178,7 +178,7 @@ if(empty($projection_model) || $projection_model == ';;;' || $projection_model =
 <?php require 'MSGCODIGO.php';?>
 <?php $MSGCODIGO = $_REQUEST['MSGCODIGO'];?>
 
-var mainMap;
+var projectionMap;
 var rectangleExtension;
 
 function initMapProjecao() {
@@ -189,77 +189,12 @@ function initMapProjecao() {
 	}
 	?>
 
-  var mapModProjecao = new google.maps.Map(document.getElementById('mapModProjecao'), {
-    center: {lat: -24.5452, lng: -42.5389},
-    mapTypeId: 'terrain',
-    gestureHandling: 'greedy',
-        mapTypeControl: true,
-        mapTypeControlOptions: {
-            mapTypeIds: ['terrain','roadmap', 'satellite']
-        },
-        styles: [
-            {
-                "featureType": "landscape",
-                "stylers": [
-                    {"hue": "#FFA800"},
-                    {"saturation": 0},
-                    {"lightness": 0},
-                    {"gamma": 1}
-                ]
-            },
-            {
-                "featureType": "road.highway",
-                "stylers": [
-                    {"hue": "#53FF00"},
-                    {"saturation": -73},
-                    {"lightness": 40},
-                    {"gamma": 1}
-                ]
-            },
-            {
-                "featureType": "road.arterial",
-                "stylers": [
-                    {"hue": "#FBFF00"},
-                    {"saturation": 0},
-                    {"lightness": 0},
-                    {"gamma": 1}
-                ]
-            },
-            {
-                "featureType": "road.local",
-                "stylers": [
-                    {"hue": "#00FFFD"},
-                    {"saturation": 0},
-                    {"lightness": 30},
-                    {"gamma": 1}
-                ]
-            },
-            {
-                "featureType": "water",
-                "stylers": [
-                    {"hue": "#00BFFF"},
-                    {"saturation": 6},
-                    {"lightness": 8},
-                    {"gamma": 1}
-                ]
-            },
-            {
-                "featureType": "poi",
-                "stylers": [
-                    {"hue": "#679714"},
-                    {"saturation": 33.4},
-                    {"lightness": -25.4},
-                    {"gamma": 1}
-                ]
-            }
-        ],
-   // center: {lat: <?php echo $latcenter;?>, lng: <?php echo $longcenter;?>},
-    zoom: 2
-  });
+	if(!projectionMap) var mapModProjecao = startMap('mapModProjecao', [-24.5452, -42.5389], 2);
+	else mapModProjecao = projectionMap;
 
   
 // [START region_rectangle]
-  var bounds1 = {
+  var bounds = {
     north: <?php echo $extensao1_norte;?>,
     south: <?php echo $extensao1_sul ;?>,
     east: <?php echo $extensao1_leste ;?>,
@@ -268,29 +203,18 @@ function initMapProjecao() {
   
   if(<?php echo $has_extent;?>){
 	// Define a rectangle and set its editable property to true.
-	  var rectangle = new google.maps.Rectangle({
-		bounds: bounds1,
-		editable: true,
-		draggable: true
-	  });
+		buildRectangle (mapModProjecao, [bounds.south, bounds.west], [bounds.north, bounds.east]);
+		  
+	    mapModProjecao.on('editable:vertex:dragend', function (e) {
+			var ne = e.layer.getBounds().getNorthEast();
+			var sw = e.layer.getBounds().getSouthWest();
 
-	  // [END region_rectangle]
-	  rectangle.setMap(mapModProjecao);
-	  
-	  rectangle.addListener('bounds_changed', showNewRect);
-	  
-	  rectangleExtension = rectangle;
-	  
-	   function showNewRect(event) {
-			var ne = rectangle.getBounds().getNorthEast();
-			var sw = rectangle.getBounds().getSouthWest();
-
-			document.getElementById('edtprojecao1_norte').value=ne.lat();
-			document.getElementById('edtprojecao1_sul').value=sw.lat();
-			document.getElementById('edtprojecao1_oeste').value=sw.lng();
-			document.getElementById('edtprojecao1_leste').value=ne.lng();
+			document.getElementById('edtprojecao1_norte').value=ne.lat;
+			document.getElementById('edtprojecao1_sul').value=sw.lat;
+			document.getElementById('edtprojecao1_oeste').value=sw.lng;
+			document.getElementById('edtprojecao1_leste').value=ne.lng;
 			
-		}
+		});
 	}
  
 <?php 
@@ -332,51 +256,9 @@ $marker = '';
     
     // Loop through our array of markers & place each one on the map  
     for( i = 0; i < markers.length; i++ ) {
-        var position = new google.maps.LatLng(markers[i][1], markers[i][2]);
-		marker2 = new google.maps.Marker({
-            position: position,
-            map: mapModProjecao,
-			draggable: false,
-			icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
-            title: markers[i][0]
-        });
-        
+		var marker = printMarker (mapModProjecao, [markers[i][1], markers[i][2]], 'green-dot.png', false);            
     }
-	mainMap = mapModProjecao;
-}
-
-function saveShape()
-{
-	//exibe('loading', 'Processando ...');
-	//console.log('shape ', document.getElementById('shape').value);
-	//document.getElementById('shape').value
-	//document.getElementById('frmmodelgem').submit();
-	printshape()
-}	
-
-function printshape()
-{	
-	//console.log('entrou print shape')
-	//console.log(mapOverlay, 'overlay')
-	if(mapOverlay) mapOverlay.setMap(null);
-	imageBounds = new google.maps.LatLngBounds(
-        new google.maps.LatLng(-33.77584, -73.94917),
-        new google.maps.LatLng(5.224162 , -34.84917));
-		
-	document.getElementById('edtprojecao1_norte').value= -73.98005; //xmin
-	document.getElementById('edtprojecao1_sul').value= -43.6135; //xmax
-	document.getElementById('edtprojecao1_oeste').value=5.250803; //ymax
-	document.getElementById('edtprojecao1_leste').value=-16.30544; //ymin
-		
-	var path = 'http://model-r.jbrj.gov.br/v2/shapes/amazonia/imagem-brasil (1).png';
-	mapOverlay = new google.maps.GroundOverlay(path,imageBounds,{opacity:0.7});
-		
-	rectangleExtension.setMap(null);
-	mapOverlay.setMap(mainMap);
-}	
-
-function getShapeExtent () {
-	
+	projectionMap = mapModProjecao;
 }
 
 function enviarProjecao(tab)
@@ -390,13 +272,25 @@ $(document ).ready(function() {
 	initMapProjecao();	
 });
 
-$('.nav-tabs a[href="#tab_content18"]').click(function(){
-	google.maps.event.trigger(window, 'resize', {});
-	initMapProjecao();
-})
+// $('.nav-tabs a[href="#tab_content18"]').click(function(){
+// 	google.maps.event.trigger(window, 'resize', {});
+// 	initMapProjecao();
+// })
 
-$('.nav-tabs').on('shown.bs.tab', function () {
-	google.maps.event.trigger(window, 'resize', {});
-	initMapProjecao();
+// $('.nav-tabs').on('shown.bs.tab', function () {
+// 	google.maps.event.trigger(window, 'resize', {});
+// 	initMapProjecao();
+// });
+
+$('input[type=radio][name=tabs]').change(function(ev) {
+	if(ev.target.id == 'tab18'){
+		projectionMap.invalidateSize();
+		var sw = [document.getElementById('edtprojecao1_sul').value,
+			document.getElementById('edtprojecao1_oeste').value];
+		var ne = [document.getElementById('edtprojecao1_norte').value,
+			document.getElementById('edtprojecao1_leste').value]
+		var bounds = [sw, ne];
+		fitToBounds(projectionMap, bounds)
+	}
 });
 </script>		

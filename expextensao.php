@@ -211,32 +211,18 @@ function initMapModelagem() {
   };
 	 
   if(<?php echo $has_extent;?>){
-	// Define a rectangle and set its editable property to true.
-	buildRectangle (mapMod, [bounds.south, bounds.west], [bounds.north, bounds.east]);
-	mapMod.on('editable:vertex:dragend', function (e) {
-		var ne = e.layer.getBounds().getNorthEast();
-		var sw = e.layer.getBounds().getSouthWest();
-	
-		document.getElementById('edtextensao1_norte').value=ne.lat;
-		document.getElementById('edtextensao1_sul').value=sw.lat;
-		document.getElementById('edtextensao1_oeste').value=sw.lng;
-		document.getElementById('edtextensao1_leste').value=ne.lng;
-	});
-	  
-	//   rectangle.addListener('bounds_changed', showNewRect);
-	  
-	//   rectangleExtension = rectangle;
-	  
-	//   function showNewRect(event) {
-    //     var ne = rectangle.getBounds().getNorthEast();
-    //     var sw = rectangle.getBounds().getSouthWest();
-
-    //     document.getElementById('edtextensao1_norte').value=ne.lat();
-    //     document.getElementById('edtextensao1_sul').value=sw.lat();
-    //     document.getElementById('edtextensao1_oeste').value=sw.lng();
-    //     document.getElementById('edtextensao1_leste').value=ne.lng();
+		// Define a rectangle and set its editable property to true.
+		buildRectangle (mapMod, [bounds.south, bounds.west], [bounds.north, bounds.east]);
+		mapMod.on('editable:vertex:dragend', function (e) {
+			var ne = e.layer.getBounds().getNorthEast();
+			var sw = e.layer.getBounds().getSouthWest();
 		
-    //   }
+			document.getElementById('edtextensao1_norte').value=ne.lat;
+			document.getElementById('edtextensao1_sul').value=sw.lat;
+			document.getElementById('edtextensao1_oeste').value=sw.lng;
+			document.getElementById('edtextensao1_leste').value=ne.lng;
+		});
+	  
   }
  
 <?php 
@@ -278,40 +264,9 @@ $marker = '';
     
     // Loop through our array of markers & place each one on the map  
     for( i = 0; i < markers.length; i++ ) {
-		var marker = printMarker (mapMod, [markers[i][1], markers[i][2]], 'green-dot.png', false);        
+			var marker = printMarker (mapMod, [markers[i][1], markers[i][2]], 'green-dot.png', false);        
     }
 	extentMap = mapMod;
-}
-
-function saveShape()
-{
-	//exibe('loading', 'Processando ...');
-	//document.getElementById('shape').value
-	//document.getElementById('frmmodelgem').submit();
-	printshape()
-}	
-
-function printshape()
-{	
-	if(mapOverlay) mapOverlay.setMap(null);
-	imageBounds = new google.maps.LatLngBounds(
-        new google.maps.LatLng(-33.77584, -73.94917),
-        new google.maps.LatLng(5.224162 , -34.84917));
-		
-	document.getElementById('edtextensao1_norte').value= -73.98005; //xmin
-	document.getElementById('edtextensao1_sul').value= -43.6135; //xmax
-	document.getElementById('edtextensao1_oeste').value=5.250803; //ymax
-	document.getElementById('edtextensao1_leste').value=-16.30544; //ymin
-		
-	var path = 'http://model-r.jbrj.gov.br/v2/shapes/amazonia/imagem-brasil (1).png';
-	mapOverlay = new google.maps.GroundOverlay(path,imageBounds,{opacity:0.7});
-		
-	rectangleExtension.setMap(null);
-	mapOverlay.setMap(extentMap);
-}	
-
-function getShapeExtent () {
-	
 }
 
 function enviarExtensao(tab)
@@ -326,20 +281,13 @@ $(document).ready(function() {
 	extentMap.invalidateSize();
 });
 
-// $('.nav-tabs a[href="#tab_content12"]').click(function(){
-// 	google.maps.event.trigger(window, 'resize', {});
-// 	initMapModelagem();
-// })
-
-// $('.nav-tabs').on('shown.bs.tab', function () {
-// 	google.maps.event.trigger(window, 'resize', {});
-// 	initMapModelagem();
-// });
-
-
 $('input[type=radio][name=tabs]').change(function(ev) {
 	if(ev.target.id == 'tab12'){
 		extentMap.invalidateSize();
+		var sw = [document.getElementById('edtextensao1_sul').value,document.getElementById('edtextensao1_oeste').value];
+		var ne = [document.getElementById('edtextensao1_norte').value,document.getElementById('edtextensao1_leste').value]
+		var bounds = [sw, ne];
+		fitToBounds(extentMap, bounds)
 	}
 });
 </script>		
