@@ -441,7 +441,7 @@ function abreModal(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,arquiv
 	document.getElementById('edtlatitude').value=lat;
 	document.getElementById('edtlongitude').value=lng;
 	document.getElementById('cmboxstatusoccurrence').value=idstatusocorrence;
-	console.log('idstatusocorrence ' + idstatusocorrence);
+	//console.log('idstatusocorrence ' + idstatusocorrence);
 	$('#pointModal').modal('show');
 	setTimeout(() => { 
 		initMapModal(idocorrencia);
@@ -475,7 +475,7 @@ function atualizarPontos(idponto,idstatus,latinf,longinf,statusOnly)
 {
 	//alert('?idstatus='+idstatus+'&idponto='+idponto+'&latinf='+latinf+'&longinf='+longinf);
 	exibe('loading','Atualizando Status');
-	console.log('exec.atualizarpontos.php?id='+ <?php echo $id;?> +'&idstatus='+idstatus+'&idponto='+idponto+'&latinf='+latinf+'&longinf='+longinf + '&statusOnly='+statusOnly + '&filtro='+<?php echo $filtro;?> + '')
+	//console.log('exec.atualizarpontos.php?id='+ <?php echo $id;?> +'&idstatus='+idstatus+'&idponto='+idponto+'&latinf='+latinf+'&longinf='+longinf + '&statusOnly='+statusOnly + '&filtro='+<?php echo $filtro;?> + '')
 	<?php if(empty($filtro)){?>
 		document.getElementById('frm').action='exec.atualizarpontos.php?id='+ <?php echo $id;?> +'&idstatus='+idstatus+'&idponto='+idponto+'&latinf='+latinf+'&longinf='+longinf + '&statusOnly='+statusOnly;
 	<?php } else { ?>
@@ -523,7 +523,7 @@ function abreConfirmacao(taxon,lat,lng,idocorrencia,latinf,lnginf,servidor,path,
 function filtrar(idstatusoccurrence)
 {
 	//exibe('loading','Filtrando');
-	console.log(document.getElementById('frm'))
+	//console.log(document.getElementById('frm'))
 	// document.getElementById('frm').action='cadexperimento.php?tab=3&filtro='+idstatusoccurrence;
     document.getElementById('frm').action='cadexperimento.php?op='+'<?php echo $op;?>'+'&tab=10&id='+'<?php echo $id;?>' + '&filtro='+idstatusoccurrence;
 	document.getElementById('frm').submit();
@@ -563,7 +563,7 @@ $('.nav-tabs a[href="#tab_content3"]').click(function(){
     initMap();
     setTimeout(function(){ 
 		//google.maps.event.trigger(tabMap, "resize");
-		console.log('resize')
+		//console.log('resize')
 		tabMap.invalidateSize();
 		tabMap.setCenter({lat: <?php echo $latcenter;?>, lng: <?php echo $longcenter;?>});
     }, 1000);

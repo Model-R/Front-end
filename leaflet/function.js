@@ -55,3 +55,62 @@ function buildRectangle (map, lower, upper) {
 function fitToBounds (map, bounds) {
     map.fitBounds(bounds);
 }
+
+function addDrawControl (map) {
+    var drawnItems = new L.FeatureGroup();
+    map.addLayer(drawnItems);
+    var drawControl = new L.Control.Draw({
+        draw : {
+            position : 'topleft',
+            polyline : false,
+            rectangle : true,
+            circle : false,
+            polygon: false,
+            marker: false
+        },
+        edit: {
+            featureGroup: drawnItems
+        }
+    });
+    map.addControl(drawControl);
+
+    map.on('draw:created', function (e) {
+        layer = e.layer;
+    
+        // Do whatever else you need to. (save to db, add to map etc)
+        map.addLayer(layer);
+    });
+}
+
+function buildCustomControl (map, options, onAdd) {
+    var customControl = L.Control.extend({
+        options: options,
+        onAdd: onAdd,
+    });
+
+    map.addControl(new customControl());
+}
+
+function eraseRectangles (map) {
+    map.eachLayer(function (layer) { 
+        if(layer instanceof L.Rectangle) map.removeLayer(layer);
+    });
+}
+
+function extractPolygonsVertices (map) {
+    let polygons = [];
+    map.eachLayer(function (layer) { 
+        if(layer instanceof L.Rectangle) {
+            var NE = layer.getBounds().getNorthEast();
+			var SW = layer.getBounds().getSouthWest();
+            
+            var NW = `${NE.lat}, ${SW.lng}`;
+            var SE = `${SW.lat}, ${NE.lng}`;
+            NE = `${NE.lat}, ${NE.lng}`;
+            SW = `${SW.lat}, ${SW.lng}`;
+            var vertices = [SW,NW,NE,SE];
+            polygons.push({ type: 'polygon', vertices: vertices.join(';') });
+        }
+    });
+    return polygons;
+}
