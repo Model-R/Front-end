@@ -109,8 +109,24 @@ function extractPolygonsVertices (map) {
             NE = `${NE.lat}, ${NE.lng}`;
             SW = `${SW.lat}, ${SW.lng}`;
             var vertices = [SW,NW,NE,SE];
-            polygons.push({ type: 'polygon', vertices: vertices.join(';') });
+            polygons.push(JSON.stringify({ type: 'polygon', vertices: vertices.join(';') }));
         }
     });
     return polygons;
+}
+
+function addImage (map, bounds, url) {
+    return L.imageOverlay(url, bounds).addTo(map);
+}
+
+function setOpacity (layer, opacity) {
+    layer.setOpacity(opacity)
+}
+
+function addLayer (map, layer) {
+    map.addLayer(layer);
+}
+
+function removeLayer (map, layer) {
+    map.removeLayer(layer);
 }

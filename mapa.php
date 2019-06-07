@@ -84,7 +84,7 @@ if(dirname(__FILE__) != '/var/www/html/rafael/modelr'){
 	<form name='frmmapa' id='frmmapa' action='exec.modelagem.php' method="post" class="form-horizontal form-label-left" novalidate></form>
 	<div class="col-md-12 col-sm-12 col-xs-12">
 		<div class="x_content map-content">
-		<input class="opacity-slider" type="range" min="0" max="1" step="0.1" value="1" onchange="updateOpacity(this.value)" data-toggle="tooltip" data-placement="top" title="Arraste para alterar transparência da imagem no Mapa">
+		<input class="opacity-slider" type="range" min="0" max="1" step="0.1" value="1" onchange="setOpacity(imageOverlay, this.value)" data-toggle="tooltip" data-placement="top" title="Arraste para alterar transparência da imagem no Mapa">
 		<?php require "templates/cortarraster.php";?>
 		 <div id="map">
 		 </div>
@@ -144,20 +144,19 @@ var imageBounds;
 var polygonArray = [];
 
 document.getElementById("cancelarCorteRaster").onclick = () => {
-     mapOverlay.setMap(null);
-	
-     if(rasterPngPath){
-        mapOverlay = new google.maps.GroundOverlay(rasterPngPath,imageBounds,{opacity:1});
+    
+    removeLayer(mapresult, imageOverlay);
+    console.log(rasterPngPath)
+    if(rasterPngPath){
+        imageOverlay = addImage (mapresult, imageBounds, rasterPngPath)
     } 
 
     isImageCut = false;
-     mapOverlay.setMap(mapresult);
-	
-     imageOverlay = mapOverlay;
-	 document.getElementById("cancelarCorteRaster").style.display = 'none';
-	 if(document.getElementById("validarCorteRaster")){
-		document.getElementById("validarCorteRaster").style.display = 'none';
-	 }
+    
+	document.getElementById("cancelarCorteRaster").style.display = 'none';
+	if(document.getElementById("validarCorteRaster")){
+	    document.getElementById("validarCorteRaster").style.display = 'none';
+	}
 
      xmlhttp=new XMLHttpRequest();
     xmlhttp.onreadystatechange=function()  {
@@ -166,10 +165,6 @@ document.getElementById("cancelarCorteRaster").onclick = () => {
     xmlhttp.send();
 };
 
-function updateOpacity (value){
-    imageOverlay.setOpacity(Number(value));
-}
-
 var mapresult;
 
 var pngCutPath;
@@ -177,6 +172,7 @@ var rasterCutPath;
 var isImageCut;
 var rasterPngPath;
 var typePolygonCut;
+var markerVisibility = true;
 
 function initMapExpResultado() {
     if(!mapresult) {
@@ -225,23 +221,18 @@ function initMapExpResultado() {
     
 	//leste oeste norte sul
 	//-64.67653000000001;-30.924622499999998;6.404925371814875;-32.03960046758004
-	//projection
-  imageBounds = new google.maps.LatLngBounds(
-	new google.maps.LatLng(<?php echo $projection[3]?>, <?php echo $projection[1]?>),
-	new google.maps.LatLng(<?php echo $projection[2]?>, <?php echo $projection[0]?>));
-	
-	//imageBounds = new google.maps.LatLngBounds(
-	//new google.maps.LatLng(-30.924622499999998, -64.67653000000001),
-	//new google.maps.LatLng(6.404925371814875, -32.03960046758004));
-		
-		if(isImageCut){
-			mapOverlay = new google.maps.GroundOverlay(pngCutPath,imageBounds,{opacity:1});
-		} else {
-			mapOverlay = new google.maps.GroundOverlay(rasterPngPath,imageBounds,{opacity:1});
-		}
-            
-    mapOverlay.setMap(map);
+    //projection
+
+    imageBounds = [[<?php echo $projection[3]?>, <?php echo $projection[1]?>],
+                   [<?php echo $projection[2]?>, <?php echo $projection[0]?>]];
+
+    if(isImageCut){
+        imageOverlay = addImage (mapResult, imageBounds, pngCutPath)
+    } else {
+        imageOverlay = addImage (mapResult, imageBounds, rasterPngPath)
+    }
     mapresult = mapResult;
+    printMarkers(mapResult);
 }
 
 function typeOfShape(shape){
@@ -254,91 +245,86 @@ function typeOfShape(shape){
     }
 }
 
- 
-<?php 
-	$sql = "select idoccurrence,idexperiment,iddatasource,taxon,collector,collectnumber,server,
-    path,file,occurrence.idstatusoccurrence,pathicon,statusoccurrence,country,majorarea,minorarea,
-case when lat2 is not null then lat2 else lat end as lat, case when long2 is not null then long2
-else long end as long
- from modelr.occurrence, modelr.statusoccurrence where 
-							occurrence.idstatusoccurrence = statusoccurrence.idstatusoccurrence and
-							idexperiment = ".$id. " and occurrence.idstatusoccurrence in (4,17) ";
-
-//echo $sql; 
-$res = pg_exec($conn,$sql);
-$conta = pg_num_rows($res);
-$marker = '';
-	
-	$c=0;
-	while ($row = pg_fetch_array($res))
-	{
-		
-		// preparo os quadros de informação para cada ponto
-		$c++;
-		if ($c < $conta) {
-			$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."'],";
-		}
-		else
-		{
-			$marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."']";
-			$latcenter = $row['lat'];
-			$longcenter = $row['long'];
-		}
-	}
-
-?>							
-  	var markers = [
-        <?php echo $marker;;?>
-    ];
-	
-	var googleMarkers = [];
-    for( i = 0; i < markers.length; i++ ) {
-        var position = new google.maps.LatLng(markers[i][1], markers[i][2]); 
-		marker2 = new google.maps.Marker({
-            position: position,
-            map: map,
-			draggable: false,
-            icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
-            title: markers[i][0]
-        });
-		
-		googleMarkers.push(marker2);
-       
-    }
-	
-	document.getElementById("tooglePontos").onclick = () => {
-		for ( i = 0; i < googleMarkers.length; i++ ) {
-			if(googleMarkers[i].getVisible()) {
-			  googleMarkers[i].setVisible(false);
-			}
-			else {
-			  googleMarkers[i].setVisible(true);
-			}
-		}
-	};
+function printMarkers(map) {
+    <?php 
+        $sql = "select idoccurrence,idexperiment,iddatasource,taxon,collector,collectnumber,server,
+        path,file,occurrence.idstatusoccurrence,pathicon,statusoccurrence,country,majorarea,minorarea,
+    case when lat2 is not null then lat2 else lat end as lat, case when long2 is not null then long2
+    else long end as long
+     from modelr.occurrence, modelr.statusoccurrence where 
+                                occurrence.idstatusoccurrence = statusoccurrence.idstatusoccurrence and
+                                idexperiment = ".$id. " and occurrence.idstatusoccurrence in (4,17) ";
+    
+    //echo $sql; 
+    $res = pg_exec($conn,$sql);
+    $conta = pg_num_rows($res);
+    $marker = '';
+        
+        $c=0;
+        while ($row = pg_fetch_array($res))
+        {
+            
+            // preparo os quadros de informação para cada ponto
+            $c++;
+            if ($c < $conta) {
+                $marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."'],";
+            }
+            else
+            {
+                $marker .= "['".$row['taxon']."', ".$row['lat'].",".$row['long'].",".$row['idoccurrence'].",'".$servidor."','".$path."','".$arquivo."','".$row['pathicon']."','".$row['idstatusoccurrence']."','".$localizacao."']";
+                $latcenter = $row['lat'];
+                $longcenter = $row['long'];
+            }
+        }
+    
+    ?>							
+          var markers = [
+            <?php echo $marker;;?>
+        ];
+        
+        var googleMarkers = [];
+        for( i = 0; i < markers.length; i++ ) {
+            var marker2 = printMarker (map, [markers[i][1], markers[i][2]], markers[i][7]);            
+            googleMarkers.push(marker2);
+           
+        }
+        
+        document.getElementById("tooglePontos").onclick = () => {
+            for ( i = 0; i < googleMarkers.length; i++ ) {
+                if(markerVisibility){
+                    eraseMarkers (map)
+                } else {
+                    
+                    addLayer(map, googleMarkers[i]);
+                }
+            }
+            markerVisibility = !markerVisibility;
+        };
+}
 
 function cortarRaster(){
 	xmlhttp=new XMLHttpRequest();
 	xmlhttp.onreadystatechange=function()  {
 		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-			mapOverlay.setMap(null);
-			
-			mapOverlay = new google.maps.GroundOverlay(
-				'https://model-r.jbrj.gov.br/temp/' + <?php echo $id;?> + '/png_map-' + <?php echo $id;?> + '.png?' + Math.random(),
-			imageBounds,{opacity:1});
-			mapOverlay.setMap(mapresult);
+            
+            removeLayer(mapresult, imageOverlay);
+			imageBounds = [[<?php echo $projection[3]?>, <?php echo $projection[1]?>],
+                   [<?php echo $projection[2]?>, <?php echo $projection[0]?>]];
+
+            var imagePath = 'https://model-r.jbrj.gov.br/temp/' + <?php echo $id;?> + '/png_map-' + <?php echo $id;?> + '.png?' + Math.random()
+            imageOverlay = addImage (mapresult, imageBounds, imagePath)
 			<?php 
 				$novoRaster = 'https://model-r.jbrj.gov.br/temp/' . $id .'/png_map-' . $id . '.png';
 			?>
-			
 			isImageCut = true;
 			pngCutPath = 'https://model-r.jbrj.gov.br/temp/' + <?php echo $id;?> + '/png_map-' + <?php echo $id;?> + '.png';
-			imageOverlay = mapOverlay;
 			document.getElementById("cancelarCorteRaster").style.display = 'flex';
 		}
     }
-    const PolygonArrayString = extractPolygonsVertices(mapresult);
-	xmlhttp.open("GET",'cutGeoJson.php?table=polygon&array=' + PolygonArrayString.join(':') + '&expid=' + <?php echo $id;?>,true);
+    let PolygonArrayString = extractPolygonsVertices(mapresult);
+    console.log(PolygonArrayString)
+    console.log('cutGeoJson.php?table=polygon&array=[' + PolygonArrayString.join(':') + ']&expid=' + <?php echo $id;?>)
+    xmlhttp.open("GET",'cutGeoJson.php?table=polygon&array=[' + PolygonArrayString.join(':') + ']&expid=' + <?php echo $id;?>,true);
 	xmlhttp.send();
 } 
 

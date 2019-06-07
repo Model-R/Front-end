@@ -104,7 +104,7 @@ $nome_experimeto = $Experimento->name;
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script> 
    <script src = "leaflet/leaflet.editable.js"></script>
-   <script src = "leaflet/function.js"></script>
+   <script src = "leaflet/functions.js"></script>
 
 </head>
 <script>

@@ -17,10 +17,10 @@ $Experimento->getPath($expid);
 $isImageCut = $Experimento->isImageCut;
 $isImageCut = $isImageCut === 't'? true: false;
 
-if(dirname(__FILE__) == '/var/www/html/rafael/modelr/v2' || dirname(__FILE__) == '/var/www/html/rafael/modelr/v3'){
+if(dirname(__FILE__) != '/var/www/html/rafael/modelr'){
 	$baseUrl = '../';
 } else {
-	$baseUrl = '';
+	$baseUrl = './';
 }
 
 if($isImageCut){
@@ -31,7 +31,7 @@ if($isImageCut){
 	$rasterCutPath = "'" . $Experimento->tiffPath . "'";
 }
 
-$Experimento->alterarPathPngRaster($expid, "'./temp/" . $expid ."/png_map-" . $expid . ".png'", "'./temp/" . $expid ."/raster_crop-" . $expid . ".tif'");
+$Experimento->alterarPathPngRaster($expid, "'".$baseUrl."temp/" . $expid ."/png_map-" . $expid . ".png'", "'".$baseUrl."temp/" . $expid ."/raster_crop-" . $expid . ".tif'");
 
 $filePath = $baseUrl . '../../../../../../mnt/dados/modelr/json/polygon-' . $expid . '.json';
 $file = fopen($filePath, 'w');
@@ -77,6 +77,7 @@ foreach($arrayPolygon as $polygon){
 if (!file_exists($baseUrl . "temp/" . $expid )) {
     mkdir($baseUrl . "temp/" . $expid , 0777, true);
 }
+
 
 exec("Rscript script_pos.R $expid $filePath $rasterCutPath");
 
